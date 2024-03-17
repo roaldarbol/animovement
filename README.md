@@ -4,7 +4,7 @@
 [![Codecov test coverage](https://codecov.io/gh/roaldarbol/trackballr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/roaldarbol/trackballr?branch=main)
 <!-- badges: end -->
 
-The goal of {trackballr} is to make analysis of trackball data easy-
+The goal of {trackballr} is to make analysis of trackball data easy.
 
 ## Installation
 

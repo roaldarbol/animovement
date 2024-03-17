@@ -6,7 +6,7 @@ test_that("Mode works!", {
 
   # Multiple outcomes
   my_multi_vector <- c(1,2,3,3,4,5,5)
-  expect_equal(trackballr::mode(my_multi_vector), 3)
+  expect_equal(trackballr::mode(my_multi_vector), c(3,5))
 
   # Removes NA
   my_na_vector <- c(1,2,3,3,NA,5)
