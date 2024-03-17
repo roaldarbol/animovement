@@ -1,4 +1,4 @@
-#' Title
+#' Mode
 #'
 #' @param x A vector of numbers
 #'
@@ -7,5 +7,6 @@
 #'
 #' @examples
 mode <- function(x){
-  which.max(tabulate(x))
+  y <- tabulate(x)
+  which(y == max(y, na.rm = TRUE))
 }

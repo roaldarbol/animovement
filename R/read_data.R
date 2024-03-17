@@ -7,9 +7,12 @@
 #' @export
 #'
 #' @examples
-read_trackball_from_rdata <- function(
-    data,
-    sensor_names = c("Left", "Right")
+read_trackball_data <- function(
+    folder_path,
+    sensor_names = c("Left", "Right"),
+    format = "RDS"
 ){
+
+
 
 }
