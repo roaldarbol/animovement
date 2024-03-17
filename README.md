@@ -39,7 +39,7 @@ data_df <- bind_rows(sensor_data_temp)
 Once the data has been pre-processed, it can then easily generate useful summaries - here are some examples.
 ```r
 # Compute translational summary
-sensor_summary <- sensor_data_df |> 
+translation_summary <- data_df |> 
   na.omit()  |> 
   group_by(id, date) |> 
   filter(abs(x) > 0 | abs(y) > 0) |> # Only keep rows containing movement
@@ -55,7 +55,7 @@ sensor_summary <- sensor_data_df |>
 
 # Compute rotational summary
 # Here wa are also filtering out trials with a faulty sensor/no data for one sensor
-rotation_summary <- sensor_data_df |> 
+rotation_summary <- data_df |> 
   na.omit() |>
   group_by(id, date) |> 
   filter(v_rotation > 0) |>
