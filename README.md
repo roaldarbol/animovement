@@ -28,10 +28,10 @@ filepaths <- list.files(pattern = ".csv", recursive = TRUE)
 
 # Once we have two paths, we can read the data
 # The current experiment uses an open-loop configuration
-data <- read_trackball_data(folder_path, configuration = "open")
+data <- read_trackball_data(filepaths, configuration = "open")
 
 # Augment all data in list
-data_list <- augment_trackball(
+data <- augment_trackball(
     data, 
     x, 
     y, 
