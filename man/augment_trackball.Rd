@@ -6,8 +6,8 @@
 \usage{
 augment_trackball(
   data,
-  x = y_Right,
-  y = y_Left,
+  x,
+  y,
   time = NULL,
   sampling_rate = 125,
   rollmean_k = 30,

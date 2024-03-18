@@ -18,8 +18,8 @@
 #'
 augment_trackball <- function(
     data,
-    x = y_Right,
-    y = y_Left,
+    x,
+    y,
     time = NULL,
     sampling_rate = 125,
     rollmean_k = 30,
@@ -34,7 +34,6 @@ augment_trackball <- function(
       "cum_{{ x }}" := 0,
       "cum_{{ y }}" := 0
       ) |>
-    dplyr::select(!c(1:4)) |>
     dplyr::mutate(distance = sqrt({{ x }}^2 + {{ y }}^2) / mouse_dpcm,
            v_translation = .data$distance * sampling_rate,
            direction = atan2({{ y }}, {{ x }}),

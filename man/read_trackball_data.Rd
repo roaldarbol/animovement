@@ -5,17 +5,17 @@
 \title{Read Trackball Data}
 \usage{
 read_trackball_data(
-  folder_path,
-  sensor_names = c("Left", "Right"),
-  format = "RDS"
+  filepaths,
+  configuration = c("open", "closed"),
+  format = c("csv", "RDS")
 )
 }
 \arguments{
-\item{folder_path}{Path to folders containing data files.}
+\item{filepaths}{To file paths, one for each sensor}
 
-\item{sensor_names}{Names of the two sensors.}
+\item{configuration}{Open- or closed-loop configuration}
 
-\item{format}{Format of data files (default: RDS)}
+\item{format}{Format of data files (default: csv)}
 }
 \value{
 A list of data frames

@@ -1,16 +1,71 @@
 #' Read Trackball Data
 #'
-#' @param folder_path Path to folders containing data files.
-#' @param sensor_names Names of the two sensors.
-#' @param format Format of data files (default: RDS)
+#' @param format Format of data files (default: csv)
+#' @param configuration Open- or closed-loop configuration
+#' @param filepaths To file paths, one for each sensor
+#'
+#' @import dplyr
+#' @importFrom vroom vroom
+#' @importFrom stats median
 #'
 #' @return A list of data frames
 #' @export
 read_trackball_data <- function(
-    folder_path,
-    sensor_names = c("Left", "Right"),
-    format = "RDS"
+    filepaths,
+    configuration = c("open", "closed"),
+    format = c("csv", "RDS")
 ){
+  # Check whether there are two files paths
+  if (length(filepaths) != 2){
+    stop("Please provide 2 filepaths")
+  }
+
+  if (configuration == "open"){
+    data_list <- list()
+
+    # Read each data frame
+    for (i in 1:length(filepaths)){
+      n <- as.numeric(i)
+      data_list[[i]] <- vroom::vroom(
+        filepaths[i],
+        skip = 1
+      ) |>
+        dplyr::rename("x_{{ n }}" := 1) |>
+        dplyr::rename("y_{{ n }}" := 2) |>
+        dplyr::rename("time_{{ n }}" := 3) |>
+        dplyr::rename("datetime_{{ n }}" := 4) |>
+        dplyr::rename(time_diff := 5) |>
+        dplyr::select(-time_diff) |>
+        dplyr::mutate(sensor_n = i)
+    }
+
+    # Merge the two data frames
+    ## Find the offset between the two sensors
+    which_max_rows <- which.max(c(nrow(data_list[[1]]), nrow(data_list[[2]])))
+    min_rows <- min(c(nrow(data_list[[1]]), nrow(data_list[[2]])))
+    rows_off <- c()
+    for (i in 1:min_rows){
+      rows_off <- c(rows_off, trackballr::find_nearest(data_list[[1]]$time_1[i], data_list[[2]]$time_2) - i)
+    }
+
+    # Here we'll use the median offset, but we can get more out of the data by finding all the best alignments
+    rows_off_median <- stats::median(rows_off)
+    data_list[[which_max_rows]] <- dplyr::slice(data_list[[which_max_rows]], 1:min_rows)
+
+    # We then merge the two data frames
+    data <- dplyr::bind_cols(data_list[[1]], data_list[[2]])
+    data <- data |>
+      dplyr::select(y_1, y_2, time_1, time_2, datetime_1, datetime_2) |>
+      dplyr::rename(x = y_1) |>
+      dplyr::rename(y = y_2) |>
+      dplyr::rename(time_x = time_1) |>
+      dplyr::rename(time_y = time_2) |>
+      dplyr::rename(datetime_x = datetime_1) |>
+      dplyr::rename(datetime_y = datetime_2)
+
+    # Process to align the data - can come up with a few algorithms
+    # ...
+  }
 
   return(data)
 }

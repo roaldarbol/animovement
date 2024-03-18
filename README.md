@@ -1,9 +1,5 @@
 # trackballr
 
-<!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/roaldarbol/trackballr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/roaldarbol/trackballr?branch=main)
-<!-- badges: end -->
-
 The goal of {trackballr} is to make analysis of trackball data easy.
 
 ## Installation
@@ -26,20 +22,30 @@ This is a basic example which shows you how to solve a common problem:
 ``` r
 library(trackballr)
 
-## Read all files into list
-data_list <- read_trackball_data(folder_path, sensors = c("Right", "Left"))
+# The read_trackball_data function requires two file paths one for each sensor
+# You can find pairs with variations of `list.files()` and for loops
+filepaths <- list.files(pattern = ".csv", recursive = TRUE)
+
+# Once we have two paths, we can read the data
+# The current experiment uses an open-loop configuration
+data <- read_trackball_data(folder_path, configuration = "open")
 
 # Augment all data in list
-data_list <- lapply(data_list, beetle_augment)
-
-# Bind list into single data frame
-data_df <- bind_rows(sensor_data_temp)
+data_list <- augment_trackball(
+    data, 
+    x, 
+    y, 
+    sampling_rate = 125,
+    rollmean_k = 30,
+    mouse_dpcm = 394
+    )
 ```
 
-Once the data has been pre-processed, it can then easily generate useful summaries - here are some examples.
+
+Once the data has been pre-processed (and metadata has been appended, such as ID and date), it can then easily generate useful summaries - here are some examples.
 ```r
 # Compute translational summary
-translation_summary <- data_df |> 
+translation_summary <- data |> 
   na.omit()  |> 
   group_by(id, date) |> 
   filter(abs(x) > 0 | abs(y) > 0) |> # Only keep rows containing movement
@@ -55,7 +61,7 @@ translation_summary <- data_df |>
 
 # Compute rotational summary
 # Here wa are also filtering out trials with a faulty sensor/no data for one sensor
-rotation_summary <- data_df |> 
+rotation_summary <- data |> 
   na.omit() |>
   group_by(id, date) |> 
   filter(v_rotation > 0) |>
