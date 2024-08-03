@@ -32,11 +32,12 @@ system.file("extdata", package = "trackballr") |> list.files()
 filepaths <- system.file("extdata", package = "trackballr") |> list.files(full.names = TRUE)
 
 # Once we have two paths, we can read the data
-# The current experiment uses an open-loop configuration
+# The current experiment uses a freely rotating configuration
 data <- read_trackball_data(filepaths, configuration = "free")
 
+
 # Augment all data in list
-data_list <- augment_trackball(
+data <- augment_trackball(
     data, 
     x, 
     y, 
@@ -45,10 +46,6 @@ data_list <- augment_trackball(
     mouse_dpcm = 394
     )
 ```
-
-We can then try to plot the route:
-```
-
 
 
 Once the data has been pre-processed (and metadata has been appended, such as ID and date), it can then easily generate useful summaries - here are some examples.
