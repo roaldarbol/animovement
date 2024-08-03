@@ -1,3 +1,7 @@
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 # trackballr
 
 The goal of {trackballr} is to make analysis of trackball data easy.
@@ -10,7 +14,7 @@ You can install the development version of trackballr from [GitHub](https://gith
 # install.packages("devtools")
 devtools::install_github("roaldarbol/trackballr")
 ```
-or from my -universe:
+or from my R-universe:
 ```
 install.packages("trackballr", repos = c("https://roaldarbol.r-universe.dev", "https://cran.r-project.org"))
 ```
@@ -23,12 +27,13 @@ This is a basic example which shows you how to solve a common problem:
 library(trackballr)
 
 # The read_trackball_data function requires two file paths one for each sensor
-# You can find pairs with variations of `list.files()` and for loops
-filepaths <- list.files(pattern = ".csv", recursive = TRUE)
+# You can find pairs with variations of `list.files()` and for loops. We've included two files as example data in the package:
+system.file("extdata", package = "trackballr") |> list.files()
+filepaths <- system.file("extdata", package = "trackballr") |> list.files(full.names = TRUE)
 
 # Once we have two paths, we can read the data
 # The current experiment uses an open-loop configuration
-data <- read_trackball_data(folder_path, configuration = "open")
+data <- read_trackball_data(filepaths, configuration = "free")
 
 # Augment all data in list
 data_list <- augment_trackball(
@@ -40,6 +45,10 @@ data_list <- augment_trackball(
     mouse_dpcm = 394
     )
 ```
+
+We can then try to plot the route:
+```
+
 
 
 Once the data has been pre-processed (and metadata has been appended, such as ID and date), it can then easily generate useful summaries - here are some examples.

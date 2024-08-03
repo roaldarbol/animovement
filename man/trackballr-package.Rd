@@ -4,8 +4,19 @@
 \name{trackballr-package}
 \alias{trackballr}
 \alias{trackballr-package}
-\title{trackballr: Speed Up Trackball Analysis}
+\title{trackballr: Read trackball files}
 \description{
-More about what it does (maybe more than one line) Use four spaces when indenting paragraphs within the Description.
+Read trackball data into a standard format.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://www.roald-arboel.com/trackballr/}
+}
+
+}
+\author{
+\strong{Maintainer}: Mikkel Roald-Arbøl \email{github.ggb9a@simplelogin.co} (\href{https://orcid.org/0000-0002-9998-0058}{ORCID})
+
 }
 \keyword{internal}

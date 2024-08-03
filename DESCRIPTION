@@ -1,11 +1,16 @@
 Package: trackballr
 Type: Package
-Title: Speed Up Trackball Analysis
-Version: 0.1.0
-Author: Mikkel Roald-Arbøl
-Maintainer: roaldarbol <github.ggb9a@simplelogin.co>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Title: Read trackball files
+Version: 0.1.1
+Authors@R: 
+    person(
+      "Mikkel", 
+      "Roald-Arbøl", 
+      role = c("aut", "cre"), 
+      email = "github.ggb9a@simplelogin.co",
+      comment = c(ORCID = "0000-0002-9998-0058")
+      )
+Description: Read trackball data into a standard format.  
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -13,9 +18,11 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
+    cli,
     dplyr,
     rlang,
     tidyr,
+    vroom,
     zoo
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 URL: http://www.roald-arboel.com/trackballr/

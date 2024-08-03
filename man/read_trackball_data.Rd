@@ -6,7 +6,7 @@
 \usage{
 read_trackball_data(
   filepaths,
-  configuration = c("open", "closed"),
+  configuration = c("free", "fixed"),
   format = c("csv", "RDS")
 )
 }
