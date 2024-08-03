@@ -20,7 +20,7 @@ install.packages("trackballr", repos = c("https://roaldarbol.r-universe.dev", "h
 ```
 
 ## Example
-
+### Load data
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
@@ -34,8 +34,10 @@ filepaths <- system.file("extdata", package = "trackballr") |> list.files(full.n
 # Once we have two paths, we can read the data
 # The current experiment uses a freely rotating configuration
 data <- read_trackball_data(filepaths, configuration = "free")
+```
 
-
+Once we have loaded the data, we can then augment it to compute positions, velocities, rotations, etc.
+``` r
 # Augment all data in list
 data <- augment_trackball(
     data, 
@@ -47,8 +49,9 @@ data <- augment_trackball(
     )
 ```
 
+## Summarise multiple trials
+Once the data has been pre-processed (and metadata has been appended, such as ID and date), it can then easily generate useful summaries. This code won't run, as we have only read a single trial, but is an example of how further analysis could look like.
 
-Once the data has been pre-processed (and metadata has been appended, such as ID and date), it can then easily generate useful summaries - here are some examples.
 ```r
 # Compute translational summary
 translation_summary <- data |> 
