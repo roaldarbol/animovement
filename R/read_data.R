@@ -36,7 +36,7 @@ read_trackball_data <- function(
         dplyr::rename("y_{{ n }}" := 2) |>
         dplyr::rename("time_{{ n }}" := 3) |>
         dplyr::rename("datetime_{{ n }}" := 4) |>
-        dplyr::rename(.data$time_diff := 5) |>
+        dplyr::rename("time_diff" := 5) |>
         dplyr::select(-.data$time_diff) |>
         dplyr::mutate(sensor_n = i)
     }
