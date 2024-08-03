@@ -63,6 +63,9 @@
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
+<div class="section level3">
+<h3 id="load-data">Load data<a class="anchor" aria-label="anchor" href="#load-data"></a>
+</h3>
 <p>This is a basic example which shows you how to solve a common problem:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.roald-arboel.com/trackballr/">trackballr</a></span><span class="op">)</span></span>
@@ -74,10 +77,10 @@
 <span></span>
 <span><span class="co"># Once we have two paths, we can read the data</span></span>
 <span><span class="co"># The current experiment uses a freely rotating configuration</span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_trackball_data.html">read_trackball_data</a></span><span class="op">(</span><span class="va">filepaths</span>, configuration <span class="op">=</span> <span class="st">"free"</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="co"># Augment all data in list</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_trackball_data.html">read_trackball_data</a></span><span class="op">(</span><span class="va">filepaths</span>, configuration <span class="op">=</span> <span class="st">"free"</span><span class="op">)</span></span></code></pre></div>
+<p>Once we have loaded the data, we can then augment it to compute positions, velocities, rotations, etc.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Augment all data in list</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/augment_trackball.html">augment_trackball</a></span><span class="op">(</span></span>
 <span>    <span class="va">data</span>, </span>
 <span>    <span class="va">x</span>, </span>
@@ -86,8 +89,13 @@
 <span>    rollmean_k <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>    mouse_dpcm <span class="op">=</span> <span class="fl">394</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
-<p>Once the data has been pre-processed (and metadata has been appended, such as ID and date), it can then easily generate useful summaries - here are some examples.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+</div>
+</div>
+<div class="section level2">
+<h2 id="summarise-multiple-trials">Summarise multiple trials<a class="anchor" aria-label="anchor" href="#summarise-multiple-trials"></a>
+</h2>
+<p>Once the data has been pre-processed (and metadata has been appended, such as ID and date), it can then easily generate useful summaries. This code won’t run, as we have only read a single trial, but is an example of how further analysis could look like.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compute translational summary</span></span>
 <span><span class="va">translation_summary</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="op">)</span>  <span class="op">|&gt;</span> </span>
