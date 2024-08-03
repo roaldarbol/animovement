@@ -1,8 +1,8 @@
+
+# trackballr
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
-
-# trackballr
 
 The goal of {trackballr} is to make analysis of trackball data easy.
 
