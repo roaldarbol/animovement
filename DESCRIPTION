@@ -7,7 +7,7 @@ Authors@R:
       "Mikkel", 
       "Roald-Arbøl", 
       role = c("aut", "cre"), 
-      email = "github.ggb9a@simplelogin.co",
+      email = "trackballr.htmc8@passmail.net",
       comment = c(ORCID = "0000-0002-9998-0058")
       )
 Description: Read trackball data into a standard format.  
