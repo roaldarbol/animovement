@@ -10,7 +10,7 @@ Authors@R:
       email = "trackballr.htmc8@passmail.net",
       comment = c(ORCID = "0000-0002-9998-0058")
       )
-Description: Read trackball data into a standard format.  
+Description: Read trackball data into a standard format
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
