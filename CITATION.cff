@@ -2,13 +2,14 @@
 # CITATION file created with {cffr} R package
 # See also: https://docs.ropensci.org/cffr/
 # --------------------------------------------
- 
+
 cff-version: 1.2.0
 message: 'To cite package "trackballr" in publications use:'
 type: software
 license: MIT
 title: 'trackballr: Read trackball files'
 version: 0.1.1
+date-released: 2024-08-06
 doi: 10.5281/zenodo.13235278
 abstract: Read trackball data into a standard format.
 authors:
