@@ -4,18 +4,12 @@
 \alias{read_trackball_data}
 \title{Read Trackball Data}
 \usage{
-read_trackball_data(
-  filepaths,
-  configuration = c("free", "fixed"),
-  format = c("csv", "RDS")
-)
+read_trackball_data(filepaths, configuration = c("free", "fixed"))
 }
 \arguments{
 \item{filepaths}{To file paths, one for each sensor}
 
 \item{configuration}{Open- or closed-loop configuration}
-
-\item{format}{Format of data files (default: csv)}
 }
 \value{
 A list of data frames

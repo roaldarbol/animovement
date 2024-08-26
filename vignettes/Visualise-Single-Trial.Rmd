@@ -1,0 +1,84 @@
+---
+title: "Visualise Single Trial"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Visualise-Single-Trial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Read trackball data
+The primary functionality of the {trackballr} package is to read trackball data. The `read_trackball_data` function requires two file paths one for each sensor. You can find pairs with variations of `list.files()` and for loops. We've included two files as example data in the package from an experiment that used the open configuration:
+
+```{r setup}
+library(trackballr)
+library(tinyplot)
+library(dplyr)
+system.file("extdata", package = "trackballr") |> list.files()
+filepaths <- system.file("extdata", package = "trackballr") |> list.files(full.names = TRUE)
+
+# Once we have two paths, we can read the data
+# The current experiment uses a freely rotating configuration
+data <- read_trackball_data(filepaths, configuration = "free")
+```
+
+Let's have a look at the data. We see that there is an `x` and `y` column, one reading per sensor. Since the sensors do not capture data at the exact same moments, **trackballr** finds the best alignment of the observations and retains time stamps for both sensors in two formats (we would recommend just using one of the time stamps for further analysis, but it's a good idea to check how closely the frames align).
+
+```{r}
+glimpse(data)
+```
+## Augment data
+When we work with movement data, we are often interested in more than just where an animal *is*; we're interested in how fast it moves, where it is heading etc. 
+`augment_trackball` computes a range of such measures:
+
+- `cum_x`/`cum_y`: Cumulative position in a 2D space (where they "are" on a map)
+- `distance`: The distance the animal moved since the last observation (simply calculated using Pythagoras' theorem)
+- `v_translation`: The translational velocity, like what you see on a speedometer in a car.
+- `direction`: The direction (in radians) the animal is heading - where the arrow on the compas is heading.
+- `rotation`: The amount (in radians) the animal has rotated since the last observation.
+- `v_rotation`: The rotational velocity (in rad/s).
+
+```{r}
+# Augment all data in list
+data_augmented <- augment_trackball(
+    data, 
+    x, 
+    y, 
+    sampling_rate = 60,
+    rollmean_k = 30,
+    mouse_dpcm = 394
+    )
+glimpse(data_augmented)
+```
+
+## Visualise movement
+
+First, we can visualise the path:
+
+```{r}
+tinyplot(cum_x ~ cum_y, 
+         type = "l",
+         data = data_augmented,
+         xlab = "x",
+         ylab = "y"
+         )
+```
+
+Or the translational velocity:
+
+```{r}
+tinyplot(v_translation ~ time, 
+         type = "l",
+         data = data_augmented,
+         xlab = "Time (s)",
+         ylab = "V_translation"
+         )
+```
+

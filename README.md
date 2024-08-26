@@ -3,21 +3,16 @@
 <!-- badges: start -->
 [![DOI](https://zenodo.org/badge/773406370.svg)](https://zenodo.org/doi/10.5281/zenodo.13235277)
 [![R-CMD-check](https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/roaldarbol/trackballr/graph/badge.svg)](https://app.codecov.io/gh/roaldarbol/trackballr)
 <!-- badges: end -->
 
 The goal of {trackballr} is to make analysis of trackball data easy.
 
 ## Installation
 
-You can install the development version of trackballr from [GitHub](https://github.com/) with:
-
-``` r
-# install.packages("devtools")
-devtools::install_github("roaldarbol/trackballr")
+You can install the development version of trackballr with:
 ```
-or from my R-universe:
-```
-install.packages("trackballr", repos = c("https://roaldarbol.r-universe.dev", "https://cran.r-project.org"))
+install.packages("trackballr", repos = c("https://roaldarbol.r-universe.dev"))
 ```
 
 ## Example

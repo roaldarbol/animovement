@@ -6,7 +6,7 @@
 \alias{trackballr-package}
 \title{trackballr: Read trackball files}
 \description{
-Read trackball data into a standard format.
+Read trackball data into a standard format
 }
 \seealso{
 Useful links:
@@ -16,7 +16,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Mikkel Roald-Arbøl \email{github.ggb9a@simplelogin.co} (\href{https://orcid.org/0000-0002-9998-0058}{ORCID})
+\strong{Maintainer}: Mikkel Roald-Arbøl \email{trackballr.htmc8@passmail.net} (\href{https://orcid.org/0000-0002-9998-0058}{ORCID})
 
 }
 \keyword{internal}

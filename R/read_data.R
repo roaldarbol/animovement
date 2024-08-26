@@ -1,8 +1,7 @@
 #' Read Trackball Data
 #'
-#' @param format Format of data files (default: csv)
-#' @param configuration Open- or closed-loop configuration
 #' @param filepaths To file paths, one for each sensor
+#' @param configuration Open- or closed-loop configuration
 #'
 #' @import dplyr
 #' @importFrom vroom vroom
@@ -13,14 +12,30 @@
 #' @export
 read_trackball_data <- function(
     filepaths,
-    configuration = c("free", "fixed"),
-    format = c("csv", "RDS")
+    configuration = c("free", "fixed")
 ){
-  # Check whether there are two files paths
+  # CHECKS
+  ## Check whether there are two files paths
   if (length(filepaths) != 2){
     cli::cli_abort("Incorrect number of file paths. Please provide 2 filepaths.")
   }
 
+  ## Check file extension
+  file_exts <- c(.get_file_ext(filepaths[1]), .get_file_ext(filepaths[2]))
+  if (file_exts[1] != file_exts[2]){
+    cli::cli_abort("Files have different extension. Please provide 2 files of the same format.")
+  }
+
+  if (!file_exts[1] %in% c("csv", "rds")){
+    cli::cli_abort("Incorrect file format. Use either csv or rds files.")
+  }
+
+  ## Check configuration
+  if (!configuration %in% c("free", "fixed")){
+    cli::cli_abort("Incorrect configuration. Configuration needs to be either \"free\" or \"fixed\".")
+  }
+
+  # Read data
   if (configuration == "free"){
     data_list <- list()
 
@@ -37,7 +52,7 @@ read_trackball_data <- function(
         dplyr::rename("time_{{ n }}" := 3) |>
         dplyr::rename("datetime_{{ n }}" := 4) |>
         dplyr::rename("time_diff" := 5) |>
-        dplyr::select(-.data$time_diff) |>
+        dplyr::select(-"time_diff") |>
         dplyr::mutate(sensor_n = i)
     }
 
@@ -57,13 +72,13 @@ read_trackball_data <- function(
     # We then merge the two data frames
     data <- dplyr::bind_cols(data_list[[1]], data_list[[2]]) |> suppressMessages()
     data <- data |>
-      dplyr::select(.data$y_1, .data$y_2, .data$time_1, .data$time_2, .data$datetime_1, .data$datetime_2) |>
-      dplyr::rename(x = .data$y_1) |>
-      dplyr::rename(y = .data$y_2) |>
-      dplyr::rename(time_x = .data$time_1) |>
-      dplyr::rename(time_y = .data$time_2) |>
-      dplyr::rename(datetime_x = .data$datetime_1) |>
-      dplyr::rename(datetime_y = .data$datetime_2)
+      dplyr::select("y_1", "y_2", "time_1", "time_2", "datetime_1", "datetime_2") |>
+      dplyr::rename(x = "y_1") |>
+      dplyr::rename(y = "y_2") |>
+      dplyr::rename(time_x = "time_1") |>
+      dplyr::rename(time_y = "time_2") |>
+      dplyr::rename(datetime_x = "datetime_1") |>
+      dplyr::rename(datetime_y = "datetime_2")
 
     # Process to align the data - can come up with a few algorithms
     # ...
@@ -73,3 +88,8 @@ read_trackball_data <- function(
 }
 
 .find_nearest <- function(x, v){ which.min(abs(v - x)) }
+
+.get_file_ext <- function(filename) {
+  nameSplit <- strsplit(x = filename, split = "\\.")[[1]]
+  return(nameSplit[length(nameSplit)])
+}

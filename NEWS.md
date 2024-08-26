@@ -1,3 +1,8 @@
+# trackballr 0.1.2
+
+* Added tests for `read_trackball_data`
+* `format` was deprecated as a parameter in `read_trackball_data`
+
 # trackballr 0.1.1
 
 * Added sample data

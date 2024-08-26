@@ -1,7 +1,7 @@
 Package: trackballr
 Type: Package
-Title: Read trackball files
-Version: 0.1.1
+Title: R package for reading trackball data into a standard format
+Version: 0.1.2
 Authors@R: 
     person(
       "Mikkel", 
@@ -10,11 +10,13 @@ Authors@R:
       email = "trackballr.htmc8@passmail.net",
       comment = c(ORCID = "0000-0002-9998-0058")
       )
-Description: Read trackball data into a standard format
+Description: R package for reading trackball data into a standard format.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
@@ -22,7 +24,9 @@ Imports:
     dplyr,
     rlang,
     tidyr,
+    tinyplot,
     vroom,
     zoo
 RoxygenNote: 7.3.2
 URL: http://www.roald-arboel.com/trackballr/
+VignetteBuilder: knitr
