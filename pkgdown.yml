@@ -3,7 +3,7 @@ pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   Analyse-Single-Trial: Analyse-Single-Trial.html
-last_built: 2024-09-03T15:34Z
+last_built: 2024-09-03T15:38Z
 urls:
   reference: http://www.roald-arboel.com/trackballr/reference
   article: http://www.roald-arboel.com/trackballr/articles
