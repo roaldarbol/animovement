@@ -4,9 +4,9 @@
 \name{trackballr-package}
 \alias{trackballr}
 \alias{trackballr-package}
-\title{trackballr: Read trackball files}
+\title{trackballr: R package for reading trackball data into a standard format}
 \description{
-Read trackball data into a standard format
+R package for reading trackball data into a standard format.
 }
 \seealso{
 Useful links:
