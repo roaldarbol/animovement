@@ -25,6 +25,7 @@ Imports:
     rlang,
     tidyr,
     tinyplot,
+    tinytable,
     vroom,
     zoo
 RoxygenNote: 7.3.2
