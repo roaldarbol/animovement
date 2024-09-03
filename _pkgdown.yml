@@ -1,4 +1,8 @@
 url: http://www.roald-arboel.com/trackballr/
 template:
+  light-switch: true
   bootstrap: 5
+navbar:
+  structure:
+    right: [github]
 
