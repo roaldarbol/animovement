@@ -16,9 +16,11 @@ coverage](https://codecov.io/gh/roaldarbol/trackballr/graph/badge.svg)](https://
 *Run the trackball!*
 
 Trackball experiments, in which animals are tethered/restrained atop a
-(most commonly) styrofoam ball are … The primary goal of the
-*trackballr* package is to make analysis of trackball data easy and
-standardise the data format.
+(most commonly) styrofoam ball are common experiments within animal
+behaviour and neuroscience.
+
+The primary goal of the *trackballr* package is to make analysis of
+trackball data easy and standardise the data format.
 
 ## Installation
 

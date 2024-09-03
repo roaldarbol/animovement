@@ -25,7 +25,8 @@ badge](https://roaldarbol.r-universe.dev/badges/trackballr)](https://roaldarbol.
 
 *Run the trackball!*
 
-Trackball experiments, in which animals are tethered/restrained atop a (most commonly) styrofoam ball are ...
+Trackball experiments, in which animals are tethered/restrained atop a (most commonly) styrofoam ball are common experiments within animal behaviour and neuroscience.
+
 The primary goal of the *trackballr* package is to make analysis of trackball data easy and standardise the data format.  
 
 ## Installation
