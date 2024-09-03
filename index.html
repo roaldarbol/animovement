@@ -35,7 +35,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/Visualise-Single-Trial.html">Visualise Single Trial</a></li>
+<li><a class="dropdown-item" href="articles/Analyse-Single-Trial.html">Analyse single trial</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -56,75 +56,65 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of {trackballr} is to make analysis of trackball data easy.</p>
+<p><em>Run the trackball!</em></p>
+<p>Trackball experiments, in which animals are tethered/restrained atop a (most commonly) styrofoam ball are … The primary goal of the <em>trackballr</em> package is to make analysis of trackball data easy and standardise the data format.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install the development version of trackballr with:</p>
-<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"trackballr"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://roaldarbol.r-universe.dev"</span><span class="op">)</span><span class="op">)</span></span></code></pre>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th>Type</th>
+<th>Source</th>
+<th>Command</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td>Development</td>
+<td>R-universe</td>
+<td><code>install.packages("trackballr", repos = "https://roaldarbol.r-universe.dev")</code></td>
+</tr></tbody>
+</table>
+<p>Once you have installed the package, you can load it with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="http://www.roald-arboel.com/trackballr/">"trackballr"</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
-<div class="section level3">
-<h3 id="load-data">Load data<a class="anchor" aria-label="anchor" href="#load-data"></a>
-</h3>
-<p>This is a basic example which shows you how to solve a common problem:</p>
+<p>For worked examples of how to use the package, see the vignettes:</p>
+<ul>
+<li><a href="https://www.roald-arboel.com/trackballr/articles/Analyse-Single-Trial.html" class="external-link">Analyse single trial</a></li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<p>To cite <em>trackballr</em> in publications use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.roald-arboel.com/trackballr/">trackballr</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># The read_trackball_data function requires two file paths one for each sensor</span></span>
-<span><span class="co"># You can find pairs with variations of `list.files()` and for loops. We've included two files as example data in the package:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"trackballr"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">filepaths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"trackballr"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Once we have two paths, we can read the data</span></span>
-<span><span class="co"># The current experiment uses a freely rotating configuration</span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_trackball_data.html">read_trackball_data</a></span><span class="op">(</span><span class="va">filepaths</span>, configuration <span class="op">=</span> <span class="st">"free"</span><span class="op">)</span></span></code></pre></div>
-<p>Once we have loaded the data, we can then augment it to compute positions, velocities, rotations, etc.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Augment all data in list</span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/augment_trackball.html">augment_trackball</a></span><span class="op">(</span></span>
-<span>    <span class="va">data</span>, </span>
-<span>    <span class="va">x</span>, </span>
-<span>    <span class="va">y</span>, </span>
-<span>    sampling_rate <span class="op">=</span> <span class="fl">125</span>,</span>
-<span>    rollmean_k <span class="op">=</span> <span class="fl">30</span>,</span>
-<span>    mouse_dpcm <span class="op">=</span> <span class="fl">394</span></span>
-<span>    <span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="summarise-multiple-trials">Summarise multiple trials<a class="anchor" aria-label="anchor" href="#summarise-multiple-trials"></a>
-</h2>
-<p>Once the data has been pre-processed (and metadata has been appended, such as ID and date), it can then easily generate useful summaries. This code won’t run, as we have only read a single trial, but is an example of how further analysis could look like.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Compute translational summary</span></span>
-<span><span class="va">translation_summary</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="op">)</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">id</span>, <span class="va">date</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Only keep rows containing movement</span></span>
-<span>  <span class="fu">summarise</span><span class="op">(</span>total_translation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">distance</span><span class="op">)</span>,</span>
-<span>            v_translation_mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">v_translation</span><span class="op">)</span>,</span>
-<span>            v_translation_sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">v_translation</span><span class="op">)</span>,</span>
-<span>            sinuosity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu">last</span><span class="op">(</span><span class="va">cum_x</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu">last</span><span class="op">(</span><span class="va">cum_y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">distance</span><span class="op">)</span></span>
-<span>            <span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>trial <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">date</span> <span class="op">&lt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>, <span class="st">"first"</span>, <span class="st">"second"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Each animal has been on the trackball on two days - here we assign which day/trial</span></span>
-<span>  <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">total_translation</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Filter away trials with no translation</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">n</span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span> <span class="co"># Keep only observations where both trials are present</span></span>
-<span></span>
-<span><span class="co"># Compute rotational summary</span></span>
-<span><span class="co"># Here wa are also filtering out trials with a faulty sensor/no data for one sensor</span></span>
-<span><span class="va">rotation_summary</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">id</span>, <span class="va">date</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">v_rotation</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">summarise</span><span class="op">(</span>total_rotation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">rotation</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>            v_rotation_mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">v_rotation</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>trial <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">date</span> <span class="op">&lt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>, <span class="st">"first"</span>, <span class="st">"second"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">n</span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"trackballr"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; To cite package 'trackballr' in publications use:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Roald-Arbøl M (2024). "trackballr: Read trackball files."</span></span>
+<span><span class="co">#&gt;   doi:10.5281/zenodo.13235278</span></span>
+<span><span class="co">#&gt;   &lt;https://doi.org/10.5281/zenodo.13235278&gt;,</span></span>
+<span><span class="co">#&gt;   &lt;http://www.roald-arboel.com/trackballr/&gt;.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   @Misc{roaldarbol:2024,</span></span>
+<span><span class="co">#&gt;     title = {trackballr: Read trackball files},</span></span>
+<span><span class="co">#&gt;     author = {Mikkel Roald-Arbøl},</span></span>
+<span><span class="co">#&gt;     year = {2024},</span></span>
+<span><span class="co">#&gt;     doi = {10.5281/zenodo.13235278},</span></span>
+<span><span class="co">#&gt;     url = {http://www.roald-arboel.com/trackballr/},</span></span>
+<span><span class="co">#&gt;     abstract = {Read trackball data into a standard format},</span></span>
+<span><span class="co">#&gt;     version = {0.1.1},</span></span>
+<span><span class="co">#&gt;   }</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
@@ -155,6 +145,7 @@
 <ul class="list-unstyled">
 <li><a href="https://zenodo.org/doi/10.5281/zenodo.13235277" class="external-link"><img src="https://zenodo.org/badge/773406370.svg" alt="DOI"></a></li>
 <li><a href="https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://roaldarbol.r-universe.dev" class="external-link"><img src="https://roaldarbol.r-universe.dev/badges/trackballr" alt="trackballr status badge"></a></li>
 <li><a href="https://app.codecov.io/gh/roaldarbol/trackballr" class="external-link"><img src="https://codecov.io/gh/roaldarbol/trackballr/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
