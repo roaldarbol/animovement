@@ -10,3 +10,4 @@
 ^pkgdown$
 ^\.github$
 ^CITATION\.cff$
+^README\.Rmd$

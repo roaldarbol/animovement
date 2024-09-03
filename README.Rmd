@@ -1,0 +1,58 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+
+# trackballr
+<!-- badges: start -->
+[![DOI](https://zenodo.org/badge/773406370.svg)](https://zenodo.org/doi/10.5281/zenodo.13235277)
+[![R-CMD-check](https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml)
+[![trackballr status
+badge](https://roaldarbol.r-universe.dev/badges/trackballr)](https://roaldarbol.r-universe.dev)
+[![Codecov test coverage](https://codecov.io/gh/roaldarbol/trackballr/graph/badge.svg)](https://app.codecov.io/gh/roaldarbol/trackballr)
+<!-- badges: end -->
+
+*Run the trackball!*
+
+Trackball experiments, in which animals are tethered/restrained atop a (most commonly) styrofoam ball are ...
+The primary goal of the *trackballr* package is to make analysis of trackball data easy and standardise the data format.  
+
+## Installation
+
+You can install the development version of trackballr with:
+
+Type | Source | Command
+---|---|---
+Development | R-universe | `install.packages("trackballr", repos = "https://roaldarbol.r-universe.dev")`
+
+Once you have installed the package, you can load it with:
+
+```{r, eval=FALSE}
+library("trackballr")
+```
+
+## Documentation
+
+For worked examples of how to use the package, see the vignettes:
+
+- [Analyse single trial](https://www.roald-arboel.com/trackballr/articles/Analyse-Single-Trial.html)
+
+
+## Citation
+
+To cite *trackballr* in publications use:
+
+```{r}
+citation("trackballr")
+```

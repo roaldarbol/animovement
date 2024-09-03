@@ -21,7 +21,7 @@ augment_trackball <- function(
     x,
     y,
     time = NULL,
-    sampling_rate = 125,
+    sampling_rate = 60,
     rollmean_k = 30,
     mouse_dpcm = 394
     ) {

@@ -1,78 +1,68 @@
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # trackballr
+
 <!-- badges: start -->
+
 [![DOI](https://zenodo.org/badge/773406370.svg)](https://zenodo.org/doi/10.5281/zenodo.13235277)
 [![R-CMD-check](https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/roaldarbol/trackballr/graph/badge.svg)](https://app.codecov.io/gh/roaldarbol/trackballr)
+[![trackballr status
+badge](https://roaldarbol.r-universe.dev/badges/trackballr)](https://roaldarbol.r-universe.dev)
+[![Codecov test
+coverage](https://codecov.io/gh/roaldarbol/trackballr/graph/badge.svg)](https://app.codecov.io/gh/roaldarbol/trackballr)
 <!-- badges: end -->
 
-The goal of {trackballr} is to make analysis of trackball data easy.
+*Run the trackball!*
+
+Trackball experiments, in which animals are tethered/restrained atop a
+(most commonly) styrofoam ball are … The primary goal of the
+*trackballr* package is to make analysis of trackball data easy and
+standardise the data format.
 
 ## Installation
 
 You can install the development version of trackballr with:
-```
-install.packages("trackballr", repos = c("https://roaldarbol.r-universe.dev"))
-```
 
-## Example
-### Load data
-This is a basic example which shows you how to solve a common problem:
+| Type | Source | Command |
+|----|----|----|
+| Development | R-universe | `install.packages("trackballr", repos = "https://roaldarbol.r-universe.dev")` |
+
+Once you have installed the package, you can load it with:
 
 ``` r
-library(trackballr)
-
-# The read_trackball_data function requires two file paths one for each sensor
-# You can find pairs with variations of `list.files()` and for loops. We've included two files as example data in the package:
-system.file("extdata", package = "trackballr") |> list.files()
-filepaths <- system.file("extdata", package = "trackballr") |> list.files(full.names = TRUE)
-
-# Once we have two paths, we can read the data
-# The current experiment uses a freely rotating configuration
-data <- read_trackball_data(filepaths, configuration = "free")
+library("trackballr")
 ```
 
-Once we have loaded the data, we can then augment it to compute positions, velocities, rotations, etc.
+## Documentation
+
+For worked examples of how to use the package, see the vignettes:
+
+- [Analyse single
+  trial](https://www.roald-arboel.com/trackballr/articles/Analyse-Single-Trial.html)
+
+## Citation
+
+To cite *trackballr* in publications use:
+
 ``` r
-# Augment all data in list
-data <- augment_trackball(
-    data, 
-    x, 
-    y, 
-    sampling_rate = 125,
-    rollmean_k = 30,
-    mouse_dpcm = 394
-    )
-```
-
-## Summarise multiple trials
-Once the data has been pre-processed (and metadata has been appended, such as ID and date), it can then easily generate useful summaries. This code won't run, as we have only read a single trial, but is an example of how further analysis could look like.
-
-```r
-# Compute translational summary
-translation_summary <- data |> 
-  na.omit()  |> 
-  group_by(id, date) |> 
-  filter(abs(x) > 0 | abs(y) > 0) |> # Only keep rows containing movement
-  summarise(total_translation = sum(distance),
-            v_translation_mean = mean(v_translation),
-            v_translation_sd = sd(v_translation),
-            sinuosity = sqrt(last(cum_x)^2 + last(cum_y)^2)/sum(distance)
-            ) |> 
-  mutate(trial = if_else(date <= min(date), "first", "second")) |> # Each animal has been on the trackball on two days - here we assign which day/trial
-  slice(1:2) |> 
-  filter(total_translation > 0) |> # Filter away trials with no translation
-  filter(n() == 2) # Keep only observations where both trials are present
-
-# Compute rotational summary
-# Here wa are also filtering out trials with a faulty sensor/no data for one sensor
-rotation_summary <- data |> 
-  na.omit() |>
-  group_by(id, date) |> 
-  filter(v_rotation > 0) |>
-  summarise(total_rotation = sum(rotation, na.rm = TRUE),
-            v_rotation_mean = mean(v_rotation, na.rm = TRUE)) |>
-  mutate(trial = if_else(date <= min(date), "first", "second")) |> 
-  slice(1:2) |>
-  filter(n() == 2)
+citation("trackballr")
+#> To cite package 'trackballr' in publications use:
+#> 
+#>   Roald-Arbøl M (2024). "trackballr: Read trackball files."
+#>   doi:10.5281/zenodo.13235278
+#>   <https://doi.org/10.5281/zenodo.13235278>,
+#>   <http://www.roald-arboel.com/trackballr/>.
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Misc{roaldarbol:2024,
+#>     title = {trackballr: Read trackball files},
+#>     author = {Mikkel Roald-Arbøl},
+#>     year = {2024},
+#>     doi = {10.5281/zenodo.13235278},
+#>     url = {http://www.roald-arboel.com/trackballr/},
+#>     abstract = {Read trackball data into a standard format},
+#>     version = {0.1.1},
+#>   }
 ```
