@@ -19,8 +19,9 @@ Trackball experiments, in which animals are tethered/restrained atop a
 (most commonly) styrofoam ball are common experiments within animal
 behaviour and neuroscience.
 
-The primary goal of the *trackballr* package is to make analysis of
-trackball data easy and standardise the data format.
+The primary goal of the *trackballr* package is to enable a
+*tidyverse*-friendly analysis of trackball data and use a standardised
+tidy data format.
 
 ## Installation
 
@@ -38,10 +39,36 @@ library("trackballr")
 
 ## Documentation
 
-For worked examples of how to use the package, see the vignettes:
+The trackball analysis workflow is simple, and generally follows the
+same steps as other movement data sets (e.g. pose estimation, centroid
+tracking). See our docs to go through the steps, one-by-one:
 
-- [Analyse single
-  trial](https://www.roald-arboel.com/trackballr/articles/Analyse-Single-Trial.html)
+- [Read
+  data](https://www.roald-arboel.com/trackballr/articles/Read-data.html)
+- [Clean
+  tracks](https://www.roald-arboel.com/trackballr/articles/Clean-tracks.html)
+- [Compute kinematics](#compute-kinematics)
+- [Visualise kinematics](#visualise)
+- [Compute movement statistics](#movement-stats)
+
+## Roadmap
+
+We envision this package to develop mostly into providing functions for
+reading trackball data. We hope to support your experimental cases, such
+as:
+
+- ✅ Support for Optical mouse sensors, free configuration
+- ⏳ Support for Optical mouse sensors, fixed configuration
+- ⏳ Support FicTrac
+- ⏳ More tests
+
+If you are running experiments with trackballs, we would love to get a
+sample of your data to support it!
+
+For computing kinematics and summary statistics, we are currently
+implementing those, but they might be transferred to a different package
+that does so for a broad array of movement data, so **stay put to hear
+more**!
 
 ## Citation
 

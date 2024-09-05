@@ -1,0 +1,154 @@
+---
+title: "Analyse single trial"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(trackballr)
+```
+
+## Workflow {#workflow}
+
+Working with trackball data is simple, and generally follows the same principles as other movement data sets (e.g. pose estimation, centroid tracking):
+
+- [Read data](#read-data)
+- [Clean tracks](#data-cleaning)
+- [Compute kinematics](#compute-kinematics)
+- [Compute movement statistics](#movement-stats)
+
+## Read data {#read-data}
+
+The primary functionality of the {trackballr} package is to read trackball data. The `read_trackball_data` function requires two file paths one for each sensor. You can find pairs with variations of `list.files()` and for loops. We've included two files as example data in the package from an experiment that used the free configuration:
+
+```{r }
+library(stringr)
+filepaths <- system.file("extdata/single", package = "trackballr") |> 
+  list.files(full.names = TRUE)
+filepaths <- filepaths[3:4]
+
+# Let's inspect
+filepaths
+```
+
+Once we have two paths, we can read the data.
+
+```{r}
+df <- read_trackball(
+  filepaths, 
+  configuration = "free",
+  time_col = 4,
+  sampling_rate = 60,
+  mouse_dpcm = 394)
+```
+
+Let's have a look at the data. We see that there is an `x` and `y` column, one reading per sensor. Since the sensors do not capture data at the exact same moments, *trackballr* finds the best alignment of the observations and retains time stamps for both sensors in two formats (we would recommend just using one of the time stamps for further analysis, but it's a good idea to check how closely the frames align).
+
+```{r}
+library(dplyr, warn.conflicts = FALSE)
+glimpse(df)
+```
+
+## Clean tracks {#data-cleaning}
+
+In the current implementation, we assume that the sensors are reliable (no missing observations), so there is no need to impute missing values. This is also where we smooth/filter our tracks. This is done using the `smooth_tracks()` function. We provide different methods of smoothing.
+
+```{r}
+df_smooth <- df |> 
+  group_by(date) |> 
+  smooth_track(method = "rolling_mean", window_width = 30)
+```
+
+## Compute kinematics {#compute-kinematics}
+When we work with movement data, we are often interested in more than just where an animal *is*; we're interested in how fast it moves, where it is heading etc. 
+`compute_kinematics` computes a range of kinematic variables:
+
+- `distance`: The distance the animal moved since the last observation (simply calculated using Pythagoras' theorem)
+- `v_translation`: The translational velocity, like what you see on a speedometer in a car.
+- `direction`: The direction (in radians) the animal is heading - where the arrow on the compass is heading.
+- `v_rotation`: The rotational velocity (in rad/s).
+
+```{r}
+# Augment all data in list
+df_kinematics <- compute_kinematics(df_smooth)
+glimpse(df_kinematics)
+```
+
+## Visualise kinematics {#visualise}
+
+We can now visualise the movements and kinematics. 
+Let's first have a look at the path.
+
+```{r}
+library(ggplot2)
+df_kinematics |> 
+  ggplot(aes(x,y)) +
+  geom_path() +
+  coord_equal()
+```
+
+Or the translational velocity:
+
+```{r}
+df_kinematics |> 
+  ggplot(aes(time, v_translation)) +
+  geom_line() +
+  xlab("Time (s)") + 
+  ylab("V_translation")
+```
+
+## Compute movement statistics {#movement-stats}
+
+Finally, we can compute some summary statistics for this trial. There are many possible measures that could be of interest, and we plan to provide a package for these at a later point. For now, here are some examples.
+
+### Data cleaning
+
+Before we compute summary statistics, one thing to be aware of with trackball data, is that especially directional data is produced only when the animal moves. However, the mouse sensors can "sense" tiny fictive movements, where a dx=1, dy=0 can become dx=0, dy=1 in an instance. That's a staggering difference of 90 degrees in direction! So we'll need to root out those observations first. Let's try to visualise that. We'll begin by looking at a histogram of the speed of translation.
+
+```{r}
+df_kinematics |> 
+  ggplot(aes(v_translation)) +
+  geom_histogram()
+```
+
+Notice all the values around zero? Let' get rid of those.
+
+```{r}
+df_kinematics |> 
+  filter(v_translation > 0) |> 
+  ggplot(aes(v_translation)) +
+  geom_histogram(bins = 100)
+```
+
+So it looks like we got rid of most of them, but the peak around zero comes from all those miniscule sensor mistakes. So to get some sensible summary statistics, we need to filter those out too. From the histogram, a cut-off around 0.2 seems sensible.
+
+```{r}
+df_kinematics |> 
+  filter(v_translation > 0.2) |> 
+  ggplot(aes(v_translation)) +
+  geom_histogram(bins = 30)
+```
+
+This looks MUCH better. So when we calculate our summary statistics, we should be prudent and filter for observations with `v_translation` > 0.2.
+
+### Compute summary statistics
+
+```{r}
+library(tinytable)
+df_kinematics |>
+  filter(v_translation > 0.2) |> 
+  filter(!is.na(rotation)) |> 
+  summarise(total_translation = sum(distance),
+            v_translation_mean = mean(v_translation),
+            v_translation_sd = sd(v_translation),
+            sinuosity = sum(distance) / sqrt(last(x)^2 + last(y)^2),
+            total_rotation = sum(rotation),
+            v_rotation_mean = mean(v_rotation)
+            ) |> 
+  tinytable::tt()
+```

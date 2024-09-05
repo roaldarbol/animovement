@@ -2,6 +2,9 @@
 #'
 #' @param filepaths To file paths, one for each sensor
 #' @param configuration Open- or closed-loop configuration
+#' @param time_col Which column contains the information about time. Can be specified either by the column number (numeric) or the name of the column if it has one (character). Should either be a datetime (POSIXt) or seconds (numeric).
+#' @param sampling_rate Sampling rate tells the function how long time it should intergrate over. A sampling rate of 60(Hz) will mean windows of 1/60 sec are used to integrate over.
+#' @param mouse_dpcm If using computer mice, you might be getting unit-less data out. However, computer mice have a factor called "dots-per-cm", which you can use to convert your estimates into centimeters.
 #'
 #' @import dplyr
 #' @importFrom vroom vroom
@@ -10,9 +13,12 @@
 #'
 #' @return A list of data frames
 #' @export
-read_trackball_data <- function(
+read_trackball <- function(
     filepaths,
-    configuration = c("free", "fixed")
+    configuration = c("free", "fixed"),
+    time_col,
+    sampling_rate,
+    mouse_dpcm = NULL
 ){
   # CHECKS
   ## Check whether there are two files paths
@@ -35,6 +41,12 @@ read_trackball_data <- function(
     cli::cli_abort("Incorrect configuration. Configuration needs to be either \"free\" or \"fixed\".")
   }
 
+  ## Check time assignment
+  if (is.null(time_col) & is.null(sampling_rate)){
+    ## Should be updated. Not quite sure how that works right now.
+    cli::cli_abort("No way of assigning time. Please provide either `time_col` or `sampling_rate`")
+  }
+
   # Read data
   if (configuration == "free"){
     data_list <- list()
@@ -42,49 +54,114 @@ read_trackball_data <- function(
     # Read each data frame
     for (i in 1:length(filepaths)){
       n <- as.numeric(i)
-      data_list[[i]] <- vroom::vroom(
-        filepaths[i],
-        skip = 1,
-        show_col_types = FALSE
-      ) |>
-        dplyr::rename("x_{{ n }}" := 1) |>
-        dplyr::rename("y_{{ n }}" := 2) |>
-        dplyr::rename("time_{{ n }}" := 3) |>
-        dplyr::rename("datetime_{{ n }}" := 4) |>
-        dplyr::rename("time_diff" := 5) |>
-        dplyr::select(-"time_diff") |>
+
+      if (is.character(time_col)){
+        data_list[[i]] <- vroom::vroom(
+          filepaths[i],
+          show_col_types = FALSE)
+      } else if (is.numeric(time_col)){
+        data_list[[i]] <- vroom::vroom(
+          filepaths[i],
+          skip = 1,
+          show_col_types = FALSE)
+      }
+
+      data_list[[i]] <- data_list[[i]] |>
+        dplyr::rename("x" := 1) |>
+        dplyr::rename("y" := 2) |>
         dplyr::mutate(sensor_n = i)
+
+      if (is.character(time_col)){
+        data_list[[i]] <- data_list[[i]] |>
+          dplyr::rename("time" := all_of(time_col))
+      } else if (is.numeric(time_col)){
+        data_list[[i]] <- data_list[[i]] |>
+          dplyr::rename("time" := all_of(time_col))
+      }
+
+      # If time is a datetime stamp, convert it into seconds from start
+      time_posixt <- .is.POSIXt(data_list[[i]]$time)
+      if (time_posixt == TRUE){
+        data_list[[i]] <- data_list[[i]] |>
+          mutate(time = as.numeric(time))
+      }
     }
 
     # Merge the two data frames
-    ## Find the offset between the two sensors
-    which_max_rows <- which.max(c(nrow(data_list[[1]]), nrow(data_list[[2]])))
-    min_rows <- min(c(nrow(data_list[[1]]), nrow(data_list[[2]])))
-    rows_off <- c()
-    for (i in 1:min_rows){
-      rows_off <- c(rows_off, .find_nearest(data_list[[1]]$time_1[i], data_list[[2]]$time_2) - i)
-    }
+    ## Find the offset between the two sensors for every single frame
+    # which_max_rows <- which.max(c(nrow(data_list[[1]]), nrow(data_list[[2]])))
+    # which_min_rows <- which.min(c(nrow(data_list[[1]]), nrow(data_list[[2]])))
+    # min_rows <- min(c(nrow(data_list[[1]]), nrow(data_list[[2]])))
+    # nearest_rows <- c()
+    # for (i in 1:min_rows){
+    #   nearest_rows <- c(nearest_rows, .find_nearest(data_list[[which_min_rows]]$time[i], data_list[[which_max_rows]]$time))
+    # }
 
-    # Here we'll use the median offset, but we can get more out of the data by finding all the best alignments
-    rows_off_median <- stats::median(rows_off)
-    data_list[[which_max_rows]] <- dplyr::slice(data_list[[which_max_rows]], 1:min_rows)
+    ## Find shared timeframe between both sensors
+    highest_min_time <- max(c(min(data_list[[1]]$time), min(data_list[[2]]$time)))
+    lowest_max_time <- min(c(max(data_list[[1]]$time), max(data_list[[2]]$time)))
+    data_list[[1]] <- filter(data_list[[1]], time > highest_min_time & time < lowest_max_time)
+    data_list[[2]] <- filter(data_list[[2]], time > highest_min_time & time < lowest_max_time)
+
+    # We use the provided sampling rate to create shared a shared time frame
+    data_list[[1]] <- data_list[[1]] |>
+      mutate(time = as.numeric(time - highest_min_time)) |>
+      filter(time > 0) |>
+      mutate(time_group = floor(time * sampling_rate)) |>
+      group_by(time_group) |>
+      summarise(x = sum(x),
+                y = sum(y))
+    data_list[[2]] <- data_list[[2]] |>
+      mutate(time = as.numeric(time - highest_min_time)) |>
+      filter(time > 0) |>
+      mutate(time_group = floor(time * sampling_rate)) |>
+      group_by(time_group) |>
+      summarise(x = sum(x),
+                y = sum(y))
 
     # We then merge the two data frames
-    data <- dplyr::bind_cols(data_list[[1]], data_list[[2]]) |> suppressMessages()
-    data <- data |>
-      dplyr::select("y_1", "y_2", "time_1", "time_2", "datetime_1", "datetime_2") |>
-      dplyr::rename(x = "y_1") |>
-      dplyr::rename(y = "y_2") |>
-      dplyr::rename(time_x = "time_1") |>
-      dplyr::rename(time_y = "time_2") |>
-      dplyr::rename(datetime_x = "datetime_1") |>
-      dplyr::rename(datetime_y = "datetime_2")
+    df <- full_join(
+      data_list[[1]], data_list[[2]],
+      by = "time_group",
+      suffix = c("_1", "_2")
+      ) |>
+      dplyr::select("y_1", "y_2", "time_group") |>
+      dplyr::mutate(y_1 = if_else(is.na(y_1), 0, y_1),
+                    y_2 = if_else(is.na(y_2), 0, y_2))
 
-    # Process to align the data - can come up with a few algorithms
-    # ...
+    # Some times do not have any sensor data, so we add those in with zeros
+    min_t <- min(df$time_group)
+    max_t <- max(df$time_group)
+    full_t_seq <- seq(from = min_t, to = max_t, by = 1)
+    missing_times <- tibble(
+      time_group = setdiff(full_t_seq, df$time_group),
+      y_1 = 0,
+      y_2 = 0
+      )
+
+    df <- dplyr::bind_rows(df, missing_times) |>
+      dplyr::arrange(time_group)
+
+    # Convert time back to seconds
+    df <- df |>
+      dplyr::rename(time = time_group,
+                    dx = y_1,
+                    dy = y_2) |>
+      dplyr::mutate(x = cumsum(dx),
+                    y = cumsum(dy)) |>
+      dplyr::relocate(time, .before = 1) |>
+      dplyr::mutate(time = time / sampling_rate) |>
+      dplyr::select(x, y, time)
+
+    # Adjust distances for mouse sensor "dots-per-cm"
+    if (!is.null(mouse_dpcm)){
+      df <- df |>
+        dplyr::mutate(x = x / mouse_dpcm,
+                      y = y / mouse_dpcm)
+    }
   }
 
-  return(data)
+  return(df)
 }
 
 .find_nearest <- function(x, v){ which.min(abs(v - x)) }
@@ -93,3 +170,5 @@ read_trackball_data <- function(
   nameSplit <- strsplit(x = filename, split = "\\.")[[1]]
   return(nameSplit[length(nameSplit)])
 }
+
+.is.POSIXt <- function(x) inherits(x, "POSIXt")

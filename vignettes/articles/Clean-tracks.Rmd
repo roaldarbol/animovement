@@ -1,0 +1,90 @@
+---
+title: "Clean tracks"
+output:
+  html_document:
+    code_folding: show
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(trackballr)
+library(tibble)
+library(dplyr, warn.conflicts = FALSE)
+library(readxl)
+library(here)
+here::i_am("vignettes/articles/Clean-tracks.Rmd")
+```
+
+The next step in our workflow is to clean the tracks. This step commonly covers **imputation of missing values** and **smoothing/filtering**. In the current implementation, we assume that the sensors are reliable (no missing observations), so there is no need to impute missing values. All there is left to do is smooth our tracks, which is done using the `smooth_tracks()` function.
+
+```{r include=FALSE}
+# Read metadata
+metadata_path <- here("inst", "extdata", "multi", "trackball_filenames.xlsx")
+metadata_file <- read_xlsx(metadata_path)
+
+# First, we'll create an empty data frame which we'll read our data into
+df <- tibble()
+
+# Then we loop through the rows in the metadata file
+for (i in 1:nrow(metadata_file)){
+  
+  # Like before, change the path to match your local file structure
+  file_primary <- here("inst", "extdata", "multi", metadata_file$filename_a[i])
+  file_secondary <- here("inst", "extdata", "multi", metadata_file$filename_b[i])
+  
+  # Then we'll read all the file
+  df_temp <- read_trackball(
+    filepaths = c(file_primary, file_secondary),
+    configuration = "free",
+    time_col = 4,
+    sampling_rate = 60,
+    mouse_dpcm = 394)
+  
+  # And we can add other metadata, such as the identity and date to distinguish between experiments
+  df_temp <- df_temp |> 
+    mutate(
+      id = metadata_file$identity[i], 
+      date = metadata_file$date[i])
+  
+  # Finally, we bind the data together
+  df <- bind_rows(df, df_temp)
+}
+```
+
+We'll use the data we read in the [Read data](https://www.roald-arboel.com/trackballr/articles/Read-data.html) article, so if you've missed that step you need to revisit [how to read data](https://www.roald-arboel.com/trackballr/articles/Read-data.html).The smoothing itself is super simple. `smooth_tracks()` provides a few different options:
+
+- `rolling_mean`
+- `rolling_median`
+- **SOON** `savitsky_golay`
+
+For the rolling filters you can provide the `window_width`, i.e. how many observations to use in the rolling filter. The filters result in some `NA` values at the beginning and end of your data.
+
+An important point about `smooth_tracks()` is that, instead of using our `x` and `y` values, it first back-transforms into the raw values obtained from your sensors (which are effectively "differences" between coordinates, so `dx` and `dy`) and performs the smoothing on them, before finally converting back to `x` and `y`. This may seem strange if you have previously worked with tracking data from computer vision or GPS loggers. However, whereas those modalities would return to the "true" coordinates after an outlier, mouse sensors do not. So the only way we can identify rogue values is by filtering those raw values.
+
+Let's try smoothing our data with a `rolling_mean` filter with 0.5 second (30 observations at at a sampling rate of 60Hz) window width. Notice that we can use `group_by` with our metadata for a *tidyverse*-friendly workflow.
+
+
+```{r}
+df_smooth <- df |> 
+  group_by(id, date) |> # We can use group_by with our metadata for a tidyverse-friendly workflow 
+  smooth_track(method = "rolling_mean", window_width = 30)
+```
+
+Let's visualise how they compare. Note that although the difference may seem negligeble when plotting paths, they may become important when computing derivatives such as velocity and acceleration.
+
+```{r}
+library(ggplot2)
+ggplot() +
+  geom_path(data = df, aes(x,y), colour = "red") +
+  geom_path(data = df_smooth, aes(x,y), colour = "blue") +
+  facet_grid(rows = vars(id),
+             cols = vars(date)) #Remember to use facet_grid when visualising multiple experiments
+```
+
+Not that different as the sensors are doing a good job! But we can see that the smoothed track end a bit further to the left than the raw version. 
