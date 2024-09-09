@@ -1,56 +1,58 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# trackballr
+# animovement
 
 <!-- badges: start -->
 
 [![DOI](https://zenodo.org/badge/773406370.svg)](https://zenodo.org/doi/10.5281/zenodo.13235277)
-[![R-CMD-check](https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml)
-[![trackballr status
-badge](https://roaldarbol.r-universe.dev/badges/trackballr)](https://roaldarbol.r-universe.dev)
+[![R-CMD-check](https://github.com/roaldarbol/animovement/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/animovement/actions/workflows/R-CMD-check.yaml)
+[![animovement status
+badge](https://roaldarbol.r-universe.dev/badges/animovement)](https://roaldarbol.r-universe.dev)
 [![Codecov test
-coverage](https://codecov.io/gh/roaldarbol/trackballr/graph/badge.svg)](https://app.codecov.io/gh/roaldarbol/trackballr)
+coverage](https://codecov.io/gh/roaldarbol/animovement/graph/badge.svg)](https://app.codecov.io/gh/roaldarbol/animovement)
 <!-- badges: end -->
 
-*Run the trackball!*
+*An R toolbox for analysing animal movement across space and time*
 
-Trackball experiments, in which animals are tethered/restrained atop a
-(most commonly) styrofoam ball are common experiments within animal
-behaviour and neuroscience.
-
-The primary goal of the *trackballr* package is to enable a
-*tidyverse*-friendly analysis of trackball data and use a standardised
-tidy data format.
+The primary aim of the *animovement* package is to provide a unified,
+standardised workflow for analysing animal movement data, in a
+*tidyverse*-friendly syntax. We work actively with the developers of the
+Python [`movement`](https://movement.neuroinformatics.dev/) package, to
+reach a similar data standards, workflow and use cases; if you prefer
+analysing your data in Python, we highly recommend using
+[`movement`](https://movement.neuroinformatics.dev/).
 
 ## Installation
 
-You can install the development version of trackballr with:
+You can install the development version of *animovement* with:
 
 | Type | Source | Command |
 |----|----|----|
-| Development | R-universe | `install.packages("trackballr", repos = "https://roaldarbol.r-universe.dev")` |
+| Development | R-universe | `install.packages("animovement", repos = "https://roaldarbol.r-universe.dev")` |
 
 Once you have installed the package, you can load it with:
 
 ``` r
-library("trackballr")
+library("animovement")
 ```
 
 ## Documentation
 
-The trackball analysis workflow is simple, and generally follows the
-same steps as other movement data sets (e.g. pose estimation, centroid
-tracking). See our docs to go through the steps, one-by-one:
+Analysis of animal movement follows a similar workflow irrespective of
+the type of data (e.g. pose estimation, centroid tracking, trackball,
+treadmill). See our docs to go through the steps, one-by-one:
 
-- [Read
-  data](https://www.roald-arboel.com/trackballr/articles/Read-data.html)
+- [Introduction to
+  `animovement`](https://www.roald-arboel.com/animovement/articles/Introduction-to-animovement.html)
+- [Read trackball
+  data](https://www.roald-arboel.com/animovement/articles/Read-trackball-data.html)
 - [Clean
-  tracks](https://www.roald-arboel.com/trackballr/articles/Clean-tracks.html)
+  tracks](https://www.roald-arboel.com/animovement/articles/Clean-tracks.html)
 - [Compute
-  kinematics](https://www.roald-arboel.com/trackballr/articles/Compute-kinematics.html)
+  kinematics](https://www.roald-arboel.com/animovement/articles/Compute-kinematics.html)
 - [Compute movement
-  statistics](https://www.roald-arboel.com/trackballr/articles/Compute-movement-statistics.html)
+  statistics](https://www.roald-arboel.com/animovement/articles/Compute-movement-statistics.html)
 
 ## Status
 
@@ -61,30 +63,38 @@ tracking). See our docs to go through the steps, one-by-one:
 
 ## Roadmap
 
-We envision this package to develop mostly into providing functions for
-reading trackball data. We hope to support your experimental cases, such
-as:
+We envision this package to support a unified workflow for *most* animal
+movement analysis.
 
-- ✅ Support for Optical mouse sensors, free configuration
-- ⏳ Support for Optical mouse sensors, fixed configuration
-- ⏳ Support FicTrac
-- ⏳ More tests
+To provide a one-stop solution, we aim to provide reader functions for a
+variety of data:
 
-If you are running experiments with trackballs, we would love to get a
-sample of your data to support it!
+- **Readers for pose estimation**
+  - [DeepLabCut](https://deeplabcut.github.io/DeepLabCut/README.html)
+  - [SLEAP](https://sleap.ai/)
+  - [Lightning Pose](https://lightning-pose.readthedocs.io/en/latest/)
+  - [Anipose](https://anipose.readthedocs.io/en/latest/)
+- **Readers for centroid tracking**
+  - [TRex](https://trex.run/)
+  - [idtracker.ai](https://idtracker.ai/latest/)
+  - [AnimalTA](http://vchiara.eu/index.php/animalta)
+- **Readers for trackballs**
+  - Optical mouse sensors, free configuration
+  - Optical mouse sensors, fixed configuration
+  - [FicTrac](https://github.com/rjdmoore/fictrac)
 
-For computing kinematics and summary statistics, we are currently
-implementing those, but they might be transferred to a different package
-that does so for a broad array of movement data, so **stay put to hear
-more**!
+**If your favourite type of movement data is not currently supported, we
+would love to get a sample of your data to support it!** *At this point
+in time, we explicitly plan not to support GPS tracking data, as many
+other packages already exist for this purpose.*
 
 ## Citation
 
-To cite *trackballr* in publications use:
+To cite *animovement* in publications use:
 
 ``` r
-citation("trackballr")
-#> To cite package 'trackballr' in publications use:
+citation("animovement")
+#> To cite package 'animovement' in publications use:
 #> 
 #>   Roald-Arbøl M (2024). "trackballr: Read trackball files."
 #>   doi:10.5281/zenodo.13235278

@@ -1,8 +1,5 @@
 ---
 title: "Clean tracks"
-output:
-  html_document:
-    code_folding: show
 ---
 
 ```{r, include = FALSE}
@@ -13,15 +10,13 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(trackballr)
+library(animovement)
 library(tibble)
 library(dplyr, warn.conflicts = FALSE)
 library(readxl)
 library(here)
 here::i_am("vignettes/articles/Clean-tracks.Rmd")
 ```
-
-The next step in our workflow is to clean the tracks. This step commonly covers **imputation of missing values** and **smoothing/filtering**. In the current implementation, we assume that the sensors are reliable (no missing observations), so there is no need to impute missing values. All there is left to do is smooth our tracks, which is done using the `smooth_tracks()` function.
 
 ```{r include=FALSE}
 # Read metadata
@@ -43,8 +38,9 @@ for (i in 1:nrow(metadata_file)){
     filepaths = c(file_primary, file_secondary),
     configuration = "free",
     time_col = 4,
-    sampling_rate = 60,
-    mouse_dpcm = 394)
+    sampling_rate = 30,
+    mouse_dpcm = 394) |> 
+    mutate(distance = sqrt(dx^2 + dy^2))
   
   # And we can add other metadata, such as the identity and date to distinguish between experiments
   df_temp <- df_temp |> 
@@ -57,10 +53,80 @@ for (i in 1:nrow(metadata_file)){
 }
 ```
 
-We'll use the data we read in the [Read data](https://www.roald-arboel.com/trackballr/articles/Read-data.html) article, so if you've missed that step you need to revisit [how to read data](https://www.roald-arboel.com/trackballr/articles/Read-data.html).The smoothing itself is super simple. `smooth_tracks()` provides a few different options:
+The next step in our workflow is to clean the tracks. This step commonly covers three separate components:
 
-- `rolling_mean`
-- `rolling_median`
+- [**Outlier detection**](#outlier-detection)
+- [**Interpolation**](#interpolation)
+- [**Smoothing**](#smoothing)
+
+Although these are not always completely separate steps in practice, we will treat them as such to ensure the integrity of our tracks.
+
+## Outlier detection {#outlier-detection}
+**If you are confident that your sensors give correct readings, you can skip this step.**. Even in a typical trackball setup with optical flow sensors (e.g. computer mice), there is a chance that we will get a few spurious readings from the sensors. The aim of this step is to root out those readings. 
+
+We'll use the data we read in the [Read data](https://www.roald-arboel.com/animovement/articles/Read-trackball-data.html) article, so if you've missed that step you need to revisit [how to read data](https://www.roald-arboel.com/animovement/articles/Read-trackball-data.html). Let us first visualise our `dx` and `dy` values.
+
+```{r}
+library(ggplot2)
+full_trace <- df |> 
+  ggplot(aes(time, distance)) +
+  geom_line() +
+  xlab("Time (s)") +
+  ylab("dx, dy (dots)")
+
+partial_trace <- df |> 
+  filter(time < 20) |> 
+  ggplot(aes(time, distance)) +
+  geom_line() +
+  xlab("Time (s)") +
+  ylab("dx, dy (dots)")
+
+hist_dist <- df |> 
+  ggplot(aes(distance)) +
+  geom_histogram()
+
+library(patchwork)
+full_trace / partial_trace / hist_dist
+```
+
+Some animals spend a significant amount of time sitting still (as was the case here). To ensure that these zero-readings do not skew our outlier detection, let's filter them out and have another look at the histograms.
+
+```{r}
+hist_dist2 <- df |> 
+  filter(distance != 0) |> 
+  ggplot(aes(distance)) +
+  geom_histogram()
+
+hist_dist2
+```
+
+Now we can see that there might be a few observations with extreme observations. **It is now up to each researcher to decide whether to attempt filtering out outliers, or whether we are happy with what we have**. 
+
+we may want to filter out all the `0` readings At first sight, it all looks fine. We could stop here and say we're confident there are no *spurious* outliers. We could also apply a variety of automated outlier detection techniques. There are several ways of achieving this, but luckily the [*performance*]() package has got us covered with their [`check_outliers()`]() function. Since most of these methods rely on histograms/probability density functions, 
+
+```{r}
+library(performance)
+a <- df |> 
+  mutate(ax = dx - lag(dx),
+         ay = dy - lag(dy)) |>
+  na.omit() |> 
+  filter(time < 200) |> 
+  filter(dx != 0) |> 
+  select(ax, ay) |> 
+  check_outliers()
+```
+
+
+## Interpolation {#interpolation}
+In case we removed any outliers, we can now interpolate across the gaps created. We 
+
+
+## Smoothing {#smoothing}
+All there is left to do is smooth our tracks, which is done using the `smooth_tracks()` function.
+The smoothing itself is super simple. `smooth_tracks()` provides a few different options:
+
+- `roll_mean`
+- `roll_median`
 - **SOON** `savitsky_golay`
 
 For the rolling filters you can provide the `window_width`, i.e. how many observations to use in the rolling filter. The filters result in some `NA` values at the beginning and end of your data.
@@ -73,7 +139,7 @@ Let's try smoothing our data with a `rolling_mean` filter with 0.5 second (30 ob
 ```{r}
 df_smooth <- df |> 
   group_by(id, date) |> # We can use group_by with our metadata for a tidyverse-friendly workflow 
-  smooth_track(method = "rolling_mean", window_width = 30)
+  smooth_track(method = "rolling_median", window_width = 5)
 ```
 
 Let's visualise how they compare. Note that although the difference may seem negligeble when plotting paths, they may become important when computing derivatives such as velocity and acceleration.

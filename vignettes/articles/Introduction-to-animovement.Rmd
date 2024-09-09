@@ -1,0 +1,16 @@
+---
+title: "Introduction to `animovement`"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(animovement)
+```
+
+The primary functionality of the *animovement* package is to provide a unified, standardised workflow for analysing animal movement data. 

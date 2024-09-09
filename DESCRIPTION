@@ -1,6 +1,6 @@
-Package: trackballr
+Package: animovement
 Type: Package
-Title: R package for reading trackball data into a standard format
+Title: An R toolbox for analysing animal movement across space and time.
 Version: 0.1.2
 Authors@R: 
     person(
@@ -10,7 +10,7 @@ Authors@R:
       email = "trackballr.htmc8@passmail.net",
       comment = c(ORCID = "0000-0002-9998-0058")
       )
-Description: R package for reading trackball data into a standard format.
+Description: An R toolbox for analysing animal movement across space and time.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -28,11 +28,13 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     cli,
+    collapse,
     dplyr,
     rlang,
     tidyr,
     vroom,
     zoo
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-URL: http://www.roald-arboel.com/trackballr/
+URL: http://www.roald-arboel.com/animovement/
 VignetteBuilder: knitr

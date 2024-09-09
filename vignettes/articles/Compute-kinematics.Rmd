@@ -54,8 +54,10 @@ for (i in 1:nrow(metadata_file)){
 # Smooth tracks
 df_smooth <- df |> 
   group_by(id, date) |> # We can use group_by with our metadata for a tidyverse-friendly workflow 
-  smooth_track(method = "rolling_mean", window_width = 30)
+  smooth_track(method = "rolling_median", window_width = 5)
 ```
+
+## Compute kinematics
 
 When we work with movement data, we are often interested in more than just where an animal *is*; we're interested in how fast it moves, where it is heading etc. 
 `compute_kinematics` computes a range of kinematic variables:
@@ -76,6 +78,11 @@ glimpse(df_kinematics)
 
 ## Assess kinematics for outliers
 
+Kinematics are much more prone to small values change. We assess these in two ways:
+
+- **Visual inspection**
+- **Outlier detection**
+
 ```{r}
 library(patchwork)
 a <- df_kinematics |> 
@@ -89,6 +96,7 @@ c <- df_kinematics |>
   ggplot(aes(time, v_translation)) +
   geom_line()
 d <- df_kinematics |> 
+  filter(v_translation > 0) |> 
   ggplot(aes(time, v_rotation)) +
   geom_line()
 e <- df_kinematics |> 
@@ -104,6 +112,5 @@ df_kinematics |>
   na.omit() |> 
   select(rotation) |>
   performance::check_outliers()
-
 ```
 

@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(trackballr)
+library(animovement)
 
-test_check("trackballr")
+test_check("animovement")
