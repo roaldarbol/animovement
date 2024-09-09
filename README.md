@@ -47,9 +47,16 @@ tracking). See our docs to go through the steps, one-by-one:
   data](https://www.roald-arboel.com/trackballr/articles/Read-data.html)
 - [Clean
   tracks](https://www.roald-arboel.com/trackballr/articles/Clean-tracks.html)
-- [Compute kinematics](#compute-kinematics)
-- [Visualise kinematics](#visualise)
-- [Compute movement statistics](#movement-stats)
+- [Compute
+  kinematics](https://www.roald-arboel.com/trackballr/articles/Compute-kinematics.html)
+- [Compute movement
+  statistics](https://www.roald-arboel.com/trackballr/articles/Compute-movement-statistics.html)
+
+## Status
+
+> \[!Warning\] 🏗️ The package is currently in early development and the
+> interface is subject to change. Feel free to play around and provide
+> feedback.
 
 ## Roadmap
 
