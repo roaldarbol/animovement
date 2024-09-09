@@ -54,9 +54,10 @@ tracking). See our docs to go through the steps, one-by-one:
 
 ## Status
 
-> \[!Warning\] 🏗️ The package is currently in early development and the
-> interface is subject to change. Feel free to play around and provide
-> feedback.
+> \[!Warning\]
+>
+> 🏗️ The package is currently in early development and the interface is
+> subject to change. Feel free to play around and provide feedback.
 
 ## Roadmap
 
