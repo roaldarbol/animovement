@@ -15,10 +15,10 @@ articles:
 - title: Tutorial
   navbar: ~
   contents:
-  - Read-trackball-data.Rmd
-  - Clean-tracks.Rmd
-  - Calculate-kinematics.Rmd
-  - Calculate-movement-statistics.Rmd
+  - Read-trackball-data
+  - Clean-tracks
+  - Calculate-kinematics
+  - Calculate-movement-statistics
 
 reference:
 - title: "Read"
@@ -46,6 +46,6 @@ reference:
 
 navbar:
   structure:
-    left:  [intro, reference, articles, tutorials, news]
+    left:  [intro, reference, articles, news]
     right: [search, github, lightswitch]
 
