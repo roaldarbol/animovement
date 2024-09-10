@@ -13,12 +13,11 @@ template:
 
 articles:
 - title: Tutorial
-  navbar: ~
   contents:
-  - Read-trackball-data
-  - Clean-tracks
-  - Calculate-kinematics
-  - Calculate-movement-statistics
+  - "Read-trackball-data.Rmd"
+  - "Clean-tracks.Rmd"
+  - "Calculate-kinematics.Rmd"
+  - "Calculate-movement-statistics.Rmd"
 
 reference:
 - title: "Read"
