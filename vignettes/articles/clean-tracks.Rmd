@@ -15,7 +15,7 @@ library(tibble)
 library(dplyr, warn.conflicts = FALSE)
 library(readxl)
 library(here)
-here::i_am("vignettes/articles/Clean-tracks.Rmd")
+here::i_am("vignettes/articles/clean-tracks.Rmd")
 ```
 
 ```{r include=FALSE}

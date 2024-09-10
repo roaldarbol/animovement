@@ -32,7 +32,7 @@ First, we'll let R know which is our project root folder.
 
 ```{r}
 library(here, quietly = TRUE)
-here::i_am("vignettes/articles/Read-trackball-data.Rmd")
+here::i_am("vignettes/articles/read-trackball.Rmd")
 ```
 
 Our data lives in a funky place (because of the constraints of being in an R package), but giving file paths is easy.

@@ -1,5 +1,10 @@
 ---
-title: "Introduction to `animovement`"
+title: "Introduction to animovement"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to animovement}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

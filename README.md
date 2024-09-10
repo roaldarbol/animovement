@@ -46,7 +46,7 @@ treadmill). See our docs to go through the steps, one-by-one:
 - [Introduction to
   `animovement`](https://www.roald-arboel.com/animovement/articles/Introduction-to-animovement.html)
 - [Read trackball
-  data](https://www.roald-arboel.com/animovement/articles/Read-trackball-data.html)
+  data](https://www.roald-arboel.com/animovement/articles/Read-trackball.html)
 - [Clean
   tracks](https://www.roald-arboel.com/animovement/articles/Clean-tracks.html)
 - [Compute
@@ -113,15 +113,16 @@ To cite *animovement* in publications use:
 citation("animovement")
 #> To cite package 'animovement' in publications use:
 #> 
-#>   Roald-Arbøl M (????). "animovement: An R toolbox for analysing animal
+#>   Roald-Arbøl M (2024). "animovement: An R toolbox for analysing animal
 #>   movement across space and time."
 #>   <http://www.roald-arboel.com/animovement/>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
-#>   @Misc{roaldarbol,
+#>   @Misc{roaldarbol:2024,
 #>     title = {animovement: An R toolbox for analysing animal movement across space and time.},
 #>     author = {Mikkel Roald-Arbøl},
+#>     year = {2024},
 #>     url = {http://www.roald-arboel.com/animovement/},
 #>     abstract = {An R toolbox for analysing animal movement across space and time.},
 #>     version = {0.2.0},

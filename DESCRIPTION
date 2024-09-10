@@ -12,8 +12,17 @@ Authors@R:
       )
 Description: An R toolbox for analysing animal movement across space and time.
 License: MIT + file LICENSE
+URL: http://www.roald-arboel.com/animovement/, https://github.com/roaldarbol/animovement/
+BugReports: https://github.com/roaldarbol/animovement/issues
 Encoding: UTF-8
 LazyData: true
+Imports: 
+    cli,
+    collapse,
+    dplyr,
+    rlang,
+    vroom,
+    zoo
 Suggests: 
     knitr,
     rmarkdown,
@@ -28,14 +37,6 @@ Suggests:
     performance,
     see
 Config/testthat/edition: 3
-Imports: 
-    cli,
-    collapse,
-    dplyr,
-    rlang,
-    vroom,
-    zoo
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-URL: http://www.roald-arboel.com/animovement/
 VignetteBuilder: knitr
