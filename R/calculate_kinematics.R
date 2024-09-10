@@ -1,20 +1,20 @@
-#' Compute kinematics
+#' Calculate kinematics
 #'
 #' @description
-#' Compute kinematics.
+#' Calculate kinematics.
 #'
 #' @param data Data frame
 #'
-#' @return An data frame data frame with kinematics computed
+#' @return An data frame data frame with kinematics calculated
 #' @export
 #' @import dplyr
 #' @importFrom rlang :=
 #' @importFrom rlang .data
 #'
-compute_kinematics <- function(
+calculate_kinematics <- function(
     data
 ) {
-  # We first temporarily back-compute from our xy coordinates to the distances (dx, dy) covered between each observation (which is what we got from the sensors initially)
+  # We first temporarily back-calculate from our xy coordinates to the distances (dx, dy) covered between each observation (which is what we got from the sensors initially)
   data <- data |>
     dplyr::mutate(dx = .data$x - lag(.data$x),
                   dy = .data$y - lag(.data$y),
@@ -23,7 +23,7 @@ compute_kinematics <- function(
   # Find the sampling rate
   sampling_rate <- round(1 / median(data$dt, na.rm = TRUE))
 
-  # Compute kinematics
+  # Calculate kinematics
   data <- data |>
     dplyr::mutate(distance = if_else(.data$dx^2 > 0 & .data$dy^2 > 0, sqrt(.data$dx^2 + .data$dy^2), 0),
                   v_translation = .data$distance * sampling_rate,

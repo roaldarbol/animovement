@@ -1,26 +1,26 @@
-#' Compute summary statistics
+#' Calculate summary statistics
 #'
 #' @description
-#' Compute summary statistics for tracks
+#' Calculate summary statistics for tracks
 #'
 #' @param data A kinematics data frame
 #' @param threshold_velocity Choose which observations to use based on the velocity. A number, "auto" or "none". Can take a number (e.g. estimated from histograms) or "auto". "auto" fits a density function to the velocities and tries to identify a local minimum between the first and second local maxima, and uses that as the threshold. "none" keeps all observations.
 #'
-#' @return An data frame data frame with kinematics computed
+#' @return An data frame data frame with kinematics calculated
 #' @export
 #' @import dplyr
 #' @importFrom rlang :=
 #' @importFrom rlang .data
 #'
-compute_statistics <- function(
+calculate_statistics <- function(
     data,
     threshold_velocity
 ) {
-  # Make some tests to ensure that `compute_kinematics` has been run first
+  # Make some tests to ensure that `calculate_kinematics` has been run first
 
   # Make sure to remove observations with almost no movement (figure out a robust method for this)
 
-  # Compute translational and rotational separately (maybe?) and gather at the end
+  # Calculate translational and rotational separately (maybe?) and gather at the end
   data <- data |>
     dplyr::summarise()
 
