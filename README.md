@@ -88,6 +88,22 @@ would love to get a sample of your data to support it!** *At this point
 in time, we explicitly plan not to support GPS tracking data, as many
 other packages already exist for this purpose.*
 
+## Contribute
+
+If you enjoy the package, please make sure to [cite it](#citation). If
+you find a bug, feel free to open an issue.
+
+## Acknowledgements
+
+*animovement* is all about the data, and we are deeply grateful for all
+those who have shared data with us to implement and test our code. Thank
+you!
+
+- [Stan Edwards](): Trackball with optical flow, free.
+- [Estelle Moubarak](): Trackball with optical flow, fixed.
+- [Maria Cozan](): Treadmill with rotary encoder.
+- [Violette Chiara](): AnimalTA
+
 ## Citation
 
 To cite *animovement* in publications use:
@@ -96,20 +112,17 @@ To cite *animovement* in publications use:
 citation("animovement")
 #> To cite package 'animovement' in publications use:
 #> 
-#>   Roald-Arbøl M (2024). "trackballr: Read trackball files."
-#>   doi:10.5281/zenodo.13235278
-#>   <https://doi.org/10.5281/zenodo.13235278>,
-#>   <http://www.roald-arboel.com/trackballr/>.
+#>   Roald-Arbøl M (????). "animovement: An R toolbox for analysing animal
+#>   movement across space and time."
+#>   <http://www.roald-arboel.com/animovement/>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
-#>   @Misc{roaldarbol:2024,
-#>     title = {trackballr: Read trackball files},
+#>   @Misc{roaldarbol,
+#>     title = {animovement: An R toolbox for analysing animal movement across space and time.},
 #>     author = {Mikkel Roald-Arbøl},
-#>     year = {2024},
-#>     doi = {10.5281/zenodo.13235278},
-#>     url = {http://www.roald-arboel.com/trackballr/},
-#>     abstract = {Read trackball data into a standard format},
-#>     version = {0.1.1},
+#>     url = {http://www.roald-arboel.com/animovement/},
+#>     abstract = {An R toolbox for analysing animal movement across space and time.},
+#>     version = {0.2.0},
 #>   }
 ```

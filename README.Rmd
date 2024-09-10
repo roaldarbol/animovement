@@ -79,7 +79,20 @@ To provide a one-stop solution, we aim to provide reader functions for a variety
 
 **If your favourite type of movement data is not currently supported, we would love to get a sample of your data to support it!** *At this point in time, we explicitly plan not to support GPS tracking data, as many other packages already exist for this purpose.*
 
-## Citation
+## Contribute
+
+If you enjoy the package, please make sure to [cite it](#citation). If you find a bug, feel free to open an issue.
+
+## Acknowledgements
+
+*animovement* is all about the data, and we are deeply grateful for all those who have shared data with us to implement and test our code. Thank you!
+
+- [Stan Edwards](): Trackball with optical flow, free.
+- [Estelle Moubarak](): Trackball with optical flow, fixed.
+- [Maria Cozan](): Treadmill with rotary encoder.
+- [Violette Chiara](): AnimalTA
+
+## Citation {#citation}
 
 To cite *animovement* in publications use:
 
