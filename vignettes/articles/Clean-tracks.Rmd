@@ -35,12 +35,12 @@ for (i in 1:nrow(metadata_file)){
   
   # Then we'll read all the file
   df_temp <- read_trackball(
-    filepaths = c(file_primary, file_secondary),
-    configuration = "free",
-    time_col = 4,
-    sampling_rate = 30,
-    mouse_dpcm = 394) |> 
-    mutate(distance = sqrt(dx^2 + dy^2))
+    c(file_primary, file_secondary), 
+    setup = "of_free",
+    col_time = 4,
+    sampling_rate = 60,
+    distance_scale = 394
+    )
   
   # And we can add other metadata, such as the identity and date to distinguish between experiments
   df_temp <- df_temp |> 

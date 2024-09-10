@@ -13,9 +13,18 @@
 #'   be writable. If "rw", the file is expected to be both readable and
 #'   writable. Default: "r".
 #' @param expected_suffix Expected suffix(es) for the file. If NULL (default), this check is skipped.
+#' @param expected_headers Expected column name(s) to be present among the header names. Default is c("x", "y", "time").
 #'
+#' @importFrom vroom vroom
+#' @importFrom cli cli_abort
 #' @export
-validate_files <- function(paths, expected_permission = "r", expected_suffix = NULL){
+validate_files <- function(
+    paths,
+    expected_permission = "r",
+    expected_suffix = NULL,
+    expected_headers = c("x", "y", "time")
+    ){
+  # Perform checks on all supplied paths
   for (path in paths){
     ensure_is_not_dir(path)
     ensure_file_exists_when_expected(path, expected_permission)
@@ -23,6 +32,8 @@ validate_files <- function(paths, expected_permission = "r", expected_suffix = N
     if (!is.null(expected_suffix)){
       ensure_file_has_expected_suffix(path, expected_suffix)
     }
+    ensure_file_has_headers(path)
+    ensure_file_has_expected_headers(path, expected_headers)
   }
 }
 
@@ -65,4 +76,34 @@ ensure_file_has_expected_suffix <- function(path, expected_suffix){
   if (!path_suffix %in% expected_suffix){
     cli::cli_abort("Expected file with suffix(es) {expected_suffix}, but got suffix {path_suffix} instead.")
   }
+}
+
+#' Ensure file has headers
+#' @inheritParams validate_files
+#' @export
+ensure_file_has_headers <- function(path){
+  df <- vroom::vroom(
+    path,
+    n_max = 10,
+    delim = ",",
+    show_col_types = FALSE,
+    .name_repair = "unique") |>
+    suppressMessages()
+  has_headers <- ncol(df) > 1
+  return(has_headers)
+}
+
+#' Ensure file has expected headers
+#' @inheritParams validate_files
+#' @export
+ensure_file_has_expected_headers <- function(path, expected_headers = c("x", "y", "time")){
+  df <- vroom::vroom(
+    path,
+    n_max = 10,
+    delim = ",",
+    show_col_types = FALSE,
+    .name_repair = "unique") |>
+    suppressMessages()
+  has_correct_headers <- all(expected_headers %in% names(df))
+  return(has_correct_headers)
 }

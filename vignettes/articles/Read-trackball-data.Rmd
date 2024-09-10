@@ -32,7 +32,7 @@ First, we'll let R know which is our project root folder.
 
 ```{r}
 library(here, quietly = TRUE)
-here::i_am("vignettes/articles/Read-data.Rmd")
+here::i_am("vignettes/articles/Read-trackball-data.Rmd")
 ```
 
 Our data lives in a funky place (because of the constraints of being in an R package), but giving file paths is easy.
@@ -61,10 +61,10 @@ Let's try to read our provided files:
 ```{r}
 df <- read_trackball(
   filepaths, 
-  configuration = "free",
-  time_col = 4,
+  setup = "of_free",
+  col_time = 4,
   sampling_rate = 60,
-  mouse_dpcm = 394
+  distance_scale = 394
   )
 ```
 
@@ -108,11 +108,12 @@ for (i in 1:nrow(metadata_file)){
   
   # Then we'll read all the file
   df_temp <- read_trackball(
-    filepaths = c(file_primary, file_secondary),
-    configuration = "free",
-    time_col = 4,
+    c(file_primary, file_secondary), 
+    setup = "of_free",
+    col_time = 4,
     sampling_rate = 60,
-    mouse_dpcm = 394)
+    distance_scale = 394
+    )
   
   # And we can add other metadata, such as the identity and date to distinguish between experiments
   df_temp <- df_temp |> 

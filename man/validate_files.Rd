@@ -4,7 +4,12 @@
 \alias{validate_files}
 \title{Validate file}
 \usage{
-validate_files(paths, expected_permission = "r", expected_suffix = NULL)
+validate_files(
+  paths,
+  expected_permission = "r",
+  expected_suffix = NULL,
+  expected_headers = c("x", "y", "time")
+)
 }
 \arguments{
 \item{expected_permission}{Expected access permission(s) for the file. If
@@ -13,6 +18,8 @@ be writable. If "rw", the file is expected to be both readable and
 writable. Default: "r".}
 
 \item{expected_suffix}{Expected suffix(es) for the file. If NULL (default), this check is skipped.}
+
+\item{expected_headers}{Expected column name(s) to be present among the header names. Default is c("x", "y", "time").}
 
 \item{path}{Path to the file.}
 }

@@ -61,6 +61,10 @@ test_that("Test whether files have the expected suffix", {
   )
 })
 
+# Headers present
+
+# Correct headers present
+
 # Full validation
 test_that("Test whether the full validation function works", {
   expect_no_error(

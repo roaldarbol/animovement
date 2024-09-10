@@ -14,15 +14,3 @@
       dplyr::mutate(across(variables, ~ .x / scaling_factor))
   }
 }
-
-.file_has_headers <- function(path){
-  df <- vroom::vroom(
-    path,
-    n_max = 10,
-    delim = ",",
-    show_col_types = FALSE,
-    .name_repair = "unique") |>
-    suppressMessages()
-  has_headers <- ncol(df) > 1
-  return(has_headers)
-}

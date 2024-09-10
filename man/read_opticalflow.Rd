@@ -4,10 +4,12 @@
 \alias{read_opticalflow}
 \title{Read optical flow sensor file}
 \usage{
-read_opticalflow(path, col_time)
+read_opticalflow(path, col_time, verbose = FALSE)
 }
 \arguments{
 \item{col_time}{Which column contains the information about time. Can be specified either by the column number (numeric) or the name of the column if it has one (character). Should either be a datetime (POSIXt) or seconds (numeric).}
+
+\item{verbose}{}
 }
 \description{
 Read optical flow sensor data

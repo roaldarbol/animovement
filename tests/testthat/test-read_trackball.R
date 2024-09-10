@@ -12,10 +12,10 @@ paths_multiple_wrong <- c(path_correct, path_wrong_suffix)
 # File headers
 test_that("File headers", {
   expect_false(
-    file_has_headers(path_correct)
+    ensure_file_has_headers(path_correct)
   )
   expect_true(
-    file_has_headers(path_named_cols)
+    ensure_file_has_headers(path_named_cols)
   )
 })
 
@@ -32,20 +32,33 @@ test_that("Read file", {
 })
 
 # Join trackball files
-# join_trackball_files
+data_list_correct <- list()
+for (i in 1:length(paths_multiple)){
+  data_list_correct[[i]] <- read_opticalflow(paths_multiple[i], col_time=4) |>
+    dplyr::mutate(sensor_n = i)
+}
+test_that("Join files together", {
+  expect_no_error(
+    join_trackball_files(data_list_correct, sampling_rate = 60)
+  )
+  expect_no_error(
+    join_trackball_files(data_list_correct, sampling_rate = 30)
+  )
+})
+
 
 # Full correct test
-# test_that("Correct setup", {
-#   expect_no_error(
-#     read_trackball(
-#       filepaths = paths_multiple,
-#       setup = "of_free",
-#       sampling_rate = 60,
-#       col_dx = "x",
-#       col_dy = "y",
-#       col_time = 4,
-#       distance_scale = 394,
-#       distance_unit = NULL
-#     )
-#   )
-# })
+test_that("Correct setup", {
+  expect_no_error(
+    read_trackball(
+      filepaths = paths_multiple,
+      setup = "of_free",
+      sampling_rate = 60,
+      # col_dx = "x",
+      # col_dy = "y",
+      col_time = 4,
+      distance_scale = 394,
+      distance_unit = NULL
+    )
+  )
+})

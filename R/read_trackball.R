@@ -1,16 +1,19 @@
 #' Read trackball data
 #'
 #' @description
-#' Read trackball data.
+#' Read trackball data from a variety of setups and configurations.
 #'
-#' @param filepaths To file paths, one for each sensor
+#' @param filepaths Two file paths, one for each sensor (although one is allowed for a fixed setup, `of_fixed`).
 #' @param setup Which type of experimental setup was used. Expects either `of_free`, `of_fixed` or `fictrac` (soon).
 #' @param sampling_rate Sampling rate tells the function how long time it should integrate over. A sampling rate of 60(Hz) will mean windows of 1/60 sec are used to integrate over.
+#' @param col_time Which column contains the information about time. Can be specified either by the column number (numeric) or the name of the column if it has one (character). Should either be a datetime (POSIXt) or seconds (numeric).
 #' @param col_dx Column name for x-axis values
 #' @param col_dy Column name for y-axis values
-#' @param col_time Which column contains the information about time. Can be specified either by the column number (numeric) or the name of the column if it has one (character). Should either be a datetime (POSIXt) or seconds (numeric).
+#' @param ball_calibration When running an `of_fixed` experiment, you may (but it is not necessary) provide a calibration factor. This factor is the number recorded after a 360 degree spin. You can use the `calibrate_trackball` function to get this number. Alternatively, provide the `ball_diameter` and a `distance_scale` (e.g. mouse dpcm).
+#' @param ball_diameter When running a `of_fixed` experiment, the ball diameter is needed together with either `ball_calibration` or `distance_scale`.
 #' @param distance_scale If using computer mice, you might be getting unit-less data out. However, computer mice have a factor called "dots-per-cm", which you can use to convert your estimates into centimeters.
 #' @param distance_unit Which unit should be used. If `distance_scale` is also used, the unit will be for the scaled data. E.g. for trackball data with optical flow sensors, you can use the mouse dots-per-cm (dpcm) of 394 by setting `distance_unit = "cm"` and `distance_scale = 394`.
+#' @param verbose
 #'
 #' @import dplyr
 #' @importFrom vroom vroom
@@ -23,14 +26,17 @@ read_trackball <- function(
     filepaths,
     setup = c("of_free", "of_fixed", "fictrac"),
     sampling_rate,
+    col_time = "time",
     col_dx = "x",
     col_dy = "y",
-    col_time = "time",
+    ball_calibration = NULL,
+    ball_diameter = NULL,
     distance_scale = NULL,
-    distance_unit = NULL
+    distance_unit = NULL,
+    verbose = FALSE
 ){
   validate_files(filepaths, expected_suffix = "csv")
-  validate_trackball(filepaths, setup)
+  validate_trackball(filepaths, setup, col_time)
   n_sensors <- length(filepaths)
 
   # Read data
@@ -40,18 +46,24 @@ read_trackball <- function(
       data_list[[i]] <- read_opticalflow(filepaths[i], col_time) |>
         dplyr::mutate(sensor_n = i)
     }
-    df <- join_trackball_files(data_list)
+    df <- join_trackball_files(data_list, sampling_rate)
   } else {
     df <- read_opticalflow(filepaths[i], col_time)
   }
 
-  df <- df |>
-      compute_xy_coordinates(setup, n_sensors)
+  # Calculate coordinates (free/fixed)
+  if (setup == "of_free"){
+    df <- df |>
+        compute_xy_coordinates_free()
+  } else if (setup == "of_fixed"){
+    df <- df |>
+      compute_xy_coordinates_fixed(n_sensors, ball_diameter, ball_calibration, distance_scale)
+  }
 
   # Scale distance and time and select output columns
   df <- df |>
     dplyr::mutate(keypoint = "centroid") |>
-    .scale_values(c("x", "y", "dx", "dy"), distance_scaling) |>
+    .scale_values(c("x", "y", "dx", "dy"), distance_scale) |>
     dplyr::mutate(time = time / sampling_rate) |>
     dplyr::select(time, keypoint, x, y, dx, dy)
 
@@ -61,9 +73,9 @@ read_trackball <- function(
 #' Read optical flow sensor file
 #' @description Read optical flow sensor data
 #' @inheritParams read_trackball
-read_opticalflow <- function(path, col_time){
+read_opticalflow <- function(path, col_time, verbose = FALSE){
   # Read file
-  if (.file_has_headers(path)){
+  if (ensure_file_has_expected_headers(path, c("x","y", "time"))){
     data <- vroom::vroom(
       path,
       delim = ",",
@@ -72,9 +84,9 @@ read_opticalflow <- function(path, col_time){
   } else {
   data <- vroom::vroom(
     path,
-    skip = 1,
+    skip = 2,
     delim = ",",
-    show_col_types = FALSE,
+    show_col_types = TRUE,
     .name_repair = "unique") |>
     suppressMessages()
   }
@@ -86,9 +98,13 @@ read_opticalflow <- function(path, col_time){
     dplyr::rename("time" := all_of(col_time))
 
   # If time is a datetime stamp, convert it into seconds from start
+  # NEEDS TO GO INTO THE TIME VALIDATOR
   if (.is.POSIXt(data$time) == TRUE){
     data <- data |>
       mutate(time = as.numeric(time))
+  } else if (is.character(data$time)){
+    data <- data |>
+      mutate(time = as.numeric(as.POSIXct(time)))
   }
   return(data)
 }
@@ -100,8 +116,8 @@ join_trackball_files <- function(data_list, sampling_rate){
   ## Find shared time frame between both sensors
   highest_min_time <- max(c(min(data_list[[1]]$time), min(data_list[[2]]$time)))
   lowest_max_time <- min(c(max(data_list[[1]]$time), max(data_list[[2]]$time)))
-  data_list[[1]] <- filter(data_list[[1]], "time" > highest_min_time & "time" < lowest_max_time)
-  data_list[[2]] <- filter(data_list[[2]], "time" > highest_min_time & "time" < lowest_max_time)
+  data_list[[1]] <- filter(data_list[[1]], time > highest_min_time & time < lowest_max_time)
+  data_list[[2]] <- filter(data_list[[2]], time > highest_min_time & time < lowest_max_time)
 
   # We use the provided sampling rate to create shared a shared time frame
   data_list[[1]] <- data_list[[1]] |>
@@ -144,32 +160,54 @@ join_trackball_files <- function(data_list, sampling_rate){
 
   df <- dplyr::bind_rows(df, missing_times) |>
     dplyr::arrange(time_group)
+  return(df)
 }
 
 #' @inheritParams read_trackball
-compute_xy_coordinates <- function(data, setup, n_sensors){
+compute_xy_coordinates_free <- function(data){
   # Convert time back to seconds
-  if (setup == "of_free"){
-    df <- df |>
-      dplyr::rename(
-        time = time_group,
-        dx = y_1,
-        dy = y_2)
-  } else if (setup == "of_fixed" & n_sensors == 2){
-    df <- df |>
-      dplyr::rename(time = time_group) |>
-      dplyr::mutate(dx = collapse::fmean(c(x_1, x_2)), # Takes the mean of the x reading on both sensors
-                    dy = y_1)
-  } else if (setup == "of_fixed" & n_sensors == 1){
-    df <- df |>
-      dplyr::rename(time = time_group)
-  }
+  data <- data |>
+    dplyr::rename(
+      time = time_group,
+      dx = y_1,
+      dy = y_2)
 
-  df <- df |>
+  data <- data |>
     dplyr::mutate(x = cumsum(dx),
                   y = cumsum(dy)) |>
     dplyr::relocate(time, .before = 1)
-  return(df)
+  return(data)
+}
+
+#' @inheritParams read_trackball
+compute_xy_coordinates_fixed <- function(data, n_sensors, ball_diameter, ball_calibration, distance_scale){
+  if (n_sensors == 2){
+    data <- data |>
+      dplyr::rename(time = time_group) |>
+      dplyr::mutate(sensor_dx = collapse::fmean(c(x_1, x_2)), # Takes the mean of the x reading on both sensors
+                    sensor_dy = y_1)
+  } else if (n_sensors == 1){
+    data <- data |>
+      dplyr::rename(time = time_group,
+                    sensor_dx = x_1,
+                    sensor_dy = y_1)
+  }
+
+  # Compute the xy coordinates by calculating the angle turned and displacement in every bin
+  if (!is.null(ball_calibration)){
+    data <- data |>
+      dplyr::mutate(d_angle = (.data$sensor_dx / ball_calibration) * 2*pi) #in radians
+  } else if (!is.null(distance_scale)){
+    data <- data |>
+      dplyr::mutate(d_angle = (.data$sensor_dx / (ball_diameter * pi * distance_scale)) * 2*pi) #in radians
+  }
+  data <- data |>
+    dplyr::mutate(dx = sensor_dy * cos(d_angle),
+                  dy = sensor_dy * sin(d_angle)) |>
+    dplyr::mutate(x = cumsum(dx),
+                  y = cumsum(dy)) |>
+    dplyr::relocate(time, .before = 1)
+  return(data)
 }
 
 

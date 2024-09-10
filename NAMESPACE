@@ -2,6 +2,8 @@
 
 export(compute_kinematics)
 export(compute_statistics)
+export(ensure_file_has_expected_headers)
+export(ensure_file_has_headers)
 export(read_trackball)
 export(smooth_track)
 export(validate_animalta)
