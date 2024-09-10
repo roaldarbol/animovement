@@ -1,7 +1,7 @@
-Package: trackballr
+Package: animovement
 Type: Package
-Title: R package for reading trackball data into a standard format
-Version: 0.1.2
+Title: An R toolbox for analysing animal movement across space and time
+Version: 0.2.0.9000
 Authors@R: 
     person(
       "Mikkel", 
@@ -10,24 +10,32 @@ Authors@R:
       email = "trackballr.htmc8@passmail.net",
       comment = c(ORCID = "0000-0002-9998-0058")
       )
-Description: R package for reading trackball data into a standard format.
+Description: An R toolbox for analysing animal movement across space and time.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: 
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    here,
+    readxl,
+    stringr,
+    tinyplot,
+    tinytable,
+    ggplot2,
+    patchwork,
+    performance,
+    see
 Config/testthat/edition: 3
 Imports: 
     cli,
+    collapse,
     dplyr,
     rlang,
-    tidyr,
-    tinyplot,
-    tinytable,
     vroom,
     zoo
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-URL: http://www.roald-arboel.com/trackballr/
+URL: http://www.roald-arboel.com/animovement/
 VignetteBuilder: knitr

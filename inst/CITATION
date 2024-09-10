@@ -1,12 +1,12 @@
+
 bibentry(bibtype = "Misc",
          key = "roaldarbol:2024",
-         title = "trackballr: Read trackball files",
+         title = "animovement: An R toolbox for analysing animal movement across space and time.",
          author = person(given = "Mikkel",
                          family = "Roald-Arbøl",
                          email = "trackballr.htmc8@passmail.net",
                          comment = c(ORCID = "0000-0002-9998-0058")),
          year = "2024",
-         doi = "10.5281/zenodo.13235278",
-         url = "http://www.roald-arboel.com/trackballr/",
-         abstract = "Read trackball data into a standard format",
-         version = "0.1.1")
+         url = "http://www.roald-arboel.com/animovement/",
+         abstract = "An R toolbox for analysing animal movement across space and time.",
+         version = "0.2.0")

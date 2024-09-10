@@ -1,0 +1,159 @@
+---
+title: "Clean tracks"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(animovement)
+library(tibble)
+library(dplyr, warn.conflicts = FALSE)
+library(readxl)
+library(here)
+here::i_am("vignettes/articles/Clean-tracks.Rmd")
+```
+
+```{r include=FALSE}
+# Read metadata
+metadata_path <- here("inst", "extdata", "multi", "trackball_filenames.xlsx")
+metadata_file <- read_xlsx(metadata_path)
+
+# First, we'll create an empty data frame which we'll read our data into
+df <- tibble()
+
+# Then we loop through the rows in the metadata file
+for (i in 1:nrow(metadata_file)){
+  
+  # Like before, change the path to match your local file structure
+  file_primary <- here("inst", "extdata", "multi", metadata_file$filename_a[i])
+  file_secondary <- here("inst", "extdata", "multi", metadata_file$filename_b[i])
+  
+  # Then we'll read all the file
+  df_temp <- read_trackball(
+    c(file_primary, file_secondary), 
+    setup = "of_free",
+    col_time = 4,
+    sampling_rate = 60,
+    distance_scale = 394
+    )
+  
+  # And we can add other metadata, such as the identity and date to distinguish between experiments
+  df_temp <- df_temp |> 
+    mutate(
+      id = metadata_file$identity[i], 
+      date = metadata_file$date[i])
+  
+  # Finally, we bind the data together
+  df <- bind_rows(df, df_temp)
+}
+```
+
+The next step in our workflow is to clean the tracks. This step commonly covers three separate components:
+
+- [**Outlier detection**](#outlier-detection)
+- [**Interpolation**](#interpolation)
+- [**Smoothing**](#smoothing)
+
+Although these are not always completely separate steps in practice, we will treat them as such to ensure the integrity of our tracks.
+
+## Outlier detection {#outlier-detection}
+**If you are confident that your sensors give correct readings, you can skip this step.**. Even in a typical trackball setup with optical flow sensors (e.g. computer mice), there is a chance that we will get a few spurious readings from the sensors. The aim of this step is to root out those readings. 
+
+We'll use the data we read in the [Read data](https://www.roald-arboel.com/animovement/articles/Read-trackball-data.html) article, so if you've missed that step you need to revisit [how to read data](https://www.roald-arboel.com/animovement/articles/Read-trackball-data.html). Let us first visualise our `dx` and `dy` values.
+
+```{r}
+library(ggplot2)
+df <- df |> 
+  mutate(displacement = sqrt(dx^2 + dy^2))
+full_trace <- df |> 
+  ggplot(aes(time, displacement)) +
+  geom_line() +
+  xlab("Time (s)") +
+  ylab("dx, dy (dots)")
+
+partial_trace <- df |> 
+  filter(time < 20) |> 
+  ggplot(aes(time, displacement)) +
+  geom_line() +
+  xlab("Time (s)") +
+  ylab("dx, dy (dots)")
+
+hist_dist <- df |> 
+  ggplot(aes(displacement)) +
+  geom_histogram()
+
+library(patchwork)
+full_trace / partial_trace / hist_dist
+```
+
+Some animals spend a significant amount of time sitting still (as was the case here). To ensure that these zero-readings do not skew our outlier detection, let's filter them out and have another look at the histograms.
+
+```{r}
+hist_dist2 <- df |> 
+  filter(displacement != 0) |> 
+  ggplot(aes(displacement)) +
+  geom_histogram()
+
+hist_dist2
+```
+
+Now we can see that there might be a few observations with extreme observations. **It is now up to each researcher to decide whether to attempt filtering out outliers, or whether we are happy with what we have**. 
+
+we may want to filter out all the `0` readings At first sight, it all looks fine. We could stop here and say we're confident there are no *spurious* outliers. We could also apply a variety of automated outlier detection techniques. There are several ways of achieving this, but luckily the [*performance*]() package has got us covered with their [`check_outliers()`]() function. Since most of these methods rely on histograms/probability density functions, 
+
+```{r}
+library(performance)
+df |> 
+  mutate(ax = dx - lag(dx),
+         ay = dy - lag(dy)) |>
+  na.omit() |> 
+  filter(time < 200) |> 
+  filter(dx != 0) |> 
+  select(ax, ay) |> 
+  check_outliers() |> 
+  plot()
+```
+
+
+## Interpolation {#interpolation}
+In case we removed any outliers, we can now interpolate across the gaps created. We 
+
+
+## Smoothing {#smoothing}
+All there is left to do is smooth our tracks, which is done using the `smooth_tracks()` function.
+The smoothing itself is super simple. `smooth_tracks()` provides a few different options:
+
+- `roll_mean`
+- `roll_median`
+- **SOON** `savitsky_golay`
+
+For the rolling filters you can provide the `window_width`, i.e. how many observations to use in the rolling filter. The filters result in some `NA` values at the beginning and end of your data.
+
+An important point about `smooth_tracks()` is that, instead of using our `x` and `y` values, it first back-transforms into the raw values obtained from your sensors (which are effectively "differences" between coordinates, so `dx` and `dy`) and performs the smoothing on them, before finally converting back to `x` and `y`. This may seem strange if you have previously worked with tracking data from computer vision or GPS loggers. However, whereas those modalities would return to the "true" coordinates after an outlier, mouse sensors do not. So the only way we can identify rogue values is by filtering those raw values.
+
+Let's try smoothing our data with a `rolling_mean` filter with 0.5 second (30 observations at at a sampling rate of 60Hz) window width. Notice that we can use `group_by` with our metadata for a *tidyverse*-friendly workflow.
+
+
+```{r}
+df_smooth <- df |> 
+  group_by(id, date) |> # We can use group_by with our metadata for a tidyverse-friendly workflow 
+  smooth_track(method = "rolling_median", window_width = 5)
+```
+
+Let's visualise how they compare. Note that although the difference may seem negligible when plotting paths, they may become important when computing derivatives such as velocity and acceleration.
+
+```{r}
+library(ggplot2)
+ggplot() +
+  geom_path(data = df, aes(x,y), colour = "red") +
+  geom_path(data = df_smooth, aes(x,y), colour = "blue") +
+  facet_grid(rows = vars(id),
+             cols = vars(date)) #Remember to use facet_grid when visualising multiple experiments
+```
+
+Not that different as the sensors are doing a good job! But we can see that the smoothed track end a bit further to the left than the raw version. 

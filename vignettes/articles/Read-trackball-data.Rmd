@@ -1,0 +1,147 @@
+---
+title: "Read trackball data"
+output:
+  html_document:
+    toc: true
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(animovement)
+```
+
+Trackball experiments, in which animals are tethered/restrained atop a (most commonly) styrofoam ball are common experiments within animal behaviour and neuroscience.
+
+There are different ways to obtain data from trackball experiments, and although we only currently support limited ways, we are looking forward to supporting all your trackball experiments!
+
+The main interface from your data to a standardised trackball data frame is the `read_trackball()` function. The most common experimental setup uses two optical computer mics (or other optical flow sensors), which detects movements of the ball at different axes and is the primary experimental setup we support (although see our [roadmap](https://roald-arboel.com/trackballr#roadmap)!). For this experiment, `read_trackball()` requires **two file paths, one for each sensor**. 
+
+You can find pairs with variations of `list.files()` and for-loops. We'll go through how to use `read_trackball()` for a single experimental trial, as well as a few ways of managing multiple experimental trials at the same time.
+
+# The `read_trackball()` function
+
+We recommend keeping your analysis scripts and data in the same project (which doesn't mean folder), and to use the great [here](https://here.r-lib.org/index.html) package package to manage your files (see their documentation to learn more about it).
+
+First, we'll let R know which is our project root folder.
+
+```{r}
+library(here, quietly = TRUE)
+here::i_am("vignettes/articles/Read-trackball-data.Rmd")
+```
+
+Our data lives in a funky place (because of the constraints of being in an R package), but giving file paths is easy.
+
+```{r}
+filepath_1 <- here("tests", "data", "single", "opticalflow_sensor_1.csv")
+filepath_2 <- here("tests", "data", "single", "opticalflow_sensor_2.csv")
+filepaths <- c(filepath_1, filepath_2)
+
+# These might be something like: here("data", "trackball", "sensor_1", "trackballdata_100.csv") for you!
+```
+
+Great, now we have our file paths. But the function needs to know a few more things.
+
+- **Experimental configuration**
+  - Takes either `"free"` or `"fixed"`.
+- **Time column**
+  - Which column contains time stamps in either seconds or datetime format (takes either column number or name in quotes, e.g. `4` or `"time"`)
+- **Sampling rate**
+  - This *can* be your actual sampling rate, but we use this information to bin observations, so you can easily choose a lower sampling rate.
+- **Mouse Dots-per-cm (DPCM)**
+  - This value is optional, but if provided is used to convert your spatial estimates from unit-less to centimeters. Can be found for most computer mice.
+
+Let's try to read our provided files:
+
+```{r}
+df <- read_trackball(
+  filepaths, 
+  setup = "of_free",
+  col_time = 4,
+  sampling_rate = 60,
+  distance_scale = 394
+  )
+```
+
+# Working with multiple experiments
+
+When working with multiple experimental trials, there are multiple ways of reading all the data whilst keeping track of all the important information. Here we'll cover a few ways that are supported by *animovement*.
+
+- [**Read from from metadata file**](#from-metadata). 
+  - *When to use*: File names contain little or no information.
+- [**Read from file names**](#from-filenames). 
+  - *When to use*: File names contain enough information that can be used to distinguish between experiments.
+
+## Read from metadata file {#from-metadata}
+
+***When to use***: File names contain little or no information.
+
+In this scenario we use a spreadsheet to keep track of which files go together. We have an `.xlsx` file that contains the correct pairs of file names. Let's begin by reading and inspecting the file.
+
+```{r}
+library(readxl)
+metadata_path <- here("inst", "extdata", "multi", "trackball_filenames.xlsx")
+metadata_file <- read_xlsx(metadata_path)
+metadata_file
+```
+
+We can then import our data, one experiment after the other. Again, we use the *here* package to make file management easier.
+
+```{r}
+library(tibble)
+library(dplyr, warn.conflicts = FALSE)
+
+# First, we'll create an empty data frame which we'll read our data into
+df <- tibble()
+
+# Then we loop through the rows in the metadata file
+for (i in 1:nrow(metadata_file)){
+  
+  # Like before, change the path to match your local file structure
+  file_primary <- here("inst", "extdata", "multi", metadata_file$filename_a[i])
+  file_secondary <- here("inst", "extdata", "multi", metadata_file$filename_b[i])
+  
+  # Then we'll read all the file
+  df_temp <- read_trackball(
+    c(file_primary, file_secondary), 
+    setup = "of_free",
+    col_time = 4,
+    sampling_rate = 60,
+    distance_scale = 394
+    )
+  
+  # And we can add other metadata, such as the identity and date to distinguish between experiments
+  df_temp <- df_temp |> 
+    mutate(
+      id = metadata_file$identity[i], 
+      date = metadata_file$date[i])
+  
+  # Finally, we bind the data together
+  df <- bind_rows(df, df_temp)
+}
+```
+
+## Read from file names {#from-filenames}
+
+***When to use***: File names contain enough information that can be used to distinguish between experiments.
+
+**WORK IN PROGRESS!**
+
+<!-- Want to make life a little easier for yourself? So do we. Keeping track of many files can be tricky, but if you are conscious of how you name your files, you can make life a lot easier for yourself! -->
+
+<!-- There are two key elements for enabling automatic import: -->
+
+<!-- 1. Include enough metadata to identify the experiment -->
+<!-- 2. Name files to ensure pairing of files is possible -->
+
+<!-- *TL;DR* Include datetime in file name, reserve a character, e.g. `_` (underscore), for separating pieces of information. -->
+
+<!-- - **GOOD**: `A101_2024-05-21T10-21-53` -->
+<!-- - **BAD**: `A101_2024-05-21T10_21_53` -->
+
+<!-- `ANIMALID_y-m-dT.csv` -->
