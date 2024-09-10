@@ -13,7 +13,7 @@
 #' @param ball_diameter When running a `of_fixed` experiment, the ball diameter is needed together with either `ball_calibration` or `distance_scale`.
 #' @param distance_scale If using computer mice, you might be getting unit-less data out. However, computer mice have a factor called "dots-per-cm", which you can use to convert your estimates into centimeters.
 #' @param distance_unit Which unit should be used. If `distance_scale` is also used, the unit will be for the scaled data. E.g. for trackball data with optical flow sensors, you can use the mouse dots-per-cm (dpcm) of 394 by setting `distance_unit = "cm"` and `distance_scale = 394`.
-#' @param verbose
+#' @param verbose If `FALSE` (default), suppress most warning messages.
 #'
 #' @import dplyr
 #' @importFrom vroom vroom
