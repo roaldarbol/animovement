@@ -1,11 +1,11 @@
 # Test arguments
 library(here)
 here::i_am("tests/testthat/test-validate_trackball.R")
-path_correct <- here("inst", "extdata", "single", "opticalflow_sensor_1.csv")
-path_correct2 <- here("inst", "extdata", "single", "opticalflow_sensor_2.csv")
-path_named_cols <- here("inst", "extdata", "single", "named_cols_opticalflow_sensor_1.csv")
-path_wrong <- here("inst", "extdata", "single", "opticalflow_sensor_12.csv")
-path_wrong_suffix <- here("inst", "extdata", "single", "opticalflow_sensor_12.txt")
+path_correct <- here("tests", "data", "single", "opticalflow_sensor_1.csv")
+path_correct2 <- here("tests", "data", "single", "opticalflow_sensor_2.csv")
+path_named_cols <- here("tests", "data", "single", "named_cols_opticalflow_sensor_1.csv")
+path_wrong <- here("tests", "data", "single", "opticalflow_sensor_12.csv")
+path_wrong_suffix <- here("tests", "data", "single", "opticalflow_sensor_12.txt")
 paths_multiple <- c(path_correct, path_correct2)
 paths_multiple_wrong <- c(path_correct, path_wrong_suffix)
 

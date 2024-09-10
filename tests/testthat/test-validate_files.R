@@ -2,11 +2,11 @@
 library(here)
 here::i_am("tests/testthat/test-validate_files.R")
 
-path_directory <- here("inst", "extdata", "single")
-path_correct <- here("inst", "extdata", "single", "opticalflow_sensor_1.csv")
-path_correct2 <- here("inst", "extdata", "single", "opticalflow_sensor_2.csv")
-path_wrong <- here("inst", "extdata", "single", "opticalflow_sensor_12.csv")
-path_wrong_suffix <- here("inst", "extdata", "single", "opticalflow_sensor_12.txt")
+path_directory <- here("tests", "data", "single")
+path_correct <- here("tests", "data", "single", "opticalflow_sensor_1.csv")
+path_correct2 <- here("tests", "data", "single", "opticalflow_sensor_2.csv")
+path_wrong <- here("tests", "data", "single", "opticalflow_sensor_12.csv")
+path_wrong_suffix <- here("tests", "data", "single", "opticalflow_sensor_12.txt")
 paths_multiple <- c(path_correct, path_correct2)
 
 # Directory
