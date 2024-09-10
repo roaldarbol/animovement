@@ -1,5 +1,5 @@
 ---
-title: "Compute movement statistics"
+title: "Calculate movement statistics"
 ---
 
 ```{r, include = FALSE}
@@ -10,9 +10,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(trackballr)
+library(animovement)
 ```
-
-
 
 ### Compute summary statistics

@@ -68,21 +68,23 @@ We'll use the data we read in the [Read data](https://www.roald-arboel.com/animo
 
 ```{r}
 library(ggplot2)
+df <- df |> 
+  mutate(displacement = sqrt(dx^2 + dy^2))
 full_trace <- df |> 
-  ggplot(aes(time, distance)) +
+  ggplot(aes(time, displacement)) +
   geom_line() +
   xlab("Time (s)") +
   ylab("dx, dy (dots)")
 
 partial_trace <- df |> 
   filter(time < 20) |> 
-  ggplot(aes(time, distance)) +
+  ggplot(aes(time, displacement)) +
   geom_line() +
   xlab("Time (s)") +
   ylab("dx, dy (dots)")
 
 hist_dist <- df |> 
-  ggplot(aes(distance)) +
+  ggplot(aes(displacement)) +
   geom_histogram()
 
 library(patchwork)
@@ -93,8 +95,8 @@ Some animals spend a significant amount of time sitting still (as was the case h
 
 ```{r}
 hist_dist2 <- df |> 
-  filter(distance != 0) |> 
-  ggplot(aes(distance)) +
+  filter(displacement != 0) |> 
+  ggplot(aes(displacement)) +
   geom_histogram()
 
 hist_dist2
@@ -106,14 +108,15 @@ we may want to filter out all the `0` readings At first sight, it all looks fine
 
 ```{r}
 library(performance)
-a <- df |> 
+df |> 
   mutate(ax = dx - lag(dx),
          ay = dy - lag(dy)) |>
   na.omit() |> 
   filter(time < 200) |> 
   filter(dx != 0) |> 
   select(ax, ay) |> 
-  check_outliers()
+  check_outliers() |> 
+  plot()
 ```
 
 
@@ -142,7 +145,7 @@ df_smooth <- df |>
   smooth_track(method = "rolling_median", window_width = 5)
 ```
 
-Let's visualise how they compare. Note that although the difference may seem negligeble when plotting paths, they may become important when computing derivatives such as velocity and acceleration.
+Let's visualise how they compare. Note that although the difference may seem negligible when plotting paths, they may become important when computing derivatives such as velocity and acceleration.
 
 ```{r}
 library(ggplot2)

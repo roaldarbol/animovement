@@ -1,5 +1,5 @@
 ---
-title: "Compute kinematics"
+title: "Calculate kinematics"
 ---
 
 ```{r, include = FALSE}
@@ -10,12 +10,12 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(trackballr)
+library(animovement)
 library(tibble)
 library(dplyr, warn.conflicts = FALSE)
 library(readxl)
 library(here)
-here::i_am("vignettes/articles/Compute-kinematics.Rmd")
+here::i_am("vignettes/articles/Calculate-kinematics.Rmd")
 ```
 
 ```{r include=FALSE}
@@ -35,11 +35,12 @@ for (i in 1:nrow(metadata_file)){
   
   # Then we'll read all the file
   df_temp <- read_trackball(
-    filepaths = c(file_primary, file_secondary),
-    configuration = "free",
-    time_col = 4,
+    c(file_primary, file_secondary), 
+    setup = "of_free",
+    col_time = 4,
     sampling_rate = 60,
-    mouse_dpcm = 394)
+    distance_scale = 394
+    )
   
   # And we can add other metadata, such as the identity and date to distinguish between experiments
   df_temp <- df_temp |> 
@@ -57,10 +58,10 @@ df_smooth <- df |>
   smooth_track(method = "rolling_median", window_width = 5)
 ```
 
-## Compute kinematics
+## Calculate kinematics
 
 When we work with movement data, we are often interested in more than just where an animal *is*; we're interested in how fast it moves, where it is heading etc. 
-`compute_kinematics` computes a range of kinematic variables:
+`calculate_kinematics` calculates a range of kinematic variables:
 
 - `distance`: The distance the animal moved since the last observation (simply calculated using Pythagoras' theorem)
 - `v_translation`: The translational velocity, like what you see on a speedometer in a car.
@@ -72,7 +73,7 @@ When we work with movement data, we are often interested in more than just where
 # Augment all data in list
 df_kinematics <- df_smooth |> 
   group_by(id, date) |> 
-  compute_kinematics()
+  calculate_kinematics()
 glimpse(df_kinematics)
 ```
 
@@ -112,5 +113,36 @@ df_kinematics |>
   na.omit() |> 
   select(rotation) |>
   performance::check_outliers()
+```
+
+```{r}
+pl_direction <- df_kinematics |> 
+  filter(v_translation > 0.2) |> 
+  ggplot(aes(x = direction, y = v_translation)) + 
+  stat_density_2d(
+    geom = "tile", 
+    aes(fill = after_stat(density)),
+    n=c(40, 10), 
+    contour = F
+  ) + 
+  scale_fill_viridis_c() +
+  # scale_fill_gradientn(colours=rev(rainbow(32)[1:23])) + 
+  coord_polar() +
+  facet_grid(rows = vars(date)) +
+  theme_minimal()
+
+max_coord <- max(abs(c(df_kinematics$x, df_kinematics$y)), na.rm = TRUE)
+pl_path <- df_kinematics |> 
+  ggplot(aes(x, y, colour = v_translation)) +
+  geom_path() +
+  coord_fixed() +
+  scale_x_continuous(limits = c(-max_coord, max_coord)) +
+  scale_y_continuous(limits = c(-max_coord, max_coord)) +
+  scale_colour_viridis_c() +
+  facet_grid(rows = vars(date)) +
+  theme_minimal()
+
+pl_path + pl_direction +
+  plot_layout(guides = "collect")
 ```
 
