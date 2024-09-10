@@ -7,7 +7,7 @@
 ensure_is_not_dir(path)
 }
 \arguments{
-\item{path}{Path to the file.}
+\item{path}{Path(s) to the file.}
 }
 \description{
 Ensure that the path does not point to a directory.

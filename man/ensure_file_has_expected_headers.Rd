@@ -7,7 +7,7 @@
 ensure_file_has_expected_headers(path, expected_headers = c("x", "y", "time"))
 }
 \arguments{
-\item{path}{Path to the file.}
+\item{path}{Path(s) to the file.}
 
 \item{expected_headers}{Expected column name(s) to be present among the header names. Default is c("x", "y", "time").}
 }

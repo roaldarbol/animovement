@@ -7,7 +7,7 @@
 ensure_file_has_headers(path)
 }
 \arguments{
-\item{path}{Path to the file.}
+\item{path}{Path(s) to the file.}
 }
 \description{
 Ensure file has headers

@@ -7,7 +7,7 @@
 ensure_file_has_expected_suffix(path, expected_suffix)
 }
 \arguments{
-\item{path}{Path to the file.}
+\item{path}{Path(s) to the file.}
 
 \item{expected_suffix}{Expected suffix(es) for the file. If NULL (default), this check is skipped.}
 }

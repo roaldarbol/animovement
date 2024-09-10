@@ -7,7 +7,7 @@
 ensure_file_has_access_permissions(path, expected_permission)
 }
 \arguments{
-\item{path}{Path to the file.}
+\item{path}{Path(s) to the file.}
 
 \item{expected_permission}{Expected access permission(s) for the file. If
 "r", the file is expected to be readable. If "w", the file is expected to

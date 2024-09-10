@@ -7,6 +7,8 @@
 join_trackball_files(data_list, sampling_rate)
 }
 \arguments{
+\item{data_list}{List of 2 dataframes}
+
 \item{sampling_rate}{Sampling rate tells the function how long time it should integrate over. A sampling rate of 60(Hz) will mean windows of 1/60 sec are used to integrate over.}
 }
 \description{

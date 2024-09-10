@@ -7,7 +7,7 @@
 validate_animalta(path)
 }
 \arguments{
-\item{path}{}
+\item{path}{An AnimalTA data frame}
 }
 \description{
 A short description...

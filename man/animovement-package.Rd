@@ -4,7 +4,7 @@
 \name{animovement-package}
 \alias{animovement}
 \alias{animovement-package}
-\title{animovement: An R toolbox for analysing animal movement across space and time.}
+\title{animovement: An R toolbox for analysing animal movement across space and time}
 \description{
 An R toolbox for analysing animal movement across space and time.
 }
