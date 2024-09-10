@@ -12,7 +12,7 @@ template:
   bootstrap: 5
 
 articles:
-- title: "Tutorial"
+- title: Tutorial
   navbar: ~
   contents:
   - articles/read-trackball
@@ -46,6 +46,6 @@ reference:
 
 navbar:
   structure:
-    left:  [intro, reference, articles, news]
+    left:  [intro, articles, reference, news]
     right: [search, github, lightswitch]
 
