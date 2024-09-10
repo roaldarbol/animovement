@@ -2,8 +2,12 @@ pandoc: 3.1.11
 pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
-  Analyse-Single-Trial: Analyse-Single-Trial.html
-last_built: 2024-09-03T15:42Z
+  articles/Calculate-kinematics: Calculate-kinematics.html
+  articles/Calculate-movement-statistics: Calculate-movement-statistics.html
+  articles/Clean-tracks: Clean-tracks.html
+  articles/Introduction-to-animovement: Introduction-to-animovement.html
+  articles/Read-trackball-data: Read-trackball-data.html
+last_built: 2024-09-10T16:01Z
 urls:
-  reference: http://www.roald-arboel.com/trackballr/reference
-  article: http://www.roald-arboel.com/trackballr/articles
+  reference: http://www.roald-arboel.com/animovement/reference
+  article: http://www.roald-arboel.com/animovement/articles

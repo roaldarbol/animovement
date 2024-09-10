@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>R package for reading trackball data into a standard format • trackballr</title>
+<title>Analyse animal movement across space and time • animovement</title>
 <script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="R package for reading trackball data into a standard format">
-<meta name="description" content="R package for reading trackball data into a standard format.">
-<meta property="og:description" content="R package for reading trackball data into a standard format.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Analyse animal movement across space and time">
+<meta name="description" content="An R toolbox for analysing animal movement across space and time.">
+<meta property="og:description" content="An R toolbox for analysing animal movement across space and time.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -20,9 +20,9 @@
 
     <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="index.html">trackballr</a>
+    <a class="navbar-brand me-2" href="index.html">animovement</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,11 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/Analyse-Single-Trial.html">Analyse single trial</a></li>
+<li><a class="dropdown-item" href="articles/Calculate-kinematics.html">Calculate kinematics</a></li>
+    <li><a class="dropdown-item" href="articles/Calculate-movement-statistics.html">Calculate movement statistics</a></li>
+    <li><a class="dropdown-item" href="articles/Clean-tracks.html">Clean tracks</a></li>
+    <li><a class="dropdown-item" href="articles/Introduction-to-animovement.html">Introduction to `animovement`</a></li>
+    <li><a class="dropdown-item" href="articles/Read-trackball-data.html">Read trackball data</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -48,16 +52,16 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="trackballr">trackballr<a class="anchor" aria-label="anchor" href="#trackballr"></a>
+<div class="page-header"><h1 id="animovement">animovement<a class="anchor" aria-label="anchor" href="#animovement"></a>
 </h1></div>
 <!-- badges: start -->
 
-<p><em>Run the trackball!</em></p>
-<p>Trackball experiments, in which animals are tethered/restrained atop a (most commonly) styrofoam ball are … The primary goal of the <em>trackballr</em> package is to make analysis of trackball data easy and standardise the data format.</p>
+<p><em>An R toolbox for analysing animal movement across space and time</em></p>
+<p>The primary aim of the <em>animovement</em> package is to provide a unified, standardised workflow for analysing animal movement data, in a <em>tidyverse</em>-friendly syntax. We work actively with the developers of the Python <a href="https://movement.neuroinformatics.dev/" class="external-link"><code>movement</code></a> package, to reach a similar data standards, workflow and use cases; if you prefer analysing your data in Python, we highly recommend using <a href="https://movement.neuroinformatics.dev/" class="external-link"><code>movement</code></a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of trackballr with:</p>
+<p>You can install the development version of <em>animovement</em> with:</p>
 <table class="table">
 <colgroup>
 <col width="33%">
@@ -72,44 +76,98 @@
 <tbody><tr class="odd">
 <td>Development</td>
 <td>R-universe</td>
-<td><code>install.packages("trackballr", repos = "https://roaldarbol.r-universe.dev")</code></td>
+<td><code>install.packages("animovement", repos = "https://roaldarbol.r-universe.dev")</code></td>
 </tr></tbody>
 </table>
 <p>Once you have installed the package, you can load it with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="http://www.roald-arboel.com/trackballr/">"trackballr"</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="http://www.roald-arboel.com/animovement/">"animovement"</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
-<p>For worked examples of how to use the package, see the vignettes:</p>
+<p>Analysis of animal movement follows a similar workflow irrespective of the type of data (e.g. pose estimation, centroid tracking, trackball, treadmill). See our docs to go through the steps, one-by-one:</p>
 <ul>
-<li><a href="https://www.roald-arboel.com/trackballr/articles/Analyse-Single-Trial.html" class="external-link">Analyse single trial</a></li>
+<li><a href="https://www.roald-arboel.com/animovement/articles/Introduction-to-animovement.html" class="external-link">Introduction to <code>animovement</code></a></li>
+<li><a href="https://www.roald-arboel.com/animovement/articles/Read-trackball-data.html" class="external-link">Read trackball data</a></li>
+<li><a href="https://www.roald-arboel.com/animovement/articles/Clean-tracks.html" class="external-link">Clean tracks</a></li>
+<li><a href="https://www.roald-arboel.com/animovement/articles/Compute-kinematics.html" class="external-link">Compute kinematics</a></li>
+<li><a href="https://www.roald-arboel.com/animovement/articles/Compute-movement-statistics.html" class="external-link">Compute movement statistics</a></li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="status">Status<a class="anchor" aria-label="anchor" href="#status"></a>
+</h2>
+<blockquote>
+<p>[!Warning]</p>
+<p>🏗️ The package is currently in early development and the interface is subject to change. Feel free to play around and provide feedback.</p>
+</blockquote>
+</div>
+<div class="section level2">
+<h2 id="roadmap">Roadmap<a class="anchor" aria-label="anchor" href="#roadmap"></a>
+</h2>
+<p>We envision this package to support a unified workflow for <em>most</em> animal movement analysis.</p>
+<p>To provide a one-stop solution, we aim to provide reader functions for a variety of data:</p>
+<ul>
+<li>
+<strong>Readers for pose estimation</strong>
+<ul>
+<li><a href="https://deeplabcut.github.io/DeepLabCut/README.html" class="external-link">DeepLabCut</a></li>
+<li><a href="https://sleap.ai/" class="external-link">SLEAP</a></li>
+<li><a href="https://lightning-pose.readthedocs.io/en/latest/" class="external-link">Lightning Pose</a></li>
+<li><a href="https://anipose.readthedocs.io/en/latest/" class="external-link">Anipose</a></li>
+</ul>
+</li>
+<li>
+<strong>Readers for centroid tracking</strong>
+<ul>
+<li><a href="https://trex.run/" class="external-link">TRex</a></li>
+<li><a href="https://idtracker.ai/latest/" class="external-link">idtracker.ai</a></li>
+<li><a href="http://vchiara.eu/index.php/animalta" class="external-link">AnimalTA</a></li>
+</ul>
+</li>
+<li>
+<strong>Readers for trackballs</strong>
+<ul>
+<li>Optical mouse sensors, free configuration</li>
+<li>Optical mouse sensors, fixed configuration</li>
+<li><a href="https://github.com/rjdmoore/fictrac" class="external-link">FicTrac</a></li>
+</ul>
+</li>
+</ul>
+<p><strong>If your favourite type of movement data is not currently supported, we would love to get a sample of your data to support it!</strong> <em>At this point in time, we explicitly plan not to support GPS tracking data, as many other packages already exist for this purpose.</em></p>
+</div>
+<div class="section level2">
+<h2 id="contribute">Contribute<a class="anchor" aria-label="anchor" href="#contribute"></a>
+</h2>
+<p>If you enjoy the package, please make sure to <a href="#citation">cite it</a>. If you find a bug, feel free to open an issue.</p>
+<!-- ## Acknowledgements -->
+<!-- *animovement* is all about the data, and we are deeply grateful for all those who have shared data with us to implement and test our code. Thank you! -->
+<!-- - [Stan Edwards](): Trackball with optical flow, free. -->
+<!-- - [Estelle Moubarak](): Trackball with optical flow, fixed. -->
+<!-- - [Maria Cozan](): Treadmill with rotary encoder. -->
+<!-- - [Violette Chiara](): AnimalTA -->
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
-<p>To cite <em>trackballr</em> in publications use:</p>
+<p>To cite <em>animovement</em> in publications use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"trackballr"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; To cite package 'trackballr' in publications use:</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"animovement"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; To cite package 'animovement' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Roald-Arbøl M (2024). "trackballr: Read trackball files."</span></span>
-<span><span class="co">#&gt;   doi:10.5281/zenodo.13235278</span></span>
-<span><span class="co">#&gt;   &lt;https://doi.org/10.5281/zenodo.13235278&gt;,</span></span>
-<span><span class="co">#&gt;   &lt;http://www.roald-arboel.com/trackballr/&gt;.</span></span>
+<span><span class="co">#&gt;   Roald-Arbøl M (????). "animovement: An R toolbox for analysing animal</span></span>
+<span><span class="co">#&gt;   movement across space and time."</span></span>
+<span><span class="co">#&gt;   &lt;http://www.roald-arboel.com/animovement/&gt;.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   @Misc{roaldarbol:2024,</span></span>
-<span><span class="co">#&gt;     title = {trackballr: Read trackball files},</span></span>
+<span><span class="co">#&gt;   @Misc{roaldarbol,</span></span>
+<span><span class="co">#&gt;     title = {animovement: An R toolbox for analysing animal movement across space and time.},</span></span>
 <span><span class="co">#&gt;     author = {Mikkel Roald-Arbøl},</span></span>
-<span><span class="co">#&gt;     year = {2024},</span></span>
-<span><span class="co">#&gt;     doi = {10.5281/zenodo.13235278},</span></span>
-<span><span class="co">#&gt;     url = {http://www.roald-arboel.com/trackballr/},</span></span>
-<span><span class="co">#&gt;     abstract = {Read trackball data into a standard format},</span></span>
-<span><span class="co">#&gt;     version = {0.1.1},</span></span>
+<span><span class="co">#&gt;     url = {http://www.roald-arboel.com/animovement/},</span></span>
+<span><span class="co">#&gt;     abstract = {An R toolbox for analysing animal movement across space and time.},</span></span>
+<span><span class="co">#&gt;     version = {0.2.0},</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
 </div>
 </div>
@@ -125,14 +183,15 @@
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing trackballr</a></li>
+<li><a href="authors.html#citation">Citing animovement</a></li>
 </ul>
 </div>
 
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Mikkel Roald-Arbøl <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-9998-0058" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>
+<a href="https://roald-arboel.com" class="external-link">Mikkel Roald-Arbøl</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-9998-0058" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
 
@@ -140,9 +199,9 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://zenodo.org/doi/10.5281/zenodo.13235277" class="external-link"><img src="https://zenodo.org/badge/773406370.svg" alt="DOI"></a></li>
-<li><a href="https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/roaldarbol/trackballr/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://roaldarbol.r-universe.dev" class="external-link"><img src="https://roaldarbol.r-universe.dev/badges/trackballr" alt="trackballr status badge"></a></li>
-<li><a href="https://app.codecov.io/gh/roaldarbol/trackballr" class="external-link"><img src="https://codecov.io/gh/roaldarbol/trackballr/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://github.com/roaldarbol/animovement/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/roaldarbol/animovement/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://roaldarbol.r-universe.dev" class="external-link"><img src="https://roaldarbol.r-universe.dev/badges/animovement" alt="animovement status badge"></a></li>
+<li><a href="https://app.codecov.io/gh/roaldarbol/animovement" class="external-link"><img src="https://codecov.io/gh/roaldarbol/animovement/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 
@@ -151,7 +210,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Mikkel Roald-Arbøl.</p>
+  <p>Developed by <a href="https://roald-arboel.com" class="external-link">Mikkel Roald-Arbøl</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
