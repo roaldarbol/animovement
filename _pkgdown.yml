@@ -12,12 +12,13 @@ template:
   bootstrap: 5
 
 articles:
-- title: Tutorial
+- title: "Tutorial"
+  navbar: ~
   contents:
-  - read-trackball-data
-  - clean-tracks
-  - calculate-kinematics
-  - calculate-movement-statistics
+  - articles/read-trackball
+  - articles/clean-tracks
+  - articles/calculate-kinematics
+  - articles/calculate-movement-statistics
 
 reference:
 - title: "Read"

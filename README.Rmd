@@ -46,7 +46,7 @@ library("animovement")
 Analysis of animal movement follows a similar workflow irrespective of the type of data (e.g. pose estimation, centroid tracking, trackball, treadmill). See our docs to go through the steps, one-by-one:
 
 - [Introduction to `animovement`](https://www.roald-arboel.com/animovement/articles/Introduction-to-animovement.html)
-- [Read trackball data](https://www.roald-arboel.com/animovement/articles/Read-trackball-data.html)
+- [Read trackball data](https://www.roald-arboel.com/animovement/articles/Read-trackball.html)
 - [Clean tracks](https://www.roald-arboel.com/animovement/articles/Clean-tracks.html)
 - [Compute kinematics](https://www.roald-arboel.com/animovement/articles/Compute-kinematics.html)
 - [Compute movement statistics](https://www.roald-arboel.com/animovement/articles/Compute-movement-statistics.html)
