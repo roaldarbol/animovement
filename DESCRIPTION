@@ -25,7 +25,8 @@ Suggests:
     tinytable,
     ggplot2,
     patchwork,
-    performance
+    performance,
+    see
 Config/testthat/edition: 3
 Imports: 
     cli,
