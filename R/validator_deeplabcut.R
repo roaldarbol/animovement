@@ -5,6 +5,8 @@
 #'
 #' @param path Path to the .csv file.
 #'
+#' @importFrom vroom vroom
+#'
 #' @export
 validate_deeplabcut_csv <- function(path){
   ensure_dlc_expected_header_levels(path)
@@ -18,7 +20,7 @@ ensure_dlc_expected_header_levels <- function(path){
   expected_levels = c("scorer", "bodyparts", "coords")
 
   # Read the first 4 lines of the file
-  f <- read.csv(path, header = TRUE, nrows = 4)
+  f <- vroom::vroom(path, nrows = 4)
   if (!expected_levels %in% names(f)){
       cli::cli_abort(".csv header rows do not match the known format for DeepLabCut pose estimation output files.")
   }

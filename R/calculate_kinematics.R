@@ -21,15 +21,15 @@ calculate_kinematics <- function(
                   dt = .data$time - lag(.data$time))
 
   # Find the sampling rate
-  sampling_rate <- round(1 / median(data$dt, na.rm = TRUE))
+  sampling_rate <- round(1 / stats::median(data$dt, na.rm = TRUE))
 
   # Calculate kinematics
   data <- data |>
     dplyr::mutate(distance = if_else(.data$dx^2 > 0 & .data$dy^2 > 0, sqrt(.data$dx^2 + .data$dy^2), 0),
                   v_translation = .data$distance * sampling_rate,
                   direction = if_else(.data$dx^2 > 0 & .data$dy^2 > 0, atan2(.data$dx, .data$dy), 0),
-                  direction = if_else(.data$dy == 0 | .data$dy == 0, NA, direction),
-                  rotation = direction - lag(direction),
+                  direction = if_else(.data$dy == 0 | .data$dy == 0, NA, .data$direction),
+                  rotation = .data$direction - lag(.data$direction),
                   v_rotation = .data$rotation * sampling_rate,
                   # We change the directions to stay within 2pi only here, otherwise rotation becomes harder to alculate
                   direction = if_else(.data$direction < 0, .data$direction + 2*pi, .data$direction), # Keep direction between 0 and 2*pi

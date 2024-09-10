@@ -4,7 +4,12 @@
 \alias{validate_time}
 \title{Title}
 \usage{
-validate_time()
+validate_time(col_time, sampling_rate)
+}
+\arguments{
+\item{col_time}{Column for time.}
+
+\item{sampling_rate}{Sampling rate.}
 }
 \description{
 Title

@@ -38,8 +38,8 @@ here::i_am("vignettes/articles/Read-trackball-data.Rmd")
 Our data lives in a funky place (because of the constraints of being in an R package), but giving file paths is easy.
 
 ```{r}
-filepath_1 <- here("inst", "extdata", "single", "opticalflow_sensor_1.csv")
-filepath_2 <- here("inst", "extdata", "single", "opticalflow_sensor_2.csv")
+filepath_1 <- here("tests", "data", "single", "opticalflow_sensor_1.csv")
+filepath_2 <- here("tests", "data", "single", "opticalflow_sensor_2.csv")
 filepaths <- c(filepath_1, filepath_2)
 
 # These might be something like: here("data", "trackball", "sensor_1", "trackballdata_100.csv") for you!

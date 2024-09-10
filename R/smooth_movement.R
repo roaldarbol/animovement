@@ -24,8 +24,8 @@ smooth_track <- function(
 
   # Back-transform to dx and dy
   data <- data |>
-    dplyr::mutate(dx = x - lag(.data$x),
-                  dy = y - lag(.data$y))
+    dplyr::mutate(dx = .data$x - lag(.data$x),
+                  dy = .data$y - lag(.data$y))
 
   # Filter the dx/dy values
   if (method == "rolling_mean"){

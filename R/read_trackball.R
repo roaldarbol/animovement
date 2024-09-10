@@ -64,8 +64,8 @@ read_trackball <- function(
   df <- df |>
     dplyr::mutate(keypoint = "centroid") |>
     .scale_values(c("x", "y", "dx", "dy"), distance_scale) |>
-    dplyr::mutate(time = time / sampling_rate) |>
-    dplyr::select(time, keypoint, x, y, dx, dy)
+    dplyr::mutate(time = .data$time / sampling_rate) |>
+    dplyr::select("time", "keypoint", "x", "y", "dx", "dy")
 
   return(df)
 }
@@ -102,10 +102,10 @@ read_opticalflow <- function(path, col_time, verbose = FALSE){
   # NEEDS TO GO INTO THE TIME VALIDATOR
   if (.is.POSIXt(data$time) == TRUE){
     data <- data |>
-      mutate(time = as.numeric(time))
+      mutate(time = as.numeric(.data$time))
   } else if (is.character(data$time)){
     data <- data |>
-      mutate(time = as.numeric(as.POSIXct(time)))
+      mutate(time = as.numeric(as.POSIXct(.data$time)))
   }
   return(data)
 }
@@ -118,24 +118,25 @@ join_trackball_files <- function(data_list, sampling_rate){
   ## Find shared time frame between both sensors
   highest_min_time <- max(c(min(data_list[[1]]$time), min(data_list[[2]]$time)))
   lowest_max_time <- min(c(max(data_list[[1]]$time), max(data_list[[2]]$time)))
-  data_list[[1]] <- filter(data_list[[1]], time > highest_min_time & time < lowest_max_time)
-  data_list[[2]] <- filter(data_list[[2]], time > highest_min_time & time < lowest_max_time)
+  data_list[[1]] <- filter(data_list[[1]], .data$time > highest_min_time & .data$time < lowest_max_time)
+  data_list[[2]] <- filter(data_list[[2]], .data$time > highest_min_time & .data$time < lowest_max_time)
 
   # We use the provided sampling rate to create shared a shared time frame
   data_list[[1]] <- data_list[[1]] |>
     dplyr::mutate(time = as.numeric(.data$time - highest_min_time)) |>
-    dplyr::filter(time > 0) |>
-    dplyr::mutate(time_group = floor(time * sampling_rate)) |>
-    dplyr::group_by(time_group) |>
-    dplyr::summarise(x = sum(dx),
-              y = sum(dy))
+    dplyr::filter(.data$time > 0) |>
+    dplyr::mutate(time_group = floor(.data$time * sampling_rate)) |>
+    dplyr::group_by(.data$time_group) |>
+    dplyr::summarise(
+      x = sum(.data$dx),
+      y = sum(.data$dy))
   data_list[[2]] <- data_list[[2]] |>
-    mutate(time = as.numeric(time - highest_min_time)) |>
-    filter(time > 0) |>
-    mutate(time_group = floor(time * sampling_rate)) |>
-    group_by(time_group) |>
-    summarise(x = sum(dx),
-              y = sum(dy))
+    mutate(time = as.numeric(.data$time - highest_min_time)) |>
+    filter(.data$time > 0) |>
+    mutate(time_group = floor(.data$time * sampling_rate)) |>
+    group_by(.data$time_group) |>
+    summarise(x = sum(.data$dx),
+              y = sum(.data$dy))
 
   # We then merge the two data frames
   df <- full_join(
@@ -143,10 +144,10 @@ join_trackball_files <- function(data_list, sampling_rate){
     by = "time_group",
     suffix = c("_1", "_2")
   ) |>
-    dplyr::mutate(x_1 = if_else(is.na(x_1), 0, x_1),
-                  x_2 = if_else(is.na(x_2), 0, x_2),
-                  y_1 = if_else(is.na(y_1), 0, y_1),
-                  y_2 = if_else(is.na(y_2), 0, y_2))
+    dplyr::mutate(x_1 = if_else(is.na(.data$x_1), 0, .data$x_1),
+                  x_2 = if_else(is.na(.data$x_2), 0, .data$x_2),
+                  y_1 = if_else(is.na(.data$y_1), 0, .data$y_1),
+                  y_2 = if_else(is.na(.data$y_2), 0, .data$y_2))
 
   # Some times do not have any sensor data, so we add those in with zeros
   min_t <- min(df$time_group)
@@ -161,7 +162,7 @@ join_trackball_files <- function(data_list, sampling_rate){
   )
 
   df <- dplyr::bind_rows(df, missing_times) |>
-    dplyr::arrange(time_group)
+    dplyr::arrange(.data$time_group)
   return(df)
 }
 
@@ -170,14 +171,14 @@ compute_xy_coordinates_free <- function(data){
   # Convert time back to seconds
   data <- data |>
     dplyr::rename(
-      time = time_group,
-      dx = y_1,
-      dy = y_2)
+      time = "time_group",
+      dx = "y_1",
+      dy = "y_2")
 
   data <- data |>
-    dplyr::mutate(x = cumsum(dx),
-                  y = cumsum(dy)) |>
-    dplyr::relocate(time, .before = 1)
+    dplyr::mutate(x = cumsum(.data$dx),
+                  y = cumsum(.data$dy)) |>
+    dplyr::relocate("time", .before = 1)
   return(data)
 }
 
@@ -185,14 +186,14 @@ compute_xy_coordinates_free <- function(data){
 compute_xy_coordinates_fixed <- function(data, n_sensors, ball_diameter, ball_calibration, distance_scale){
   if (n_sensors == 2){
     data <- data |>
-      dplyr::rename(time = time_group) |>
-      dplyr::mutate(sensor_dx = collapse::fmean(c(x_1, x_2)), # Takes the mean of the x reading on both sensors
-                    sensor_dy = y_1)
+      dplyr::rename(time = "time_group") |>
+      dplyr::mutate(sensor_dx = collapse::fmean(c(.data$x_1, .data$x_2)), # Takes the mean of the x reading on both sensors
+                    sensor_dy = .data$y_1)
   } else if (n_sensors == 1){
     data <- data |>
-      dplyr::rename(time = time_group,
-                    sensor_dx = x_1,
-                    sensor_dy = y_1)
+      dplyr::rename(time = "time_group",
+                    sensor_dx = .data$x_1,
+                    sensor_dy = .data$y_1)
   }
 
   # Compute the xy coordinates by calculating the angle turned and displacement in every bin
@@ -204,11 +205,11 @@ compute_xy_coordinates_fixed <- function(data, n_sensors, ball_diameter, ball_ca
       dplyr::mutate(d_angle = (.data$sensor_dx / (ball_diameter * pi * distance_scale)) * 2*pi) #in radians
   }
   data <- data |>
-    dplyr::mutate(dx = sensor_dy * cos(d_angle),
-                  dy = sensor_dy * sin(d_angle)) |>
-    dplyr::mutate(x = cumsum(dx),
-                  y = cumsum(dy)) |>
-    dplyr::relocate(time, .before = 1)
+    dplyr::mutate(dx = .data$sensor_dy * cos(.data$d_angle),
+                  dy = .data$sensor_dy * sin(.data$d_angle)) |>
+    dplyr::mutate(x = cumsum(.data$dx),
+                  y = cumsum(.data$dy)) |>
+    dplyr::relocate("time", .before = 1)
   return(data)
 }
 
