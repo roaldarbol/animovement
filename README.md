@@ -93,16 +93,17 @@ other packages already exist for this purpose.*
 If you enjoy the package, please make sure to [cite it](#citation). If
 you find a bug, feel free to open an issue.
 
-## Acknowledgements
+<!-- ## Acknowledgements -->
 
-*animovement* is all about the data, and we are deeply grateful for all
-those who have shared data with us to implement and test our code. Thank
-you!
+<!-- *animovement* is all about the data, and we are deeply grateful for all those who have shared data with us to implement and test our code. Thank you! -->
 
-- [Stan Edwards](): Trackball with optical flow, free.
-- [Estelle Moubarak](): Trackball with optical flow, fixed.
-- [Maria Cozan](): Treadmill with rotary encoder.
-- [Violette Chiara](): AnimalTA
+<!-- - [Stan Edwards](): Trackball with optical flow, free. -->
+
+<!-- - [Estelle Moubarak](): Trackball with optical flow, fixed. -->
+
+<!-- - [Maria Cozan](): Treadmill with rotary encoder. -->
+
+<!-- - [Violette Chiara](): AnimalTA -->
 
 ## Citation
 
