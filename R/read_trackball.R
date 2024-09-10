@@ -3,7 +3,7 @@
 #' @description
 #' Read trackball data from a variety of setups and configurations.
 #'
-#' @param filepaths Two file paths, one for each sensor (although one is allowed for a fixed setup, `of_fixed`).
+#' @param paths Two file paths, one for each sensor (although one is allowed for a fixed setup, `of_fixed`).
 #' @param setup Which type of experimental setup was used. Expects either `of_free`, `of_fixed` or `fictrac` (soon).
 #' @param sampling_rate Sampling rate tells the function how long time it should integrate over. A sampling rate of 60(Hz) will mean windows of 1/60 sec are used to integrate over.
 #' @param col_time Which column contains the information about time. Can be specified either by the column number (numeric) or the name of the column if it has one (character). Should either be a datetime (POSIXt) or seconds (numeric).
@@ -20,10 +20,10 @@
 #' @importFrom collapse fmean
 #' @importFrom cli cli_abort
 #'
-#' @return A list of data frames
+#' @return a movement dataframe
 #' @export
 read_trackball <- function(
-    filepaths,
+    paths,
     setup = c("of_free", "of_fixed", "fictrac"),
     sampling_rate,
     col_time = "time",
@@ -35,20 +35,20 @@ read_trackball <- function(
     distance_unit = NULL,
     verbose = FALSE
 ){
-  validate_files(filepaths, expected_suffix = "csv")
-  validate_trackball(filepaths, setup, col_time)
-  n_sensors <- length(filepaths)
+  validate_files(paths, expected_suffix = "csv")
+  validate_trackball(paths, setup, col_time)
+  n_sensors <- length(paths)
 
   # Read data
   if (n_sensors == 2){
     data_list <- list()
     for (i in 1:n_sensors){
-      data_list[[i]] <- read_opticalflow(filepaths[i], col_time) |>
+      data_list[[i]] <- read_opticalflow(paths[i], col_time) |>
         dplyr::mutate(sensor_n = i)
     }
     df <- join_trackball_files(data_list, sampling_rate)
   } else {
-    df <- read_opticalflow(filepaths[i], col_time)
+    df <- read_opticalflow(paths[i], col_time)
   }
 
   # Calculate coordinates (free/fixed)
@@ -71,7 +71,8 @@ read_trackball <- function(
 }
 
 #' Read optical flow sensor file
-#' @description Read optical flow sensor data
+#' @description Read optical flow sensor data.
+#' @param path Path to the file.
 #' @inheritParams read_trackball
 read_opticalflow <- function(path, col_time, verbose = FALSE){
   # Read file
@@ -111,6 +112,7 @@ read_opticalflow <- function(path, col_time, verbose = FALSE){
 
 #' Join data files with non-matching time stamps
 #' @description Join data files with non-matching time stamps
+#' @param data_list List of 2 dataframes
 #' @inheritParams read_trackball
 join_trackball_files <- function(data_list, sampling_rate){
   ## Find shared time frame between both sensors

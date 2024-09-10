@@ -4,7 +4,7 @@
 #' A short description...
 #'
 #'
-#' @param path
+#' @param path An AnimalTA data frame
 #'
 #' @export
 validate_animalta <- function(path){
