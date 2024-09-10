@@ -11,7 +11,11 @@ template:
   light-switch: true
   bootstrap: 5
 
-# articles:
+articles:
+- Read-trackball-data.Rmd
+- Clean-tracks.Rmd
+- Calculate-kinematics.Rmd
+- Calculate-movement-statistics.Rmd
 
 reference:
 - title: "Read"
@@ -39,5 +43,6 @@ reference:
 
 navbar:
   structure:
-    right: [github]
+    left:  [intro, reference, articles, tutorials, news]
+    right: [search, github, lightswitch]
 
