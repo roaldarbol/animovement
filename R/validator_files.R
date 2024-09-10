@@ -7,7 +7,7 @@
 #' - does not exist if it is meant to be written,
 #' - has one of the expected suffix(es).
 #'
-#' @param path Path to the file.
+#' @param path Path(s) to the file.
 #' @param expected_permission Expected access permission(s) for the file. If
 #'   "r", the file is expected to be readable. If "w", the file is expected to
 #'   be writable. If "rw", the file is expected to be both readable and
@@ -19,21 +19,21 @@
 #' @importFrom cli cli_abort
 #' @export
 validate_files <- function(
-    paths,
+    path,
     expected_permission = "r",
     expected_suffix = NULL,
     expected_headers = c("x", "y", "time")
     ){
   # Perform checks on all supplied paths
-  for (path in paths){
-    ensure_is_not_dir(path)
-    ensure_file_exists_when_expected(path, expected_permission)
-    ensure_file_has_access_permissions(path, expected_permission)
+  for (p in path){
+    ensure_is_not_dir(p)
+    ensure_file_exists_when_expected(p, expected_permission)
+    ensure_file_has_access_permissions(p, expected_permission)
     if (!is.null(expected_suffix)){
-      ensure_file_has_expected_suffix(path, expected_suffix)
+      ensure_file_has_expected_suffix(p, expected_suffix)
     }
-    ensure_file_has_headers(path)
-    ensure_file_has_expected_headers(path, expected_headers)
+    ensure_file_has_headers(p)
+    ensure_file_has_expected_headers(p, expected_headers)
   }
 }
 
