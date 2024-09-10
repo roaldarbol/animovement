@@ -4,6 +4,7 @@
 #' @param col_time Column for time.
 #' @param sampling_rate Sampling rate.
 #'
+#' @keywords internal
 #' @export
 validate_time <- function(col_time, sampling_rate){
   ## Check time assignment

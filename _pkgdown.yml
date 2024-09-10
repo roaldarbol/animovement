@@ -20,6 +20,7 @@ reference:
   - read_animalta
   - read_deeplabcut
   - read_idtracker
+  - read_movement
   - read_sleap
   - read_trackball
   - read_treadmill

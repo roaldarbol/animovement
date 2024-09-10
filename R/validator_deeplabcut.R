@@ -7,6 +7,7 @@
 #'
 #' @importFrom vroom vroom
 #'
+#' @keywords internal
 #' @export
 validate_deeplabcut_csv <- function(path){
   ensure_dlc_expected_header_levels(path)

@@ -17,6 +17,7 @@
 #'
 #' @importFrom vroom vroom
 #' @importFrom cli cli_abort
+#' @keywords internal
 #' @export
 validate_files <- function(
     path,
@@ -40,6 +41,7 @@ validate_files <- function(
 #' Ensure that the path does not point to a directory.
 #' @description Ensure that the path does not point to a directory.
 #' @inheritParams validate_files
+#' @keywords internal
 ensure_is_not_dir <- function(path){
   if (dir.exists(path)){
     cli::cli_abort("Expected a file path but got a directory: {path}")
@@ -49,6 +51,7 @@ ensure_is_not_dir <- function(path){
 #' Ensure that the file exists (or not) as needed.
 #' @description Ensure that the file exists (or not) as needed. This depends on the expected usage (read and/or write).
 #' @inheritParams validate_files
+#' @keywords internal
 ensure_file_exists_when_expected <- function(path, expected_permission){
   if (expected_permission %in% c("r", "rw") & file.access(path, mode = 0) == -1){
       cli::cli_abort("File {path} does not exist.")
@@ -60,6 +63,7 @@ ensure_file_exists_when_expected <- function(path, expected_permission){
 #' Ensure that the file has the expected access permission(s).
 #' @description Ensure that the file has the expected access permission(s).
 #' @inheritParams validate_files
+#' @keywords internal
 ensure_file_has_access_permissions <- function(path, expected_permission){
   if (expected_permission %in% c("r", "rw") & file.access(path, mode = 4) == -1){
       cli::cli_abort("Unable to read file: {path}. Make sure that you have read permissions.")
@@ -71,6 +75,7 @@ ensure_file_has_access_permissions <- function(path, expected_permission){
 #' Ensure that the file has one of the expected suffix(es).
 #' @description Ensure that the file has one of the expected suffix(es).
 #' @inheritParams validate_files
+#' @keywords internal
 ensure_file_has_expected_suffix <- function(path, expected_suffix){
   path_suffix <- .get_file_ext(path)
   if (!path_suffix %in% expected_suffix){
@@ -80,6 +85,7 @@ ensure_file_has_expected_suffix <- function(path, expected_suffix){
 
 #' Ensure file has headers
 #' @inheritParams validate_files
+#' @keywords internal
 #' @export
 ensure_file_has_headers <- function(path){
   df <- vroom::vroom(

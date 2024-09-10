@@ -11,6 +11,7 @@
 #' @param setup Experimental setup used. Expects either "of_free", "of_fixed" or "fictrac".
 #' @param col_time Column which contains time
 #'
+#' @keywords internal
 #' @export
 validate_trackball <- function(paths, setup, col_time){
   ensure_trackball_setup(setup)
@@ -25,6 +26,7 @@ validate_trackball <- function(paths, setup, col_time){
 #' Ensure that a valid setup is given
 #' @description Ensure that a valid setup is given
 #' @inheritParams validate_trackball
+#' @keywords internal
 ensure_trackball_setup <- function(setup){
   if (!setup %in% c("of_free", "of_fixed", "fictrac")){
     cli::cli_abort("Expected setup being either \"of_free\", \"of_fixed\" or \"fictrac\", but got {setup} instead.")
@@ -42,6 +44,7 @@ ensure_number_of_files <- function(paths, setup){
 }
 
 #' @inheritParams validate_trackball
+#' @keywords internal
 ensure_identical_suffix <- function(paths){
   ## Check file extension
   if (length(paths) == 2){
@@ -53,6 +56,7 @@ ensure_identical_suffix <- function(paths){
 }
 
 #' @inheritParams validate_trackball
+#' @keywords internal
 ensure_header_match <- function(path, col_time){
   if (!ensure_file_has_headers(path) & is.character(col_time)){
     cli::cli_abort("`col_time` is a string ({col_time}), but the file doesn't have named headers. Either use a column number or provide a file with named headers.")

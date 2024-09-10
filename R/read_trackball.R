@@ -74,6 +74,7 @@ read_trackball <- function(
 #' @description Read optical flow sensor data.
 #' @param path Path to the file.
 #' @inheritParams read_trackball
+#' @keywords internal
 read_opticalflow <- function(path, col_time, verbose = FALSE){
   # Read file
   if (ensure_file_has_expected_headers(path, c("x","y", "time"))){
@@ -114,6 +115,7 @@ read_opticalflow <- function(path, col_time, verbose = FALSE){
 #' @description Join data files with non-matching time stamps
 #' @param data_list List of 2 dataframes
 #' @inheritParams read_trackball
+#' @keywords internal
 join_trackball_files <- function(data_list, sampling_rate){
   ## Find shared time frame between both sensors
   highest_min_time <- max(c(min(data_list[[1]]$time), min(data_list[[2]]$time)))
@@ -167,6 +169,7 @@ join_trackball_files <- function(data_list, sampling_rate){
 }
 
 #' @inheritParams read_trackball
+#' @keywords internal
 compute_xy_coordinates_free <- function(data){
   # Convert time back to seconds
   data <- data |>
@@ -183,6 +186,7 @@ compute_xy_coordinates_free <- function(data){
 }
 
 #' @inheritParams read_trackball
+#' @keywords internal
 compute_xy_coordinates_fixed <- function(data, n_sensors, ball_diameter, ball_calibration, distance_scale){
   if (n_sensors == 2){
     data <- data |>
