@@ -1,7 +1,41 @@
-url: http://www.roald-arboel.com/trackballr/
+url: http://www.roald-arboel.com/animovement/
+
+home:
+  title: Analyse animal movement across space and time
+
+authors:
+  Mikkel Roald-Arbøl:
+    href: https://roald-arboel.com
+
 template:
   light-switch: true
   bootstrap: 5
+
+# articles:
+
+reference:
+- title: "Read"
+  desc: These functions are the link between R and your data.
+  contents:
+  - read_animalta
+  - read_deeplabcut
+  - read_idtracker
+  - read_sleap
+  - read_trackball
+  - read_treadmill
+  - read_trex
+
+- title: "Clean"
+  desc: These functions ensures that your data is ready for analysis.
+  contents:
+  - smooth_track
+
+- title: "Calculate"
+  desc: These functions is where your results begin to emerge.
+  contents:
+  - calculate_kinematics
+  - calculate_statistics
+
 navbar:
   structure:
     right: [github]
