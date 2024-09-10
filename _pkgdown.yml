@@ -14,14 +14,14 @@ template:
 articles:
 - title: Tutorial
   contents:
-  - "Read-trackball-data.Rmd"
-  - "Clean-tracks.Rmd"
-  - "Calculate-kinematics.Rmd"
-  - "Calculate-movement-statistics.Rmd"
+  - read-trackball-data
+  - clean-tracks
+  - calculate-kinematics
+  - calculate-movement-statistics
 
 reference:
 - title: "Read"
-  desc: These functions are the link between R and your data.
+  desc: These functions are the links between R and your data.
   contents:
   - read_animalta
   - read_deeplabcut
@@ -33,12 +33,12 @@ reference:
   - read_trex
 
 - title: "Clean"
-  desc: These functions ensures that your data is ready for analysis.
+  desc: These functions ensure that your data is ready for analysis.
   contents:
   - smooth_track
 
 - title: "Calculate"
-  desc: These functions is where your results begin to emerge.
+  desc: These functions are where your results begin to emerge.
   contents:
   - calculate_kinematics
   - calculate_statistics
