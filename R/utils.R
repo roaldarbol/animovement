@@ -11,6 +11,6 @@
   # Adjust distances for mouse sensor "dots-per-cm"
   if (!is.null(scaling_factor)){
     data <- data |>
-      dplyr::mutate(across(variables, ~ .x / scaling_factor))
+      dplyr::mutate(across(all_of(variables), ~ .x / scaling_factor))
   }
 }

@@ -1,6 +1,6 @@
 Package: animovement
 Type: Package
-Title: An R toolbox for analysing animal movement across space and time.
+Title: An R toolbox for analysing animal movement across space and time
 Version: 0.2.0
 Authors@R: 
     person(
@@ -31,7 +31,6 @@ Imports:
     collapse,
     dplyr,
     rlang,
-    tidyr,
     vroom,
     zoo
 Roxygen: list(markdown = TRUE)
