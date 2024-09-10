@@ -2,13 +2,14 @@
 # CITATION file created with {cffr} R package
 # See also: https://docs.ropensci.org/cffr/
 # --------------------------------------------
- 
+
 cff-version: 1.2.0
 message: 'To cite package "animovement" in publications use:'
 type: software
 license: MIT
 title: 'animovement: An R toolbox for analysing animal movement across space and time.'
 version: 0.2.0
+date-released: 2024-09-10
 abstract: An R toolbox for analysing animal movement across space and time.
 authors:
 - family-names: Roald-Arbøl
