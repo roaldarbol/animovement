@@ -2,12 +2,12 @@ pandoc: 3.1.11
 pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
-  articles/Calculate-kinematics: Calculate-kinematics.html
-  articles/Calculate-movement-statistics: Calculate-movement-statistics.html
-  articles/Clean-tracks: Clean-tracks.html
-  articles/Introduction-to-animovement: Introduction-to-animovement.html
-  articles/Read-trackball-data: Read-trackball-data.html
-last_built: 2024-09-10T16:01Z
+  animovement: animovement.html
+  articles/calculate-kinematics: calculate-kinematics.html
+  articles/calculate-movement-statistics: calculate-movement-statistics.html
+  articles/clean-tracks: clean-tracks.html
+  articles/read-trackball: read-trackball.html
+last_built: 2024-09-10T18:04Z
 urls:
   reference: http://www.roald-arboel.com/animovement/reference
   article: http://www.roald-arboel.com/animovement/articles
