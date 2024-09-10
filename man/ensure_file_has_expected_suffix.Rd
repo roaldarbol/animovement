@@ -14,3 +14,4 @@ ensure_file_has_expected_suffix(path, expected_suffix)
 \description{
 Ensure that the file has one of the expected suffix(es).
 }
+\keyword{internal}

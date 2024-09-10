@@ -12,3 +12,4 @@ validate_animalta(path)
 \description{
 A short description...
 }
+\keyword{internal}

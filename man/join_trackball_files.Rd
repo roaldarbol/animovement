@@ -14,3 +14,4 @@ join_trackball_files(data_list, sampling_rate)
 \description{
 Join data files with non-matching time stamps
 }
+\keyword{internal}

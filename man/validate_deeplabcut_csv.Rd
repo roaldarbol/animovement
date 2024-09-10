@@ -12,3 +12,4 @@ validate_deeplabcut_csv(path)
 \description{
 The validator ensures that the file contains the expected index column levels.
 }
+\keyword{internal}

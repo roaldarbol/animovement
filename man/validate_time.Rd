@@ -14,3 +14,4 @@ validate_time(col_time, sampling_rate)
 \description{
 Title
 }
+\keyword{internal}

@@ -17,3 +17,4 @@ writable. Default: "r".}
 \description{
 Ensure that the file exists (or not) as needed. This depends on the expected usage (read and/or write).
 }
+\keyword{internal}

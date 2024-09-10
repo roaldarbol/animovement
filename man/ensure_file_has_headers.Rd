@@ -12,3 +12,4 @@ ensure_file_has_headers(path)
 \description{
 Ensure file has headers
 }
+\keyword{internal}

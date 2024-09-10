@@ -32,3 +32,4 @@ The validator ensures that the file:
 \item has one of the expected suffix(es).
 }
 }
+\keyword{internal}

@@ -17,3 +17,4 @@ writable. Default: "r".}
 \description{
 Ensure that the file has the expected access permission(s).
 }
+\keyword{internal}

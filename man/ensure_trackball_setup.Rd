@@ -12,3 +12,4 @@ ensure_trackball_setup(setup)
 \description{
 Ensure that a valid setup is given
 }
+\keyword{internal}

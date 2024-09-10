@@ -16,3 +16,4 @@ read_opticalflow(path, col_time, verbose = FALSE)
 \description{
 Read optical flow sensor data.
 }
+\keyword{internal}

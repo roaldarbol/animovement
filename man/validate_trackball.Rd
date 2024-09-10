@@ -21,3 +21,4 @@ The validator ensures that:
 \item Identical suffixes when tewo files are given.
 }
 }
+\keyword{internal}

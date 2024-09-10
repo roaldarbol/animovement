@@ -12,3 +12,4 @@ ensure_is_not_dir(path)
 \description{
 Ensure that the path does not point to a directory.
 }
+\keyword{internal}
