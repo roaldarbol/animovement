@@ -14,3 +14,4 @@ ensure_file_has_expected_headers(path, expected_headers = c("x", "y", "time"))
 \description{
 Ensure file has expected headers
 }
+\keyword{internal}

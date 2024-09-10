@@ -101,6 +101,7 @@ ensure_file_has_headers <- function(path){
 
 #' Ensure file has expected headers
 #' @inheritParams validate_files
+#' @keywords internal
 #' @export
 ensure_file_has_expected_headers <- function(path, expected_headers = c("x", "y", "time")){
   df <- vroom::vroom(

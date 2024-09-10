@@ -12,3 +12,4 @@ ensure_dlc_expected_header_levels(path)
 \description{
 Ensure that the .csv file contains the expected index column levels.
 }
+\keyword{internal}

@@ -16,6 +16,7 @@ validate_deeplabcut_csv <- function(path){
 #' Ensure that the .csv file contains the expected index column levels.
 #' @description Ensure that the .csv file contains the expected index column levels.
 #' @inheritParams validate_deeplabcut_csv
+#' @keywords internal
 ensure_dlc_expected_header_levels <- function(path){
   # These are to be found among the top 4 rows of the file.
   expected_levels = c("scorer", "bodyparts", "coords")
