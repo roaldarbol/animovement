@@ -12,10 +12,13 @@ template:
   bootstrap: 5
 
 articles:
-- Read-trackball-data.Rmd
-- Clean-tracks.Rmd
-- Calculate-kinematics.Rmd
-- Calculate-movement-statistics.Rmd
+- title: Tutorial
+  navbar: ~
+  contents:
+  - Read-trackball-data.Rmd
+  - Clean-tracks.Rmd
+  - Calculate-kinematics.Rmd
+  - Calculate-movement-statistics.Rmd
 
 reference:
 - title: "Read"
