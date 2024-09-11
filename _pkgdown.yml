@@ -18,7 +18,7 @@ articles:
   - articles/read-trackball
   - articles/clean-tracks
   - articles/calculate-kinematics
-  - articles/calculate-movement-statistics
+  - articles/calculate-summary-statistics
 
 reference:
 - title: "Read"
