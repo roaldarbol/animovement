@@ -44,19 +44,19 @@ the type of data (e.g. pose estimation, centroid tracking, trackball,
 treadmill). See our docs to go through the steps, one-by-one:
 
 - [Introduction to
-  `animovement`](https://www.roald-arboel.com/animovement/articles/Introduction-to-animovement.html)
+  `animovement`](https://www.roald-arboel.com/animovement/articles/animovement.html)
 - [Read trackball
-  data](https://www.roald-arboel.com/animovement/articles/Read-trackball.html)
+  data](https://www.roald-arboel.com/animovement/articles/read-trackball.html)
 - [Clean
-  tracks](https://www.roald-arboel.com/animovement/articles/Clean-tracks.html)
+  tracks](https://www.roald-arboel.com/animovement/articles/clean-tracks.html)
 - [Compute
-  kinematics](https://www.roald-arboel.com/animovement/articles/Compute-kinematics.html)
+  kinematics](https://www.roald-arboel.com/animovement/articles/calculate-kinematics.html)
 - [Compute movement
-  statistics](https://www.roald-arboel.com/animovement/articles/Compute-movement-statistics.html)
+  statistics](https://www.roald-arboel.com/animovement/articles/calculate-summary-statistics.html)
 
 ## Status
 
-> \[!Warning\]
+> **Warning**
 >
 > 🏗️ The package is currently in early development and the interface is
 > subject to change. Feel free to play around and provide feedback.
