@@ -23,6 +23,7 @@ Imports:
     dplyr,
     lifecycle,
     rlang,
+    stringi,
     vroom,
     zoo
 Suggests: 

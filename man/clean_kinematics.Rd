@@ -7,7 +7,7 @@
 clean_kinematics(data)
 }
 \arguments{
-\item{data}{}
+\item{data}{tidy movement data frame with kinematics}
 }
 \value{
 a clean kinematics data frame

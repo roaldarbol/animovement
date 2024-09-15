@@ -3,7 +3,7 @@
 #' @description
 #' `r lifecycle::badge('experimental')`
 #'
-#' @param data
+#' @param data tidy movement data frame with kinematics
 #'
 #' @return a clean kinematics data frame
 #' @export

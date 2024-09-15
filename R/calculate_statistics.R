@@ -43,7 +43,7 @@ calculate_statistics <- function(
                        .by = .data$uid
       ) |>
       left_join(totals) |>
-      select(-c(last_x, last_y)) |>
+      select(-c(.data$last_x, .data$last_y)) |>
       suppressMessages()
 
   } else if (measures == "mean_sd"){
@@ -55,7 +55,7 @@ calculate_statistics <- function(
                        .by = .data$uid
       ) |>
       left_join(totals) |>
-      select(-c(last_x, last_y)) |>
+      select(-c(.data$last_x, .data$last_y)) |>
       suppressMessages()
   }
 
