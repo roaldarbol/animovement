@@ -32,10 +32,10 @@ In practice, our goal is to make it possible to derive meaningful insights from 
 
 ```{r eval=FALSE}
 library(animovement)
-movement_summary <- read_deeplabcut(path) |> 
-  clean_tracks() |> 
-  calculate_kinematics() |> 
-  clean_kinematics() |> 
+movement_summary <- read_deeplabcut(path) |>
+  clean_tracks() |>
+  calculate_kinematics() |>
+  clean_kinematics() |>
   calculate_statistics()
 ```
 

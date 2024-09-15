@@ -7,6 +7,6 @@
 #'
 #' @return a movement dataframe
 #' @export
-read_treadmill <- function(data){
+read_treadmill <- function(data) {
   cli::cli_abort("`read_treadmill` has not yet been implemented. Coming soon!")
 }

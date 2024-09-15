@@ -25,15 +25,15 @@ filepath_2 <- here("inst", "extdata", "multi", "GB_COM7_2021-08-05T15_37_55.csv"
 filepaths <- c(filepath_1, filepath_2)
 
 df <- read_trackball(
-  filepaths, 
+  filepaths,
   setup = "of_free",
   col_time = 4,
   sampling_rate = 60,
   distance_scale = 394
-  )
+)
 
 # Smooth tracks
-df_smooth <- df |> 
+df_smooth <- df |>
   smooth_track(method = "rolling_median", window_width = 5)
 ```
 
@@ -50,7 +50,7 @@ When we work with movement data, we are often interested in more than just where
 
 ```{r}
 # Augment all data in list
-df_kinematics <- df_smooth |> 
+df_kinematics <- df_smooth |>
   calculate_kinematics()
 glimpse(df_kinematics)
 ```
@@ -58,14 +58,14 @@ glimpse(df_kinematics)
 ### Clean kinematics
 
 ```{r}
-df_kinematics_clean <- df_kinematics |> 
+df_kinematics_clean <- df_kinematics |>
   clean_kinematics()
 ```
 
 Alternatively, you can perform your own data cleaning methods.
 
 ```{r}
- df_kinematics_alternative <- df_kinematics |> 
+df_kinematics_alternative <- df_kinematics |>
   filter(v_translation > 0.25 & v_rotation < 200)
 ```
 
@@ -77,56 +77,57 @@ Kinematics are much more prone to small values change. We assess these in two wa
 
 ```{r}
 library(patchwork)
-a <- df_kinematics_clean |> 
+a <- df_kinematics_clean |>
   ggplot(aes(x, y, colour = time)) +
   geom_path() +
   scale_colour_viridis_c()
-b <- df_kinematics_clean |> 
+b <- df_kinematics_clean |>
   ggplot(aes(time, direction)) +
   geom_line()
-c <- df_kinematics_clean |> 
+c <- df_kinematics_clean |>
   ggplot(aes(time, v_translation)) +
   geom_line()
-d <- df_kinematics_clean |> 
-  # filter(time < 20) |> 
-  # filter(v_translation > 0) |> 
+d <- df_kinematics_clean |>
+  # filter(time < 20) |>
+  # filter(v_translation > 0) |>
   ggplot(aes(time, v_rotation)) +
   geom_line()
-e <- df_kinematics_clean |> 
+e <- df_kinematics_clean |>
   ggplot(aes(abs(v_translation))) +
   geom_histogram()
-f <- df_kinematics_clean |> 
+f <- df_kinematics_clean |>
   ggplot(aes(abs(v_rotation))) +
   geom_histogram()
 (a + b) / (c + d) / (e + f)
 
 library(performance)
-df_kinematics_clean |> 
-  na.omit() |> 
+df_kinematics_clean |>
+  na.omit() |>
   select(rotation) |>
   performance::check_outliers()
 ```
 
 ```{r}
-pl_direction <- df_kinematics_clean |> 
-  # filter(time < 20) |> 
-  ggplot(aes(x = direction, y = v_translation)) + 
+pl_direction <- df_kinematics_clean |>
+  # filter(time < 20) |>
+  ggplot(aes(x = direction, y = v_translation)) +
   stat_density_2d(
-    geom = "tile", 
+    geom = "tile",
     aes(fill = after_stat(density)),
-    n=c(40, 10), 
+    n = c(40, 10),
     contour = F
-  ) + 
+  ) +
   scale_fill_viridis_c() +
-  # scale_fill_gradientn(colours=rev(rainbow(32)[1:23])) + 
-  coord_polar(direction = -1,
-              start = -pi/2
-              ) +
+  # scale_fill_gradientn(colours=rev(rainbow(32)[1:23])) +
+  coord_polar(
+    direction = -1,
+    start = -pi / 2
+  ) +
   # scale_x_continuous(limits = c(0,2*pi)) +
   theme_minimal()
 
 max_coord <- max(abs(c(df_kinematics_clean$x, df_kinematics_clean$y)), na.rm = TRUE)
-pl_path <- df_kinematics_clean |> 
+pl_path <- df_kinematics_clean |>
   ggplot(aes(x, y, colour = v_translation)) +
   geom_path() +
   coord_fixed() +

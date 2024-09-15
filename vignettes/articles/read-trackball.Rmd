@@ -60,12 +60,12 @@ Let's try to read our provided files:
 
 ```{r}
 df <- read_trackball(
-  filepaths, 
+  filepaths,
   setup = "of_free",
   col_time = 4,
   sampling_rate = 60,
   distance_scale = 394
-  )
+)
 ```
 
 # Working with multiple experiments
@@ -100,27 +100,27 @@ library(dplyr, warn.conflicts = FALSE)
 df <- tibble()
 
 # Then we loop through the rows in the metadata file
-for (i in 1:nrow(metadata_file)){
-  
+for (i in 1:nrow(metadata_file)) {
   # Like before, change the path to match your local file structure
   file_primary <- here("inst", "extdata", "multi", metadata_file$filename_a[i])
   file_secondary <- here("inst", "extdata", "multi", metadata_file$filename_b[i])
-  
+
   # Then we'll read all the file
   df_temp <- read_trackball(
-    c(file_primary, file_secondary), 
+    c(file_primary, file_secondary),
     setup = "of_free",
     col_time = 4,
     sampling_rate = 60,
     distance_scale = 394
-    )
-  
+  )
+
   # And we can add other metadata, such as the identity and date to distinguish between experiments
-  df_temp <- df_temp |> 
+  df_temp <- df_temp |>
     mutate(
-      id = metadata_file$identity[i], 
-      date = metadata_file$date[i])
-  
+      id = metadata_file$identity[i],
+      date = metadata_file$date[i]
+    )
+
   # Finally, we bind the data together
   df <- bind_rows(df, df_temp)
 }

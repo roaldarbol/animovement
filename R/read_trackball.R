@@ -36,16 +36,15 @@ read_trackball <- function(
     ball_diameter = NULL,
     distance_scale = NULL,
     distance_unit = NULL,
-    verbose = FALSE
-){
+    verbose = FALSE) {
   validate_files(paths, expected_suffix = "csv")
   validate_trackball(paths, setup, col_time)
   n_sensors <- length(paths)
 
   # Read data
-  if (n_sensors == 2){
+  if (n_sensors == 2) {
     data_list <- list()
-    for (i in 1:n_sensors){
+    for (i in 1:n_sensors) {
       data_list[[i]] <- read_opticalflow(paths[i], col_time) |>
         dplyr::mutate(sensor_n = i)
     }
@@ -55,10 +54,10 @@ read_trackball <- function(
   }
 
   # Calculate coordinates (free/fixed)
-  if (setup == "of_free"){
+  if (setup == "of_free") {
     df <- df |>
-        compute_xy_coordinates_free()
-  } else if (setup == "of_fixed"){
+      compute_xy_coordinates_free()
+  } else if (setup == "of_fixed") {
     df <- df |>
       compute_xy_coordinates_fixed(n_sensors, ball_diameter, ball_calibration, distance_scale)
   }
@@ -79,22 +78,24 @@ read_trackball <- function(
 #' @param path Path to the file.
 #' @inheritParams read_trackball
 #' @keywords internal
-read_opticalflow <- function(path, col_time, verbose = FALSE){
+read_opticalflow <- function(path, col_time, verbose = FALSE) {
   # Read file
-  if (ensure_file_has_expected_headers(path, c("x","y", "time"))){
+  if (ensure_file_has_expected_headers(path, c("x", "y", "time"))) {
     data <- vroom::vroom(
       path,
       delim = ",",
-      show_col_types = FALSE) |>
+      show_col_types = FALSE
+    ) |>
       suppressMessages()
   } else {
-  data <- vroom::vroom(
-    path,
-    skip = 2,
-    delim = ",",
-    show_col_types = TRUE,
-    .name_repair = "unique") |>
-    suppressMessages()
+    data <- vroom::vroom(
+      path,
+      skip = 2,
+      delim = ",",
+      show_col_types = TRUE,
+      .name_repair = "unique"
+    ) |>
+      suppressMessages()
   }
 
   # Change column names
@@ -105,10 +106,10 @@ read_opticalflow <- function(path, col_time, verbose = FALSE){
 
   # If time is a datetime stamp, convert it into seconds from start
   # NEEDS TO GO INTO THE TIME VALIDATOR
-  if (.is.POSIXt(data$time) == TRUE){
+  if (.is.POSIXt(data$time) == TRUE) {
     data <- data |>
       mutate(time = as.numeric(.data$time))
-  } else if (is.character(data$time)){
+  } else if (is.character(data$time)) {
     data <- data |>
       mutate(time = as.numeric(as.POSIXct(.data$time)))
   }
@@ -120,7 +121,7 @@ read_opticalflow <- function(path, col_time, verbose = FALSE){
 #' @param data_list List of 2 dataframes
 #' @inheritParams read_trackball
 #' @keywords internal
-join_trackball_files <- function(data_list, sampling_rate){
+join_trackball_files <- function(data_list, sampling_rate) {
   ## Find shared time frame between both sensors
   highest_min_time <- max(c(min(data_list[[1]]$time), min(data_list[[2]]$time)))
   lowest_max_time <- min(c(max(data_list[[1]]$time), max(data_list[[2]]$time)))
@@ -135,14 +136,17 @@ join_trackball_files <- function(data_list, sampling_rate){
     dplyr::group_by(.data$time_group) |>
     dplyr::summarise(
       x = sum(.data$dx),
-      y = sum(.data$dy))
+      y = sum(.data$dy)
+    )
   data_list[[2]] <- data_list[[2]] |>
     mutate(time = as.numeric(.data$time - highest_min_time)) |>
     filter(.data$time > 0) |>
     mutate(time_group = floor(.data$time * sampling_rate)) |>
     group_by(.data$time_group) |>
-    summarise(x = sum(.data$dx),
-              y = sum(.data$dy))
+    summarise(
+      x = sum(.data$dx),
+      y = sum(.data$dy)
+    )
 
   # We then merge the two data frames
   df <- full_join(
@@ -150,10 +154,12 @@ join_trackball_files <- function(data_list, sampling_rate){
     by = "time_group",
     suffix = c("_1", "_2")
   ) |>
-    dplyr::mutate(x_1 = if_else(is.na(.data$x_1), 0, .data$x_1),
-                  x_2 = if_else(is.na(.data$x_2), 0, .data$x_2),
-                  y_1 = if_else(is.na(.data$y_1), 0, .data$y_1),
-                  y_2 = if_else(is.na(.data$y_2), 0, .data$y_2))
+    dplyr::mutate(
+      x_1 = if_else(is.na(.data$x_1), 0, .data$x_1),
+      x_2 = if_else(is.na(.data$x_2), 0, .data$x_2),
+      y_1 = if_else(is.na(.data$y_1), 0, .data$y_1),
+      y_2 = if_else(is.na(.data$y_2), 0, .data$y_2)
+    )
 
   # Some times do not have any sensor data, so we add those in with zeros
   min_t <- min(df$time_group)
@@ -174,51 +180,60 @@ join_trackball_files <- function(data_list, sampling_rate){
 
 #' @inheritParams read_trackball
 #' @keywords internal
-compute_xy_coordinates_free <- function(data){
+compute_xy_coordinates_free <- function(data) {
   # Convert time back to seconds
   data <- data |>
     dplyr::rename(
       time = "time_group",
       dx = "y_1",
-      dy = "y_2")
+      dy = "y_2"
+    )
 
   data <- data |>
-    dplyr::mutate(x = cumsum(.data$dx),
-                  y = cumsum(.data$dy)) |>
+    dplyr::mutate(
+      x = cumsum(.data$dx),
+      y = cumsum(.data$dy)
+    ) |>
     dplyr::relocate("time", .before = 1)
   return(data)
 }
 
 #' @inheritParams read_trackball
 #' @keywords internal
-compute_xy_coordinates_fixed <- function(data, n_sensors, ball_diameter, ball_calibration, distance_scale){
-  if (n_sensors == 2){
+compute_xy_coordinates_fixed <- function(data, n_sensors, ball_diameter, ball_calibration, distance_scale) {
+  if (n_sensors == 2) {
     data <- data |>
       dplyr::rename(time = "time_group") |>
-      dplyr::mutate(sensor_dx = collapse::fmean(c(.data$x_1, .data$x_2)), # Takes the mean of the x reading on both sensors
-                    sensor_dy = .data$y_1)
-  } else if (n_sensors == 1){
+      dplyr::mutate(
+        sensor_dx = collapse::fmean(c(.data$x_1, .data$x_2)), # Takes the mean of the x reading on both sensors
+        sensor_dy = .data$y_1
+      )
+  } else if (n_sensors == 1) {
     data <- data |>
-      dplyr::rename(time = "time_group",
-                    sensor_dx = .data$x_1,
-                    sensor_dy = .data$y_1)
+      dplyr::rename(
+        time = "time_group",
+        sensor_dx = .data$x_1,
+        sensor_dy = .data$y_1
+      )
   }
 
   # Compute the xy coordinates by calculating the angle turned and displacement in every bin
-  if (!is.null(ball_calibration)){
+  if (!is.null(ball_calibration)) {
     data <- data |>
-      dplyr::mutate(d_angle = (.data$sensor_dx / ball_calibration) * 2*pi) #in radians
-  } else if (!is.null(distance_scale)){
+      dplyr::mutate(d_angle = (.data$sensor_dx / ball_calibration) * 2 * pi) # in radians
+  } else if (!is.null(distance_scale)) {
     data <- data |>
-      dplyr::mutate(d_angle = (.data$sensor_dx / (ball_diameter * pi * distance_scale)) * 2*pi) #in radians
+      dplyr::mutate(d_angle = (.data$sensor_dx / (ball_diameter * pi * distance_scale)) * 2 * pi) # in radians
   }
   data <- data |>
-    dplyr::mutate(dx = .data$sensor_dy * cos(.data$d_angle),
-                  dy = .data$sensor_dy * sin(.data$d_angle)) |>
-    dplyr::mutate(x = cumsum(.data$dx),
-                  y = cumsum(.data$dy)) |>
+    dplyr::mutate(
+      dx = .data$sensor_dy * cos(.data$d_angle),
+      dy = .data$sensor_dy * sin(.data$d_angle)
+    ) |>
+    dplyr::mutate(
+      x = cumsum(.data$dx),
+      y = cumsum(.data$dy)
+    ) |>
     dplyr::relocate("time", .before = 1)
   return(data)
 }
-
-
