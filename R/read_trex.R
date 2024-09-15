@@ -7,6 +7,6 @@
 #'
 #' @return a movement dataframe
 #' @export
-read_trex <- function(data){
+read_trex <- function(data) {
   cli::cli_abort("`read_trex` has not yet been implemented. Coming soon!")
 }

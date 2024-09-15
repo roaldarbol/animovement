@@ -24,12 +24,12 @@ filepath_2 <- here("inst", "extdata", "multi", "GB_COM7_2021-08-05T15_37_55.csv"
 filepaths <- c(filepath_1, filepath_2)
 
 df <- read_trackball(
-  filepaths, 
+  filepaths,
   setup = "of_free",
   col_time = 4,
   sampling_rate = 60,
   distance_scale = 394
-  )
+)
 ```
 
 The next step in our workflow is to clean the tracks. This step commonly covers three separate components:
@@ -47,22 +47,22 @@ We'll use the data we read in the [Read data](https://www.roald-arboel.com/animo
 
 ```{r}
 library(ggplot2)
-df <- df |> 
+df <- df |>
   mutate(displacement = sqrt(dx^2 + dy^2))
-full_trace <- df |> 
+full_trace <- df |>
   ggplot(aes(time, displacement)) +
   geom_line() +
   xlab("Time (s)") +
   ylab("dx, dy (dots)")
 
-partial_trace <- df |> 
-  filter(time < 20) |> 
+partial_trace <- df |>
+  filter(time < 20) |>
   ggplot(aes(time, displacement)) +
   geom_line() +
   xlab("Time (s)") +
   ylab("dx, dy (dots)")
 
-hist_dist <- df |> 
+hist_dist <- df |>
   ggplot(aes(displacement)) +
   geom_histogram()
 
@@ -73,8 +73,8 @@ full_trace / partial_trace / hist_dist
 Some animals spend a significant amount of time sitting still (as was the case here). To ensure that these zero-readings do not skew our outlier detection, let's filter them out and have another look at the histograms.
 
 ```{r}
-hist_dist2 <- df |> 
-  filter(displacement != 0) |> 
+hist_dist2 <- df |>
+  filter(displacement != 0) |>
   ggplot(aes(displacement)) +
   geom_histogram()
 
@@ -87,14 +87,16 @@ we may want to filter out all the `0` readings At first sight, it all looks fine
 
 ```{r}
 library(performance)
-df |> 
-  mutate(ax = dx - lag(dx),
-         ay = dy - lag(dy)) |>
-  na.omit() |> 
-  filter(time < 200) |> 
-  filter(dx != 0) |> 
-  select(ax, ay) |> 
-  check_outliers() |> 
+df |>
+  mutate(
+    ax = dx - lag(dx),
+    ay = dy - lag(dy)
+  ) |>
+  na.omit() |>
+  filter(time < 200) |>
+  filter(dx != 0) |>
+  select(ax, ay) |>
+  check_outliers() |>
   plot()
 ```
 
@@ -121,7 +123,7 @@ Let's try smoothing our data with a `rolling_mean` filter with 0.5 second (30 ob
 
 
 ```{r}
-df_smooth <- df |> 
+df_smooth <- df |>
   smooth_track(method = "rolling_median", window_width = 5)
 ```
 
@@ -130,8 +132,8 @@ Let's visualise how they compare. Note that although the difference may seem neg
 ```{r}
 library(ggplot2)
 ggplot() +
-  geom_path(data = df, aes(x,y), colour = "red") +
-  geom_path(data = df_smooth, aes(x,y), colour = "blue")
+  geom_path(data = df, aes(x, y), colour = "red") +
+  geom_path(data = df_smooth, aes(x, y), colour = "blue")
 ```
 
 Not that different as the sensors are doing a good job! But we can see that the smoothed track end a bit further to the left than the raw version. 

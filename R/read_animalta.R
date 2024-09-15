@@ -7,6 +7,6 @@
 #'
 #' @return a movement dataframe
 #' @export
-read_animalta <- function(path){
+read_animalta <- function(path) {
   cli::cli_abort("`read_animalta` has not yet been implemented. Coming soon!")
 }

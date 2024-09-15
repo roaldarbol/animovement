@@ -25,17 +25,17 @@ filepath_2 <- here("inst", "extdata", "multi", "GB_COM7_2021-08-05T15_37_55.csv"
 filepaths <- c(filepath_1, filepath_2)
 
 df <- read_trackball(
-  filepaths, 
+  filepaths,
   setup = "of_free",
   col_time = 4,
   sampling_rate = 60,
   distance_scale = 394
-  )
+)
 
 # Smooth tracks
-df_kinematics_clean <- df |> 
-  smooth_track(method = "rolling_median", window_width = 5) |> 
-  calculate_kinematics() |> 
+df_kinematics_clean <- df |>
+  smooth_track(method = "rolling_median", window_width = 5) |>
+  calculate_kinematics() |>
   clean_kinematics()
 ```
 
@@ -43,14 +43,15 @@ Voilá! We've arrived at the final step, and all that's left is to calculate sum
 
 ```{r}
 library(tinytable)
-df_kinematics_clean |> 
-  calculate_statistics(measures = "median_mad") |> 
-  select(-uid) |> 
-  mutate(across(everything(), as.numeric)) |> 
+df_kinematics_clean |>
+  calculate_statistics(measures = "median_mad") |>
+  select(-uid) |>
+  mutate(across(everything(), as.numeric)) |>
   tidyr::pivot_longer(everything(),
-                      names_to = "Measure",
-                      values_to = "Value") |> 
-  tt() |> 
+    names_to = "Measure",
+    values_to = "Value"
+  ) |>
+  tt() |>
   format_tt(digits = 2)
 ```
 

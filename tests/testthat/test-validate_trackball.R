@@ -77,4 +77,3 @@ test_that("Full correct test", {
     )
   )
 })
-

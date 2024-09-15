@@ -7,12 +7,12 @@
 #'
 #' @return a clean kinematics data frame
 #' @export
-clean_kinematics <- function(data){
+clean_kinematics <- function(data) {
   # Place validators here
 
   # Proceed to make the cleaning
   data <- data |>
-    dplyr::filter(.data$direction != atan2(1,0) & .data$direction != atan2(0,1)) |>
+    dplyr::filter(.data$direction != atan2(1, 0) & .data$direction != atan2(0, 1)) |>
     dplyr::filter(.data$v_translation > 0)
   return(data)
 }

@@ -33,8 +33,8 @@ test_that("Read file", {
 
 # Join trackball files
 data_list_correct <- list()
-for (i in 1:length(paths_multiple)){
-  data_list_correct[[i]] <- read_opticalflow(paths_multiple[i], col_time=4) |>
+for (i in 1:length(paths_multiple)) {
+  data_list_correct[[i]] <- read_opticalflow(paths_multiple[i], col_time = 4) |>
     dplyr::mutate(sensor_n = i)
 }
 test_that("Join files together", {
