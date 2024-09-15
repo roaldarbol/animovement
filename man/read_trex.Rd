@@ -13,5 +13,5 @@ read_trex(data)
 a movement dataframe
 }
 \description{
-Read TRex data
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }

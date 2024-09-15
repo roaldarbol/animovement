@@ -1,5 +1,8 @@
 #' Read TRex data
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' @param data A TRex data frame
 #'
 #' @return a movement dataframe

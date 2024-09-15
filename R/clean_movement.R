@@ -1,6 +1,8 @@
 #' Smooth tracks
 #'
 #' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' Filtering/smoothing tracks is standard practice to root out noise in movement data.
 #' Here we provide some filter functions to do this. The function expects the data to be in the standard format,
 #' containing at least x, y and time variables.

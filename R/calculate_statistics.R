@@ -1,42 +1,83 @@
 #' Calculate summary statistics
 #'
 #' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' Calculate summary statistics for tracks
 #'
 #' @param data A kinematics data frame
-#' @param threshold_velocity Choose which observations to use based on the velocity. A number, "auto" or "none". Can take a number (e.g. estimated from histograms) or "auto". "auto" fits a density function to the velocities and tries to identify a local minimum between the first and second local maxima, and uses that as the threshold. "none" keeps all observations.
-#'
+#' @param measures Measures of central tendency and dispersion. Options are `median_mad` (default) and `mean_sd`. See description for more information.
+#' @param straightness Which method to calculate path straightness. Choose between "A" (default), "B", "C"... or a combination (e.g. "c("A","B")"). See description for details about the different calculations.
 #' @return An data frame data frame with kinematics calculated
 #' @export
 #' @import dplyr
+#' @import circular
+#' @importFrom collapse fmean fmedian fsd
 #' @importFrom rlang :=
 #' @importFrom rlang .data
 #'
 calculate_statistics <- function(
     data,
-    threshold_velocity
+    measures = "median_mad",
+    straightness = c("A", "B", "C", "D")
 ) {
-  # Make some tests to ensure that `calculate_kinematics` has been run first
-
-  # Make sure to remove observations with almost no movement (figure out a robust method for this)
+  validate_statistics()
 
   # Calculate translational and rotational separately (maybe?) and gather at the end
-  data <- data |>
-    dplyr::summarise()
+  totals <- data |>
+    dplyr::summarise(across(c(.data$distance, .data$rotation), ~ collapse::fsum(abs(.x)), .names = "total_{.col}"),
+                     across(c(.data$x, .data$y), ~ dplyr::last(.x, na_rm = TRUE), .names = "last_{.col}"),
+                     .by = .data$uid)
 
-    # dplyr::mutate(distance = sqrt(.data$dx^2 + .data$dy^2),
-    #               v_translation = .data$distance * sampling_rate,
-    #               direction = atan2(.data$dx, .data$dy),
-    #               direction = if_else(.data$dy == 0 | .data$dy == 0, NA, direction),
-    #               direction = if_else(.data$direction < 0, .data$direction + 2*pi, .data$direction), # Keep direction between 0 and 2*pi
-    #               direction = zoo::na.locf(.data$direction, na.rm = FALSE),
-    #               rotation = direction - lag(direction),
-    #               # rotation = dplyr::if_else(abs(.data$dx) > 1 & abs(.data$dy) > 1,
-    #               #                           abs(dplyr::lag(.data$direction) - .data$direction),
-    #               #                           0),
-    #               # rotation = dplyr::if_else(.data$rotation > pi, 2*pi - .data$rotation, .data$rotation),
-    #               v_rotation = .data$rotation * sampling_rate,
-    # )
+  totals <- totals |>
+    calculate_straightness(straightness)
+    # dplyr::mutate("straightness_{{ A }} = calculate_straightness(.data$last_x, .data$last_y, .data$total_distance, method = straightness))
+
+
+  if (measures == "median_mad"){
+    data <- data |>
+      dplyr::summarise(across(c(.data$direction), ~ collapse::fmean(circular::circular(.x, modulo = "2pi")), .names = "median_{.col}"),
+                       across(c(.data$direction), ~ calculate_circular_mad(circular::circular(.x, modulo = "2pi")), .names = "mad_{.col}"),
+                       across(c(.data$v_translation, .data$a_translation, .data$v_rotation, .data$a_rotation), ~ collapse::fmedian(abs(.x)), .names = "median_{.col}"),
+                       across(c(.data$v_translation, .data$a_translation, .data$v_rotation, .data$a_rotation), ~ stats::mad(abs(.x), na.rm = TRUE), .names = "mad_{.col}"),
+                       .by = .data$uid
+      ) |>
+      left_join(totals) |>
+      select(-c(.data$last_x, .data$last_y)) |>
+      suppressMessages()
+
+  } else if (measures == "mean_sd"){
+    data <- data |>
+      dplyr::summarise(across(c(.data$direction), ~ collapse::fmean(circular::circular(.x)), .names = "mean_{.col}"),
+                       across(c(.data$direction), ~ circular::sd(circular::circular(.x)), .names = "sd_{.col}"),
+                       across(c(.data$v_translation, .data$a_translation, .data$v_rotation, .data$a_rotation), ~ collapse::fmean(abs(.x)), .names = "mean_{.col}"),
+                       across(c(.data$v_translation, .data$a_translation, .data$v_rotation, .data$a_rotation), ~ collapse::fsd(abs(.x)), .names = "sd_{.col}"),
+                       .by = .data$uid
+      ) |>
+      left_join(totals) |>
+      select(-c(.data$last_x, .data$last_y)) |>
+      suppressMessages()
+  }
 
   return(data)
+}
+
+#' Calculate circular Median Absolute Deviation (MAD)
+#' @param angles Vector of angles
+#' @importFrom circular circular
+#' @importFrom collapse fmedian
+#' @keywords internal
+calculate_circular_mad <- function(angles) {
+  ensure_circular(angles)
+  # Convert angles to circular object
+  angles_circular <- circular::circular(angles, units = "radians")
+
+  # Calculate circular median
+  circular_median <- collapse::fmedian(angles_circular)
+
+  # Compute absolute deviations from the circular median
+  abs_dev <- abs(angles_circular - circular_median)
+
+  # Calculate and return the median absolute deviation
+  collapse::fmedian(abs_dev)
 }

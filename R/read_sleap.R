@@ -1,5 +1,8 @@
 #' Read SLEAP data
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' @param data A SLEAP data frame
 #'
 #' @return a movement dataframe

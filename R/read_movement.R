@@ -1,5 +1,8 @@
 #' Read movement data
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' @param data A movement data frame
 #'
 #' @return a movement dataframe

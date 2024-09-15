@@ -1,0 +1,42 @@
+---
+title: "Mission & Scope"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Mission
+
+The primary goal of the *animovement* package is to offer a streamlined and standardised workflow for analysing animal movement data, with a syntax designed to integrate seamlessly into the *tidyverse* ecosystem.
+
+Animal movement, whether produced by humans or other animals, is crucial for navigating and interacting with the environment. Understanding these movements is of great interest to scientists in diverse fields such as ethology, behavioral ecology, biomechanics, and neuroscience. While there are numerous tools available for quantifying movement, the data they produce — whether from video tracking software or hardware like treadmills, trackballs, or accelerometers — often lack a standardised approach for analysis. This makes it difficult to easily process and compare movement data across different studies and platforms.
+
+The *animovement* package addresses this gap by establishing a standardised workflow for processing movement data, leveraging common data formats (in collaboration with movement) and offering a "recipe" for streamlined data analysis.
+
+## Scope
+
+At its core, *animovement* processes the trajectories of individual keypoints through time. The spatial position of an individual is represented by one (centroid) or more keypoints (pose), provided in 1D (x), 2D (x, y), or 3D (x, y, z) coordinates. These sequentially collected positions form tracks over time.
+
+In neuroscience and ethology, tracks are commonly generated from:
+
+1. Pose estimation tools like DeepLabCut or SLEAP, which track multiple keypoints for each individual.
+2. Centroid tracking software like TRex or idtracker.ai, which focuses on a single point (the centroid) per individual.
+3. Treadmills or trackballs, which record the movement of a belt or ball, serving as proxies for 1D (treadmill) and 2D (trackball) centroid tracking.
+Our vision is to provide an intuitive and accessible workflow using the familiar tidyverse syntax. animovement is designed to handle data from various sources, supporting 1D, 2D, and 3D tracking for single or multiple individuals.
+
+In practice, our goal is to make it possible to derive meaningful insights from movement data in fewer than 10 lines of code. For example:
+
+```{r eval=FALSE}
+library(animovement)
+movement_summary <- read_deeplabcut(path) |> 
+  clean_tracks() |> 
+  calculate_kinematics() |> 
+  clean_kinematics() |> 
+  calculate_statistics()
+```
+
+## Design Principles

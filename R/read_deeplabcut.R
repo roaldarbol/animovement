@@ -1,5 +1,8 @@
 #' Read DeepLabCut data
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' @param data A DeepLabCut data frame
 #'
 #' @return a movement dataframe

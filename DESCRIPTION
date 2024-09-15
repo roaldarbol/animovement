@@ -17,10 +17,13 @@ BugReports: https://github.com/roaldarbol/animovement/issues
 Encoding: UTF-8
 LazyData: true
 Imports: 
+    circular,
     cli,
     collapse,
     dplyr,
+    lifecycle,
     rlang,
+    stringi,
     vroom,
     zoo
 Suggests: 
@@ -35,7 +38,9 @@ Suggests:
     ggplot2,
     patchwork,
     performance,
-    see
+    see,
+    markdown,
+    tidyr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

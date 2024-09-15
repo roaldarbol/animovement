@@ -25,14 +25,16 @@ badge](https://roaldarbol.r-universe.dev/badges/animovement)](https://roaldarbol
 
 *An R toolbox for analysing animal movement across space and time*
 
-The primary aim of the *animovement* package is to provide a unified, standardised workflow for analysing animal movement data, in a *tidyverse*-friendly syntax. We work actively with the developers of the Python [`movement`](https://movement.neuroinformatics.dev/) package, to reach a similar data standards, workflow and use cases; if you prefer analysing your data in Python, we highly recommend using [`movement`](https://movement.neuroinformatics.dev/).
+The primary aim of the *animovement* package is to provide a unified, standardised workflow for analysing animal movement data in a *tidyverse*-friendly syntax. 
+
+*We work actively with the developers of the Python [`movement`](https://movement.neuroinformatics.dev/) package, to reach a similar data standards, workflow and use cases; if you prefer analysing your data in Python, we highly recommend using [`movement`](https://movement.neuroinformatics.dev/).*
 
 ## Installation
 
 You can install the development version of *animovement* with:
 
 Type | Source | Command
----|---|---
+---|---|-----------------------
 Development | R-universe | `install.packages("animovement", repos = "https://roaldarbol.r-universe.dev")`
 
 Once you have installed the package, you can load it with:
@@ -48,8 +50,8 @@ Analysis of animal movement follows a similar workflow irrespective of the type 
 - [Introduction to `animovement`](https://www.roald-arboel.com/animovement/articles/animovement.html)
 - [Read trackball data](https://www.roald-arboel.com/animovement/articles/read-trackball.html)
 - [Clean tracks](https://www.roald-arboel.com/animovement/articles/clean-tracks.html)
-- [Compute kinematics](https://www.roald-arboel.com/animovement/articles/calculate-kinematics.html)
-- [Compute movement statistics](https://www.roald-arboel.com/animovement/articles/calculate-summary-statistics.html)
+- [Calculate kinematics](https://www.roald-arboel.com/animovement/articles/calculate-kinematics.html)
+- [Calculate summary statistics](https://www.roald-arboel.com/animovement/articles/calculate-summary-statistics.html)
 
 ## Status
 > **Warning**
@@ -61,7 +63,7 @@ Analysis of animal movement follows a similar workflow irrespective of the type 
 
 We envision this package to support a unified workflow for *most* animal movement analysis. 
 
-To provide a one-stop solution, we aim to provide reader functions for a variety of data:
+To provide a one-stop solution, we aim to provide reader functions for a variety of data sources:
 
 - **Readers for pose estimation**
   - [DeepLabCut](https://deeplabcut.github.io/DeepLabCut/README.html)
@@ -77,9 +79,11 @@ To provide a one-stop solution, we aim to provide reader functions for a variety
   - Optical mouse sensors, fixed configuration
   - [FicTrac](https://github.com/rjdmoore/fictrac)
 
-**If your favourite type of movement data is not currently supported, we would love to get a sample of your data to support it!** *At this point in time, we explicitly plan not to support GPS tracking data, as many other packages already exist for this purpose.*
+At this point in time, we explicitly plan not to support GPS tracking data, as many other packages already exist for this purpose.
 
 ## Contribute
+
+**If your favourite type of movement data is not currently supported, we would love to get a sample of your data to support it!** 
 
 If you enjoy the package, please make sure to [cite it](#citation). If you find a bug, feel free to open an issue.
 

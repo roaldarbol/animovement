@@ -11,15 +11,6 @@ template:
   light-switch: true
   bootstrap: 5
 
-articles:
-- title: Tutorial
-  navbar: ~
-  contents:
-  - articles/read-trackball
-  - articles/clean-tracks
-  - articles/calculate-kinematics
-  - articles/calculate-summary-statistics
-
 reference:
 - title: "Read"
   desc: These functions are the links between R and your data.
@@ -37,6 +28,7 @@ reference:
   desc: These functions ensure that your data is ready for analysis.
   contents:
   - smooth_track
+  - clean_kinematics
 
 - title: "Calculate"
   desc: These functions are where your results begin to emerge.
@@ -46,7 +38,7 @@ reference:
 
 navbar:
   components:
-    articles:
+    tutorial:
       text: Tutorial
       menu:
       - text: Read trackball data
@@ -57,7 +49,14 @@ navbar:
         href: articles/calculate-kinematics.html
       - text: Calculate summary statistics
         href: articles/calculate-summary-statistics.html
+    articles:
+      text: Articles
+      menu:
+      - text: Mission & Scope
+        href: articles/mission.html
+      - text: Roadmaps
+      - text: How to contribute
   structure:
-    left:  [intro, articles, reference, news]
+    left:  [intro, tutorial, articles, reference, news]
     right: [search, github, lightswitch]
 

@@ -1,5 +1,8 @@
 #' Read treadmill data
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' @param data A treadmill data frame
 #'
 #' @return a movement dataframe

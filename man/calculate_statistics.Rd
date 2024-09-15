@@ -4,16 +4,24 @@
 \alias{calculate_statistics}
 \title{Calculate summary statistics}
 \usage{
-calculate_statistics(data, threshold_velocity)
+calculate_statistics(
+  data,
+  measures = "median_mad",
+  straightness = c("A", "B", "C", "D")
+)
 }
 \arguments{
 \item{data}{A kinematics data frame}
 
-\item{threshold_velocity}{Choose which observations to use based on the velocity. A number, "auto" or "none". Can take a number (e.g. estimated from histograms) or "auto". "auto" fits a density function to the velocities and tries to identify a local minimum between the first and second local maxima, and uses that as the threshold. "none" keeps all observations.}
+\item{measures}{Measures of central tendency and dispersion. Options are \code{median_mad} (default) and \code{mean_sd}. See description for more information.}
+
+\item{straightness}{Which method to calculate path straightness. Choose between "A" (default), "B", "C"... or a combination (e.g. "c("A","B")"). See description for details about the different calculations.}
 }
 \value{
 An data frame data frame with kinematics calculated
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Calculate summary statistics for tracks
 }

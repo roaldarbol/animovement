@@ -9,8 +9,49 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, include=FALSE}
 library(animovement)
+library(tibble)
+library(ggplot2)
+library(dplyr, warn.conflicts = FALSE)
+library(readxl)
+library(here)
+here::i_am("vignettes/articles/calculate-summary-statistics.Rmd")
 ```
 
-### Compute summary statistics
+```{r include=FALSE}
+filepath_1 <- here("inst", "extdata", "multi", "GB_COM6_2021-08-05T15_37_55.csv")
+filepath_2 <- here("inst", "extdata", "multi", "GB_COM7_2021-08-05T15_37_55.csv")
+filepaths <- c(filepath_1, filepath_2)
+
+df <- read_trackball(
+  filepaths, 
+  setup = "of_free",
+  col_time = 4,
+  sampling_rate = 60,
+  distance_scale = 394
+  )
+
+# Smooth tracks
+df_kinematics_clean <- df |> 
+  smooth_track(method = "rolling_median", window_width = 5) |> 
+  calculate_kinematics() |> 
+  clean_kinematics()
+```
+
+Voilá! We've arrived at the final step, and all that's left is to calculate summary statistics! We can decide whether which measures of central tendency and dispersion (e.g. mean and SD). As most movement data is highly skewed, we  recommend to use median and MAD (default setting).
+
+```{r}
+library(tinytable)
+df_kinematics_clean |> 
+  calculate_statistics(measures = "median_mad") |> 
+  select(-uid) |> 
+  mutate(across(everything(), as.numeric)) |> 
+  tidyr::pivot_longer(everything(),
+                      names_to = "Measure",
+                      values_to = "Value") |> 
+  tt() |> 
+  format_tt(digits = 2)
+```
+
+

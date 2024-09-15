@@ -1,5 +1,8 @@
 #' Read idtracker.ai data
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' @param data An idtracker.ai data frame
 #'
 #' @return a movement dataframe
