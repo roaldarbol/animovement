@@ -6,8 +6,10 @@ articles:
   articles/calculate-kinematics: calculate-kinematics.html
   articles/calculate-summary-statistics: calculate-summary-statistics.html
   articles/clean-tracks: clean-tracks.html
+  articles/mission: mission.html
   articles/read-trackball: read-trackball.html
-last_built: 2024-09-11T12:44Z
+  articles/roadmaps: roadmaps.html
+last_built: 2024-09-15T18:36Z
 urls:
   reference: http://www.roald-arboel.com/animovement/reference
   article: http://www.roald-arboel.com/animovement/articles

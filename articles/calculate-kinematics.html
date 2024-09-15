@@ -39,6 +39,14 @@
     <li><a class="dropdown-item" href="../articles/calculate-summary-statistics.html">Calculate summary statistics</a></li>
   </ul>
 </li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/mission.html">Mission &amp; Scope</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Roadmaps</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>How to contribute</h6></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
@@ -71,7 +79,7 @@
       <h1>Calculate kinematics</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/roaldarbol/animovement/blob/v0.2.0-beta/vignettes/articles/calculate-kinematics.Rmd" class="external-link"><code>vignettes/articles/calculate-kinematics.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/roaldarbol/animovement/blob/main/vignettes/articles/calculate-kinematics.Rmd" class="external-link"><code>vignettes/articles/calculate-kinematics.Rmd</code></a></small>
       <div class="d-none name"><code>calculate-kinematics.Rmd</code></div>
     </div>
 
@@ -113,105 +121,87 @@ observation.</li>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Augment all data in list</span></span>
 <span><span class="va">df_kinematics</span> <span class="op">&lt;-</span> <span class="va">df_smooth</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">date</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/calculate_kinematics.html">calculate_kinematics</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">df_kinematics</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 74,078</span></span>
-<span><span class="co">#&gt; Columns: 11</span></span>
-<span><span class="co">#&gt; Groups: id, date [2]</span></span>
+<span><span class="co">#&gt; Rows: 37,039</span></span>
+<span><span class="co">#&gt; Columns: 12</span></span>
+<span><span class="co">#&gt; $ uid           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2UL50GHAQRV61BE7E2DZ", "2UL50GHAQRV61BE7E2DZ", "2UL50GH…</span></span>
 <span><span class="co">#&gt; $ time          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.00000000, 0.01666667, 0.03333333, 0.05000000, 0.066666…</span></span>
 <span><span class="co">#&gt; $ keypoint      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "centroid", "centroid", "centroid", "centroid", "centroi…</span></span>
 <span><span class="co">#&gt; $ x             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, 0.002538071, 0.012690355, 0.025380711, 0.038…</span></span>
 <span><span class="co">#&gt; $ y             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, 0.005076142, 0.022842640, 0.060913706, 0.109…</span></span>
-<span><span class="co">#&gt; $ id            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "A100", "A100", "A100", "A100", "A100", "A100", "A100", …</span></span>
-<span><span class="co">#&gt; $ date          <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span> 2021-08-05, 2021-08-05, 2021-08-05, 2021-08-05, 2021-08…</span></span>
 <span><span class="co">#&gt; $ distance      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, 0.02046258, 0.04013043, 0.04986518, 0.05…</span></span>
 <span><span class="co">#&gt; $ v_translation <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, 1.2277550, 2.4078256, 2.9919111, 3.03424…</span></span>
-<span><span class="co">#&gt; $ direction     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, 0.5191461, 0.3217506, 0.2573237, 0.30587…</span></span>
-<span><span class="co">#&gt; $ rotation      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, NA, -1.973956e-01, -6.442684e-02, 4.8555…</span></span>
-<span><span class="co">#&gt; $ v_rotation    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, NA, -1.184373e+01, -3.865610e+00, 2.9133…</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="assess-kinematics-for-outliers">Assess kinematics for outliers<a class="anchor" aria-label="anchor" href="#assess-kinematics-for-outliers"></a>
-</h2>
+<span><span class="co">#&gt; $ a_translation <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, NA, 7.080424e+01, 3.504513e+01, 2.539884…</span></span>
+<span><span class="co">#&gt; $ direction     <span style="color: #949494; font-style: italic;">&lt;circular&gt;</span> NA, NA, NA, NA, 1.0516502, 1.2490458, 1.3134726, 1.…</span></span>
+<span><span class="co">#&gt; $ rotation      <span style="color: #949494; font-style: italic;">&lt;circular&gt;</span> NA, NA, NA, NA, NA, 1.973956e-01, 6.442684e-02, -4.…</span></span>
+<span><span class="co">#&gt; $ v_rotation    <span style="color: #949494; font-style: italic;">&lt;circular&gt;</span> NA, NA, NA, NA, NA, -1.184373e+01, -3.865610e+00, 2…</span></span>
+<span><span class="co">#&gt; $ a_rotation    <span style="color: #949494; font-style: italic;">&lt;circular&gt;</span> NA, NA, NA, NA, NA, NA, 478.6874, 406.7352, -174.79…</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="clean-kinematics">Clean kinematics<a class="anchor" aria-label="anchor" href="#clean-kinematics"></a>
+</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_kinematics_clean</span> <span class="op">&lt;-</span> <span class="va">df_kinematics</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/clean_kinematics.html">clean_kinematics</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Alternatively, you can perform your own data cleaning methods.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span> <span class="va">df_kinematics_alternative</span> <span class="op">&lt;-</span> <span class="va">df_kinematics</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">v_translation</span> <span class="op">&gt;</span> <span class="fl">0.25</span> <span class="op">&amp;</span> <span class="va">v_rotation</span> <span class="op">&lt;</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
+<p>Whatever way you choose is all up to you, but do make sure you do not
+just calculate summaries without knowing what’s in it.</p>
 <p>Kinematics are much more prone to small values change. We assess
 these in two ways:</p>
-<ul>
-<li><strong>Visual inspection</strong></li>
-<li><strong>Outlier detection</strong></li>
-</ul>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
-<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">df_kinematics</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, colour <span class="op">=</span> <span class="va">time</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_path</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_colour_viridis_c</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">df_kinematics</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">direction</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">c</span> <span class="op">&lt;-</span> <span class="va">df_kinematics</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">c</span> <span class="op">&lt;-</span> <span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">v_translation</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">df_kinematics</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">v_translation</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="co"># filter(time &lt; 20) |&gt; </span></span>
+<span>  <span class="co"># filter(v_translation &gt; 0) |&gt; </span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">v_rotation</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">e</span> <span class="op">&lt;-</span> <span class="va">df_kinematics</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">e</span> <span class="op">&lt;-</span> <span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">v_translation</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">f</span> <span class="op">&lt;-</span> <span class="va">df_kinematics</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">f</span> <span class="op">&lt;-</span> <span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">v_rotation</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">(</span><span class="va">a</span> <span class="op">+</span> <span class="va">b</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">c</span> <span class="op">+</span> <span class="va">d</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">e</span> <span class="op">+</span> <span class="va">f</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 5 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_path()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 8 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_line()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 12 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_line()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_line()`).</span></span>
 <span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></span>
-<span><span class="co">#&gt; Warning: Removed 12 rows containing non-finite outside the scale range</span></span>
-<span><span class="co">#&gt; (`stat_bin()`).</span></span>
 <span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></span>
-<span><span class="co">#&gt; Warning: Removed 56474 rows containing non-finite outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 66 rows containing non-finite outside the scale range</span></span>
 <span><span class="co">#&gt; (`stat_bin()`).</span></span></code></pre></div>
-<p><img src="calculate-kinematics_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p><img src="calculate-kinematics_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://easystats.github.io/performance/" class="external-link">performance</a></span><span class="op">)</span></span>
-<span><span class="va">df_kinematics</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">rotation</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">performance</span><span class="fu">::</span><span class="fu"><a href="https://easystats.github.io/performance/reference/check_outliers.html" class="external-link">check_outliers</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Adding missing grouping variables: `id`, `date`</span></span>
-<span><span class="co">#&gt; 222 outliers detected: cases 44, 58, 441, 502, 505, 509, 652, 701, 954,</span></span>
-<span><span class="co">#&gt;   1085, 1189, 1282, 1409, 2101, 2115, 2140, 2264, 2288, 2501, 2718, 2732,</span></span>
-<span><span class="co">#&gt;   2780, 2781, 2882, 2930, 2989, 3083, 3522, 3589, 3731, 3827, 3850, 3911,</span></span>
-<span><span class="co">#&gt;   4295, 4310, 4321, 4894, 4900, 4973, 4998, 5258, 5291, 5293, 5534, 5660,</span></span>
-<span><span class="co">#&gt;   5803, 5890, 6231, 6232, 6480, 6535, 6963, 6968, 6969, 7057, 7058, 7069,</span></span>
-<span><span class="co">#&gt;   7141, 7275, 7277, 7308, 7353, 7390, 7395, 7405, 7426, 7541, 7675, 7676,</span></span>
-<span><span class="co">#&gt;   7775, 7788, 7810, 7947, 8001, 8002, 8003, 8250, 8263, 8276, 8335, 8365,</span></span>
-<span><span class="co">#&gt;   8368, 8369, 8377, 8381, 8383, 8429, 8437, 8438, 8651, 8673, 8678, 8679,</span></span>
-<span><span class="co">#&gt;   8681, 8682, 8685, 8690, 8703, 8704, 8705, 8711, 8719, 8723, 8732, 8742,</span></span>
-<span><span class="co">#&gt;   8744, 8745, 8753, 8773, 8777, 8783, 8846, 8860, 9243, 9304, 9307, 9311,</span></span>
-<span><span class="co">#&gt;   9454, 9503, 9756, 9887, 9991, 10084, 10211, 10903, 10917, 10942, 11066,</span></span>
-<span><span class="co">#&gt;   11090, 11303, 11520, 11534, 11582, 11583, 11684, 11732, 11791, 11885,</span></span>
-<span><span class="co">#&gt;   12324, 12391, 12533, 12629, 12652, 12713, 13097, 13112, 13123, 13696,</span></span>
-<span><span class="co">#&gt;   13702, 13775, 13800, 14060, 14093, 14095, 14336, 14462, 14605, 14692,</span></span>
-<span><span class="co">#&gt;   15033, 15034, 15282, 15337, 15765, 15770, 15771, 15859, 15860, 15871,</span></span>
-<span><span class="co">#&gt;   15943, 16077, 16079, 16110, 16155, 16192, 16197, 16207, 16228, 16343,</span></span>
-<span><span class="co">#&gt;   16477, 16478, 16577, 16590, 16612, 16749, 16803, 16804, 16805, 17052,</span></span>
-<span><span class="co">#&gt;   17065, 17078, 17137, 17167, 17170, 17171, 17179, 17183, 17185, 17231,</span></span>
-<span><span class="co">#&gt;   17239, 17240, 17453, 17475, 17480, 17481, 17483, 17484, 17487, 17492,</span></span>
-<span><span class="co">#&gt;   17505, 17506, 17507, 17513, 17521, 17525, 17534, 17544, 17546, 17547,</span></span>
-<span><span class="co">#&gt;   17555, 17575, 17579, 17585.</span></span>
+<span><span class="co">#&gt; 90 outliers detected: cases 37, 327, 332, 380, 383, 388, 473, 474, 475,</span></span>
+<span><span class="co">#&gt;   523, 764, 807, 907, 1306, 1350, 1364, 1479, 1777, 1802, 1838, 1855,</span></span>
+<span><span class="co">#&gt;   1888, 1982, 1985, 1987, 2003, 2125, 2126, 2276, 2415, 2486, 2890, 3319,</span></span>
+<span><span class="co">#&gt;   3380, 3396, 3513, 3569, 3590, 3687, 4080, 4099, 4104, 4236, 4284, 4318,</span></span>
+<span><span class="co">#&gt;   4369, 4481, 4482, 4529, 4637, 4724, 4725, 4765, 4767, 4810, 4840, 4856,</span></span>
+<span><span class="co">#&gt;   4891, 4892, 4893, 4906, 4972, 5019, 5102, 5103, 5146, 5272, 5298, 5317,</span></span>
+<span><span class="co">#&gt;   5318, 5335, 5337, 5370, 5374, 5376, 5384, 5398, 5406, 5519, 5523, 5531,</span></span>
+<span><span class="co">#&gt;   5533, 5534, 5538, 5543, 5564, 5575, 5598, 5609, 5642.</span></span>
 <span><span class="co">#&gt; - Based on the following method and threshold: mahalanobis (10.828).</span></span>
 <span><span class="co">#&gt; - For variable: rotation.</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pl_direction</span> <span class="op">&lt;-</span> <span class="va">df_kinematics</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">v_translation</span> <span class="op">&gt;</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pl_direction</span> <span class="op">&lt;-</span> <span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="co"># filter(time &lt; 20) |&gt; </span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">direction</span>, y <span class="op">=</span> <span class="va">v_translation</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density_2d.html" class="external-link">stat_density_2d</a></span><span class="op">(</span></span>
 <span>    geom <span class="op">=</span> <span class="st">"tile"</span>, </span>
@@ -221,26 +211,26 @@ these in two ways:</p>
 <span>  <span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># scale_fill_gradientn(colours=rev(rainbow(32)[1:23])) + </span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_polar.html" class="external-link">coord_polar</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html" class="external-link">vars</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_polar.html" class="external-link">coord_polar</a></span><span class="op">(</span>direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span>
+<span>              start <span class="op">=</span> <span class="op">-</span><span class="va">pi</span><span class="op">/</span><span class="fl">2</span></span>
+<span>              <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># scale_x_continuous(limits = c(0,2*pi)) +</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">max_coord</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">df_kinematics</span><span class="op">$</span><span class="va">x</span>, <span class="va">df_kinematics</span><span class="op">$</span><span class="va">y</span><span class="op">)</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">pl_path</span> <span class="op">&lt;-</span> <span class="va">df_kinematics</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">max_coord</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">df_kinematics_clean</span><span class="op">$</span><span class="va">x</span>, <span class="va">df_kinematics_clean</span><span class="op">$</span><span class="va">y</span><span class="op">)</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">pl_path</span> <span class="op">&lt;-</span> <span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, colour <span class="op">=</span> <span class="va">v_translation</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_path</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">max_coord</span>, <span class="va">max_coord</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">max_coord</span>, <span class="va">max_coord</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_colour_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html" class="external-link">vars</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pl_path</span> <span class="op">+</span> <span class="va">pl_direction</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">"collect"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 5 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_path()`).</span></span></code></pre></div>
-<p><img src="calculate-kinematics_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">"collect"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="calculate-kinematics_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

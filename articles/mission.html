@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Introduction to animovement • animovement</title>
+<title>Mission &amp; Scope • animovement</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to animovement">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Mission &amp; Scope">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -29,7 +29,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="active nav-item"><a class="nav-link" href="../articles/animovement.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/animovement.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorial" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorial</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorial">
@@ -39,7 +39,7 @@
     <li><a class="dropdown-item" href="../articles/calculate-summary-statistics.html">Calculate summary statistics</a></li>
   </ul>
 </li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/mission.html">Mission &amp; Scope</a></li>
@@ -76,15 +76,18 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Introduction to animovement</h1>
+      <h1>Mission &amp; Scope</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/roaldarbol/animovement/blob/main/vignettes/animovement.Rmd" class="external-link"><code>vignettes/animovement.Rmd</code></a></small>
-      <div class="d-none name"><code>animovement.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/roaldarbol/animovement/blob/main/vignettes/articles/mission.Rmd" class="external-link"><code>vignettes/articles/mission.Rmd</code></a></small>
+      <div class="d-none name"><code>mission.Rmd</code></div>
     </div>
 
     
     
+<div class="section level2">
+<h2 id="mission">Mission<a class="anchor" aria-label="anchor" href="#mission"></a>
+</h2>
 <p>The primary goal of the <em>animovement</em> package is to offer a
 streamlined and standardised workflow for analysing animal movement
 data, with a syntax designed to integrate seamlessly into the
@@ -103,6 +106,10 @@ platforms.</p>
 standardised workflow for processing movement data, leveraging common
 data formats (in collaboration with movement) and offering a “recipe”
 for streamlined data analysis.</p>
+</div>
+<div class="section level2">
+<h2 id="scope">Scope<a class="anchor" aria-label="anchor" href="#scope"></a>
+</h2>
 <p>At its core, <em>animovement</em> processes the trajectories of
 individual keypoints through time. The spatial position of an individual
 is represented by one (centroid) or more keypoints (pose), provided in
@@ -131,86 +138,10 @@ example:</p>
 <span>  <span class="fu"><a href="../reference/calculate_kinematics.html">calculate_kinematics</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/clean_kinematics.html">clean_kinematics</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/calculate_statistics.html">calculate_statistics</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="section level2">
-<h2 id="data-structure">Data structure<a class="anchor" aria-label="anchor" href="#data-structure"></a>
-</h2>
-<p>A movement data frame contains information about the <em>spatial
-position</em> of <em>at least one keypoint</em> along <em>at least one
-axis</em> at a point in <em>time</em>.</p>
-<p>In practice, a movement data frame contains the following:</p>
-<table class="table">
-<colgroup>
-<col width="25%">
-<col width="25%">
-<col width="25%">
-<col width="25%">
-</colgroup>
-<thead><tr class="header">
-<th>Variable</th>
-<th>Conditional</th>
-<th>Use-case</th>
-<th>Description</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><code>time</code></td>
-<td>Required</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><code>keypoint</code></td>
-<td>Required</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><code>x</code></td>
-<td>Required</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><code>y</code></td>
-<td>Optional</td>
-<td>All except treadmills</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><code>z</code></td>
-<td>Optional</td>
-<td>3D tracking</td>
-<td></td>
-</tr>
-<tr class="even">
-<td><code>confidence</code></td>
-<td>Optional</td>
-<td></td>
-<td>In pose estimation, a <em>confidence</em> score is often given which
-can be leveraged to filter outlier observations.</td>
-</tr>
-</tbody>
-</table>
-<!-- # Data sources --><!-- We can divide the data sources into two different categories: --><!-- 1. Direct measurements, derives the position directly (from video) --><!-- 2. Indirect measurements, derives the position through a proxy measurement  --><!-- | Source | Type | Description | | | --><!-- | ---- | ---- | ---- | --><!-- | Treadmill | --><!-- | Trackball | Optical flow | `dx`,`dy` | Optical flow sensors | --><!-- | Trackball | Video tracking | `x`,`y` | Camera | --><!-- | Accelerometer | Accelerometer | `d2x`,`d2y` | Accelerometer | --><!-- | DeepLabCut | Pose estimation | 2D/3D | Single/multi | Camera | --><!-- | SLEAP | Pose estimation | 2D | Single/multi | Camera | --><!-- | Lightning Pose | Pose estimation | 2D | Single/multi | Camera | --><!-- | anipose | Pose estimation | 3D | Single | min. 2 cameras | --><!-- | TRex | Centroid tracking | 2D | Single/multi | Camera | --><!-- | idtracker.ai | centroid tracking | 2D | single/multi | camera | --><!-- | AnimalTA | centroid tracking | 2D | single/multi | camera | -->
 </div>
 <div class="section level2">
-<h2 id="getting-started-with-animovement">Getting started with <em>animovement</em><a class="anchor" aria-label="anchor" href="#getting-started-with-animovement"></a>
+<h2 id="design-principles">Design Principles<a class="anchor" aria-label="anchor" href="#design-principles"></a>
 </h2>
-<p>To get started, first install the package.</p>
-<p>Next, we have put together a tutorial that takes you through all the
-necessary steps, from reading your data to summarising the movements. We
-recommend going through the steps in the specified order which is the
-recommended workflow.</p>
-<ul>
-<li><a href="https://www.roald-arboel.com/animovement/articles/read-trackball.html" class="external-link">Read
-trackball data</a></li>
-<li><a href="https://www.roald-arboel.com/animovement/articles/clean-tracks.html" class="external-link">Clean
-tracks</a></li>
-<li><a href="https://www.roald-arboel.com/animovement/articles/calculate-kinematics.html" class="external-link">Compute
-kinematics</a></li>
-<li><a href="https://www.roald-arboel.com/animovement/articles/calculate-summary-statistics.html" class="external-link">Compute
-movement statistics</a></li>
-</ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

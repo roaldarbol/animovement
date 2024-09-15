@@ -39,6 +39,14 @@
     <li><a class="dropdown-item" href="../articles/calculate-summary-statistics.html">Calculate summary statistics</a></li>
   </ul>
 </li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/mission.html">Mission &amp; Scope</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Roadmaps</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>How to contribute</h6></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
@@ -71,18 +79,151 @@
       <h1>Calculate movement statistics</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/roaldarbol/animovement/blob/v0.2.0-beta/vignettes/articles/calculate-summary-statistics.Rmd" class="external-link"><code>vignettes/articles/calculate-summary-statistics.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/roaldarbol/animovement/blob/main/vignettes/articles/calculate-summary-statistics.Rmd" class="external-link"><code>vignettes/articles/calculate-summary-statistics.Rmd</code></a></small>
       <div class="d-none name"><code>calculate-summary-statistics.Rmd</code></div>
     </div>
 
     
     
+<p>Voilá! We’ve arrived at the final step, and all that’s left is to
+calculate summary statistics! We can decide whether which measures of
+central tendency and dispersion (e.g. mean and SD). As most movement
+data is highly skewed, we recommend to use median and MAD (default
+setting).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.roald-arboel.com/animovement/">animovement</a></span><span class="op">)</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="compute-summary-statistics">Compute summary statistics<a class="anchor" aria-label="anchor" href="#compute-summary-statistics"></a>
-</h3>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://vincentarelbundock.github.io/tinytable/" class="external-link">tinytable</a></span><span class="op">)</span></span>
+<span><span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/calculate_statistics.html">calculate_statistics</a></span><span class="op">(</span>measures <span class="op">=</span> <span class="st">"median_mad"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">uid</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">as.numeric</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>                      names_to <span class="op">=</span> <span class="st">"Measure"</span>,</span>
+<span>                      values_to <span class="op">=</span> <span class="st">"Value"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://vincentarelbundock.github.io/tinytable/man/tt.html" class="external-link">tt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://vincentarelbundock.github.io/tinytable/man/format_tt.html" class="external-link">format_tt</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<!-- preamble start -->
+
+    <script>
+      function styleCell_0rw6b1pd4bgcwwchv4aw(i, j, css_id) {
+        var table = document.getElementById("tinytable_0rw6b1pd4bgcwwchv4aw");
+        table.rows[i].cells[j].classList.add(css_id);
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_0rw6b1pd4bgcwwchv4aw');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_0rw6b1pd4bgcwwchv4aw(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_0rw6b1pd4bgcwwchv4aw");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+window.addEventListener('load', function () { styleCell_0rw6b1pd4bgcwwchv4aw(0, 0, 'tinytable_css_idrb2f7b16hpwp18wfmevj') })
+window.addEventListener('load', function () { styleCell_0rw6b1pd4bgcwwchv4aw(0, 1, 'tinytable_css_idrb2f7b16hpwp18wfmevj') })
+    </script><style>
+    .table td.tinytable_css_idrb2f7b16hpwp18wfmevj, .table th.tinytable_css_idrb2f7b16hpwp18wfmevj {  border-bottom: solid 0.1em #d3d8dc; }
+    </style>
+<div class="container">
+      <table class="table table table-borderless" id="tinytable_0rw6b1pd4bgcwwchv4aw" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+<thead><tr>
+<th scope="col">Measure</th>
+                <th scope="col">Value</th>
+              </tr></thead>
+<tbody>
+<tr>
+<td>median_direction</td>
+                  <td>  1.4441032342060967</td>
+                </tr>
+<tr>
+<td>mad_direction</td>
+                  <td>  0.2368487609469971</td>
+                </tr>
+<tr>
+<td>median_v_translation</td>
+                  <td>  1.1893781232345191</td>
+                </tr>
+<tr>
+<td>median_a_translation</td>
+                  <td>  7.2372389037648981</td>
+                </tr>
+<tr>
+<td>median_v_rotation</td>
+                  <td>  4.5526462275238302</td>
+                </tr>
+<tr>
+<td>median_a_rotation</td>
+                  <td>447.6779803675393055</td>
+                </tr>
+<tr>
+<td>mad_v_translation</td>
+                  <td>  0.7304126001892335</td>
+                </tr>
+<tr>
+<td>mad_a_translation</td>
+                  <td> 10.7299303986401622</td>
+                </tr>
+<tr>
+<td>mad_v_rotation</td>
+                  <td> -0.0000000000000087</td>
+                </tr>
+<tr>
+<td>mad_a_rotation</td>
+                  <td> -0.0000000000010257</td>
+                </tr>
+<tr>
+<td>total_distance</td>
+                  <td>119.5512360621872858</td>
+                </tr>
+<tr>
+<td>total_rotation</td>
+                  <td>760.4137339347830675</td>
+                </tr>
+<tr>
+<td>straightness_A</td>
+                  <td>  1.3814346341566919</td>
+                </tr>
+<tr>
+<td>straightness_B</td>
+                  <td>  0.7238851374321147</td>
+                </tr>
+<tr>
+<td>straightness_C</td>
+                  <td>  0.1572186702146553</td>
+                </tr>
+<tr>
+<td>straightness_D</td>
+                  <td>  6.3605677279592205</td>
+                </tr>
+</tbody>
+</table>
 </div>
+<!-- hack to avoid NA insertion in last line -->
   </main>
 </div>
 

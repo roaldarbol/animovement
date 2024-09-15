@@ -41,6 +41,14 @@
     <li><a class="dropdown-item" href="articles/calculate-summary-statistics.html">Calculate summary statistics</a></li>
   </ul>
 </li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/mission.html">Mission &amp; Scope</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Roadmaps</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>How to contribute</h6></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
@@ -70,7 +78,8 @@
 <!-- badges: start -->
 
 <p><em>An R toolbox for analysing animal movement across space and time</em></p>
-<p>The primary aim of the <em>animovement</em> package is to provide a unified, standardised workflow for analysing animal movement data, in a <em>tidyverse</em>-friendly syntax. We work actively with the developers of the Python <a href="https://movement.neuroinformatics.dev/" class="external-link"><code>movement</code></a> package, to reach a similar data standards, workflow and use cases; if you prefer analysing your data in Python, we highly recommend using <a href="https://movement.neuroinformatics.dev/" class="external-link"><code>movement</code></a>.</p>
+<p>The primary aim of the <em>animovement</em> package is to provide a unified, standardised workflow for analysing animal movement data in a <em>tidyverse</em>-friendly syntax.</p>
+<p><em>We work actively with the developers of the Python <a href="https://movement.neuroinformatics.dev/" class="external-link"><code>movement</code></a> package, to reach a similar data standards, workflow and use cases; if you prefer analysing your data in Python, we highly recommend using <a href="https://movement.neuroinformatics.dev/" class="external-link"><code>movement</code></a>.</em></p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -104,8 +113,8 @@
 <li><a href="https://www.roald-arboel.com/animovement/articles/animovement.html" class="external-link">Introduction to <code>animovement</code></a></li>
 <li><a href="https://www.roald-arboel.com/animovement/articles/read-trackball.html" class="external-link">Read trackball data</a></li>
 <li><a href="https://www.roald-arboel.com/animovement/articles/clean-tracks.html" class="external-link">Clean tracks</a></li>
-<li><a href="https://www.roald-arboel.com/animovement/articles/calculate-kinematics.html" class="external-link">Compute kinematics</a></li>
-<li><a href="https://www.roald-arboel.com/animovement/articles/calculate-summary-statistics.html" class="external-link">Compute movement statistics</a></li>
+<li><a href="https://www.roald-arboel.com/animovement/articles/calculate-kinematics.html" class="external-link">Calculate kinematics</a></li>
+<li><a href="https://www.roald-arboel.com/animovement/articles/calculate-summary-statistics.html" class="external-link">Calculate summary statistics</a></li>
 </ul>
 </div>
 <div class="section level2">
@@ -120,7 +129,7 @@
 <h2 id="roadmap">Roadmap<a class="anchor" aria-label="anchor" href="#roadmap"></a>
 </h2>
 <p>We envision this package to support a unified workflow for <em>most</em> animal movement analysis.</p>
-<p>To provide a one-stop solution, we aim to provide reader functions for a variety of data:</p>
+<p>To provide a one-stop solution, we aim to provide reader functions for a variety of data sources:</p>
 <ul>
 <li>
 <strong>Readers for pose estimation</strong>
@@ -148,11 +157,12 @@
 </ul>
 </li>
 </ul>
-<p><strong>If your favourite type of movement data is not currently supported, we would love to get a sample of your data to support it!</strong> <em>At this point in time, we explicitly plan not to support GPS tracking data, as many other packages already exist for this purpose.</em></p>
+<p>At this point in time, we explicitly plan not to support GPS tracking data, as many other packages already exist for this purpose.</p>
 </div>
 <div class="section level2">
 <h2 id="contribute">Contribute<a class="anchor" aria-label="anchor" href="#contribute"></a>
 </h2>
+<p><strong>If your favourite type of movement data is not currently supported, we would love to get a sample of your data to support it!</strong></p>
 <p>If you enjoy the package, please make sure to <a href="#citation">cite it</a>. If you find a bug, feel free to open an issue.</p>
 <!-- ## Acknowledgements -->
 <!-- *animovement* is all about the data, and we are deeply grateful for all those who have shared data with us to implement and test our code. Thank you! -->
