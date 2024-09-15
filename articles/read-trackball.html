@@ -161,12 +161,12 @@ computer mice.</li>
 <p>Let’s try to read our provided files:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_trackball.html">read_trackball</a></span><span class="op">(</span></span>
-<span>  <span class="va">filepaths</span>, </span>
+<span>  <span class="va">filepaths</span>,</span>
 <span>  setup <span class="op">=</span> <span class="st">"of_free"</span>,</span>
 <span>  col_time <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  sampling_rate <span class="op">=</span> <span class="fl">60</span>,</span>
 <span>  distance_scale <span class="op">=</span> <span class="fl">394</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="working-with-multiple-experiments">Working with multiple experiments<a class="anchor" aria-label="anchor" href="#working-with-multiple-experiments"></a>
@@ -222,27 +222,27 @@ we use the <em>here</em> package to make file management easier.</p>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Then we loop through the rows in the metadata file</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">metadata_file</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
-<span>  </span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">metadata_file</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Like before, change the path to match your local file structure</span></span>
 <span>  <span class="va">file_primary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"inst"</span>, <span class="st">"extdata"</span>, <span class="st">"multi"</span>, <span class="va">metadata_file</span><span class="op">$</span><span class="va">filename_a</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
 <span>  <span class="va">file_secondary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"inst"</span>, <span class="st">"extdata"</span>, <span class="st">"multi"</span>, <span class="va">metadata_file</span><span class="op">$</span><span class="va">filename_b</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="co"># Then we'll read all the file</span></span>
 <span>  <span class="va">df_temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_trackball.html">read_trackball</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">file_primary</span>, <span class="va">file_secondary</span><span class="op">)</span>, </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">file_primary</span>, <span class="va">file_secondary</span><span class="op">)</span>,</span>
 <span>    setup <span class="op">=</span> <span class="st">"of_free"</span>,</span>
 <span>    col_time <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>    sampling_rate <span class="op">=</span> <span class="fl">60</span>,</span>
 <span>    distance_scale <span class="op">=</span> <span class="fl">394</span></span>
-<span>    <span class="op">)</span></span>
-<span>  </span>
+<span>  <span class="op">)</span></span>
+<span></span>
 <span>  <span class="co"># And we can add other metadata, such as the identity and date to distinguish between experiments</span></span>
-<span>  <span class="va">df_temp</span> <span class="op">&lt;-</span> <span class="va">df_temp</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="va">df_temp</span> <span class="op">&lt;-</span> <span class="va">df_temp</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>      id <span class="op">=</span> <span class="va">metadata_file</span><span class="op">$</span><span class="va">identity</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, </span>
-<span>      date <span class="op">=</span> <span class="va">metadata_file</span><span class="op">$</span><span class="va">date</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
-<span>  </span>
+<span>      id <span class="op">=</span> <span class="va">metadata_file</span><span class="op">$</span><span class="va">identity</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>,</span>
+<span>      date <span class="op">=</span> <span class="va">metadata_file</span><span class="op">$</span><span class="va">date</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
+<span>    <span class="op">)</span></span>
+<span></span>
 <span>  <span class="co"># Finally, we bind the data together</span></span>
 <span>  <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">df</span>, <span class="va">df_temp</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
