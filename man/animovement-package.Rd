@@ -12,6 +12,8 @@ An R toolbox for analysing animal movement across space and time.
 Useful links:
 \itemize{
   \item \url{http://www.roald-arboel.com/animovement/}
+  \item \url{https://github.com/roaldarbol/animovement/}
+  \item Report bugs at \url{https://github.com/roaldarbol/animovement/issues}
 }
 
 }

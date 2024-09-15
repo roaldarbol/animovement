@@ -16,12 +16,14 @@ coverage](https://codecov.io/gh/roaldarbol/animovement/graph/badge.svg)](https:/
 *An R toolbox for analysing animal movement across space and time*
 
 The primary aim of the *animovement* package is to provide a unified,
-standardised workflow for analysing animal movement data, in a
-*tidyverse*-friendly syntax. We work actively with the developers of the
-Python [`movement`](https://movement.neuroinformatics.dev/) package, to
-reach a similar data standards, workflow and use cases; if you prefer
-analysing your data in Python, we highly recommend using
-[`movement`](https://movement.neuroinformatics.dev/).
+standardised workflow for analysing animal movement data in a
+*tidyverse*-friendly syntax.
+
+*We work actively with the developers of the Python
+[`movement`](https://movement.neuroinformatics.dev/) package, to reach a
+similar data standards, workflow and use cases; if you prefer analysing
+your data in Python, we highly recommend using
+[`movement`](https://movement.neuroinformatics.dev/).*
 
 ## Installation
 
@@ -49,9 +51,9 @@ treadmill). See our docs to go through the steps, one-by-one:
   data](https://www.roald-arboel.com/animovement/articles/read-trackball.html)
 - [Clean
   tracks](https://www.roald-arboel.com/animovement/articles/clean-tracks.html)
-- [Compute
+- [Calculate
   kinematics](https://www.roald-arboel.com/animovement/articles/calculate-kinematics.html)
-- [Compute movement
+- [Calculate summary
   statistics](https://www.roald-arboel.com/animovement/articles/calculate-summary-statistics.html)
 
 ## Status
@@ -67,7 +69,7 @@ We envision this package to support a unified workflow for *most* animal
 movement analysis.
 
 To provide a one-stop solution, we aim to provide reader functions for a
-variety of data:
+variety of data sources:
 
 - **Readers for pose estimation**
   - [DeepLabCut](https://deeplabcut.github.io/DeepLabCut/README.html)
@@ -83,12 +85,13 @@ variety of data:
   - Optical mouse sensors, fixed configuration
   - [FicTrac](https://github.com/rjdmoore/fictrac)
 
-**If your favourite type of movement data is not currently supported, we
-would love to get a sample of your data to support it!** *At this point
-in time, we explicitly plan not to support GPS tracking data, as many
-other packages already exist for this purpose.*
+At this point in time, we explicitly plan not to support GPS tracking
+data, as many other packages already exist for this purpose.
 
 ## Contribute
+
+**If your favourite type of movement data is not currently supported, we
+would love to get a sample of your data to support it!**
 
 If you enjoy the package, please make sure to [cite it](#citation). If
 you find a bug, feel free to open an issue.

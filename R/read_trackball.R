@@ -1,6 +1,8 @@
 #' Read trackball data
 #'
 #' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' Read trackball data from a variety of setups and configurations.
 #'
 #' @param paths Two file paths, one for each sensor (although one is allowed for a fixed setup, `of_fixed`).
@@ -19,6 +21,7 @@
 #' @importFrom vroom vroom
 #' @importFrom collapse fmean
 #' @importFrom cli cli_abort
+#' @importFrom stringi stri_rand_strings
 #'
 #' @return a movement dataframe
 #' @export
@@ -65,7 +68,8 @@ read_trackball <- function(
     dplyr::mutate(keypoint = "centroid") |>
     .scale_values(c("x", "y", "dx", "dy"), distance_scale) |>
     dplyr::mutate(time = .data$time / sampling_rate) |>
-    dplyr::select("time", "keypoint", "x", "y", "dx", "dy")
+    dplyr::mutate(uid = stringi::stri_rand_strings(1, 20, pattern = "[A-Z0-9]")) |>
+    dplyr::select("uid", "time", "keypoint", "x", "y", "dx", "dy")
 
   return(df)
 }
