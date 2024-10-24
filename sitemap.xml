@@ -1,5 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>http://www.roald-arboel.com/animovement/404.html</loc></url>
+<url><loc>http://www.roald-arboel.com/animovement/CONTRIBUTING.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/LICENSE-text.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/LICENSE.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/articles/animovement.html</loc></url>
@@ -37,6 +38,7 @@
 <url><loc>http://www.roald-arboel.com/animovement/reference/index.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/join_trackball_files.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/read_animalta.html</loc></url>
+<url><loc>http://www.roald-arboel.com/animovement/reference/read_bonsai.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/read_deeplabcut.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/read_idtracker.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/read_movement.html</loc></url>
