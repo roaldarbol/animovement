@@ -16,6 +16,7 @@ reference:
   desc: These functions are the links between R and your data.
   contents:
   - read_animalta
+  - read_bonsai
   - read_deeplabcut
   - read_idtracker
   - read_movement

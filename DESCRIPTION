@@ -1,7 +1,7 @@
 Package: animovement
 Type: Package
 Title: An R toolbox for analysing animal movement across space and time
-Version: 0.2.0.9000
+Version: 0.3.0
 Authors@R: 
     person(
       "Mikkel", 
@@ -24,6 +24,7 @@ Imports:
     lifecycle,
     rlang,
     stringi,
+    tidyselect,
     vroom,
     zoo
 Suggests: 

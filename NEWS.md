@@ -1,4 +1,6 @@
-# animovement (development version)
+# animovement 0.3.0
+
+Has added the ability to read centroid tracking from Bonsai files through `read_bonsai()`.
 
 # animovement 0.2.0
 
