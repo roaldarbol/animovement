@@ -24,6 +24,7 @@ Imports:
     lifecycle,
     rlang,
     stringi,
+    tidyselect,
     vroom,
     zoo
 Suggests: 

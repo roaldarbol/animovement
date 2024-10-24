@@ -3,10 +3,10 @@
 #' @description
 #' `r lifecycle::badge('experimental')`
 #'
-#' @param data A DeepLabCut data frame
+#' @param path Path to a DeepLabCut data file
 #'
 #' @return a movement dataframe
 #' @export
-read_deeplabcut <- function(data) {
+read_deeplabcut <- function(path) {
   cli::cli_abort("`read_deeplabcut` has not yet been implemented. Coming soon!")
 }

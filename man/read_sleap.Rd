@@ -4,10 +4,10 @@
 \alias{read_sleap}
 \title{Read SLEAP data}
 \usage{
-read_sleap(data)
+read_sleap(path)
 }
 \arguments{
-\item{data}{A SLEAP data frame}
+\item{path}{A SLEAP data frame}
 }
 \value{
 a movement dataframe

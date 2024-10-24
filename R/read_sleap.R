@@ -3,10 +3,10 @@
 #' @description
 #' `r lifecycle::badge('experimental')`
 #'
-#' @param data A SLEAP data frame
+#' @param path A SLEAP data frame
 #'
 #' @return a movement dataframe
 #' @export
-read_sleap <- function(data) {
+read_sleap <- function(path) {
   cli::cli_abort("`read_sleap` has not yet been implemented. Coming soon!")
 }
