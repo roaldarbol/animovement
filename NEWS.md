@@ -1,4 +1,4 @@
-# animovement (development version)
+# animovement 0.3.0
 
 # animovement 0.2.0
 
