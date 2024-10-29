@@ -37,6 +37,11 @@ reference:
   - calculate_kinematics
   - calculate_statistics
 
+- title: "Helpers"
+  desc: These functions help you along the way
+  contents:
+  - group_every
+
 navbar:
   components:
     tutorial:
