@@ -4,10 +4,12 @@
 \alias{read_deeplabcut}
 \title{Read DeepLabCut data}
 \usage{
-read_deeplabcut(path)
+read_deeplabcut(path, multianimal = FALSE)
 }
 \arguments{
 \item{path}{Path to a DeepLabCut data file}
+
+\item{multianimal}{Is it a multianimal project?}
 }
 \value{
 a movement dataframe

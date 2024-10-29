@@ -24,6 +24,7 @@ Imports:
     lifecycle,
     rlang,
     stringi,
+    tidyr,
     tidyselect,
     vroom,
     zoo
@@ -40,8 +41,7 @@ Suggests:
     patchwork,
     performance,
     see,
-    markdown,
-    tidyr
+    markdown
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
