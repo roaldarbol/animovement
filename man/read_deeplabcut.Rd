@@ -4,10 +4,12 @@
 \alias{read_deeplabcut}
 \title{Read DeepLabCut data}
 \usage{
-read_deeplabcut(path)
+read_deeplabcut(path, multianimal = NULL)
 }
 \arguments{
 \item{path}{Path to a DeepLabCut data file}
+
+\item{multianimal}{By default, whether a file is multi-animal is detected automatically. This gives an option to ensure it. logical TRUE/FALSE.}
 }
 \value{
 a movement dataframe

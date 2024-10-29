@@ -6,6 +6,7 @@
 #' single- or multi-animal dataset.
 #'
 #' @param path Path to a DeepLabCut data file
+#' @param multianimal By default, whether a file is multi-animal is detected automatically. This gives an option to ensure it. logical TRUE/FALSE.
 #'
 #' @import dplyr
 #' @import tidyr
@@ -13,20 +14,22 @@
 #'
 #' @return a movement dataframe
 #' @export
-read_deeplabcut <- function(path) {
+read_deeplabcut <- function(path, multianimal = NULL) {
   validate_files(path, expected_suffix = "csv")
 
-  # Check whether it's a multi-animal daata set
-  multianimal <- vroom::vroom(
-      path,
-      delim = ",",
-      show_col_types = FALSE,
-      skip = 3,
-      n_max = 1,
-      col_names = FALSE
-    ) |>
-    t() |>
-    is.character()
+  # Check whether it's a multi-animal data set
+  if (is.null(multianimal)){
+    multianimal <- vroom::vroom(
+        path,
+        delim = ",",
+        show_col_types = FALSE,
+        skip = 3,
+        n_max = 1,
+        col_names = FALSE
+      ) |>
+      t() |>
+      is.character()
+  }
 
   if (multianimal == FALSE){
     data <- read_deeplabcut_single(path)
