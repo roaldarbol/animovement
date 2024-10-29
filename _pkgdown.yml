@@ -19,6 +19,7 @@ reference:
   - read_bonsai
   - read_deeplabcut
   - read_idtracker
+  - read_lightningpose
   - read_movement
   - read_sleap
   - read_trackball
