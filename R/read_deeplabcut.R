@@ -22,7 +22,7 @@ read_deeplabcut <- function(path, multianimal = FALSE) {
   return(data)
 }
 
-
+#' Read single-animal DLC files
 #' @keywords internal
 read_deeplabcut_single <- function(path){
 
@@ -77,6 +77,7 @@ read_deeplabcut_single <- function(path){
   return(data)
 }
 
+#' Read multi-animal DLC files
 #' @keywords internal
 read_deeplabcut_multi <- function(path){
 
