@@ -4,16 +4,17 @@
 \alias{read_deeplabcut}
 \title{Read DeepLabCut data}
 \usage{
-read_deeplabcut(path, multianimal = FALSE)
+read_deeplabcut(path)
 }
 \arguments{
 \item{path}{Path to a DeepLabCut data file}
-
-\item{multianimal}{Is it a multianimal project?}
 }
 \value{
 a movement dataframe
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+Read csv files from DeepLabCut (DLC). The function recognises whether it is a
+single- or multi-animal dataset.
 }

@@ -1,10 +1,11 @@
 #' Read DeepLabCut data
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`
+#' @description `r lifecycle::badge('experimental')`
+#'
+#' Read csv files from DeepLabCut (DLC). The function recognises whether it is a
+#' single- or multi-animal dataset.
 #'
 #' @param path Path to a DeepLabCut data file
-#' @param multianimal Is it a multianimal project?
 #'
 #' @import dplyr
 #' @import tidyr
@@ -12,8 +13,21 @@
 #'
 #' @return a movement dataframe
 #' @export
-read_deeplabcut <- function(path, multianimal = FALSE) {
+read_deeplabcut <- function(path) {
   validate_files(path, expected_suffix = "csv")
+
+  # Check whether it's a multi-animal daata set
+  multianimal <- vroom::vroom(
+      path,
+      delim = ",",
+      show_col_types = FALSE,
+      skip = 3,
+      n_max = 1,
+      col_names = FALSE
+    ) |>
+    t() |>
+    is.character()
+
   if (multianimal == FALSE){
     data <- read_deeplabcut_single(path)
   } else if (multianimal == TRUE){
