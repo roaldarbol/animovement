@@ -48,7 +48,7 @@ read_deeplabcut_single <- function(path){
   new_headers <- rbind(header_2, header_3) |>
     t() |>
     as.data.frame() |>
-    dplyr::mutate(new_names = paste(V1, V2, sep = "_")) |>
+    dplyr::mutate(new_names = paste(.data$V1, .data$V2, sep = "_")) |>
     dplyr::select("new_names") |>
     as.data.frame() |>
     dplyr::pull()
@@ -66,7 +66,7 @@ read_deeplabcut_single <- function(path){
   # Wrangle
   data <- data |>
     dplyr::rename(time = 1) |>
-    tidyr::pivot_longer(cols = !time,
+    tidyr::pivot_longer(cols = !"time",
                  names_to = c("keypoint", "pos"),
                  names_pattern = "(.*)_(\\w+)",
                  values_to = "val") |>
@@ -112,7 +112,7 @@ read_deeplabcut_multi <- function(path){
   new_headers <- rbind(header_2, header_3, header_4) |>
     t() |>
     as.data.frame() |>
-    dplyr::mutate(new_names = paste(V1, V2, V3, sep = "_")) |>
+    dplyr::mutate(new_names = paste(.data$V1, .data$V2, .data$V3, sep = "_")) |>
     dplyr::select("new_names") |>
     as.data.frame() |>
     dplyr::pull()
@@ -130,7 +130,7 @@ read_deeplabcut_multi <- function(path){
   # Wrangle
   data <- data |>
     dplyr::rename(time = 1) |>
-    tidyr::pivot_longer(cols = !time,
+    tidyr::pivot_longer(cols = !"time",
                         names_to = c("individual", "keypoint", "pos"),
                         names_sep = "_",
                         values_to = "val") |>
