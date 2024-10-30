@@ -4,10 +4,10 @@
 \alias{read_idtracker}
 \title{Read idtracker.ai data}
 \usage{
-read_idtracker(data)
+read_idtracker(path)
 }
 \arguments{
-\item{data}{An idtracker.ai data frame}
+\item{path}{Path to an idtracker.ai data frame}
 }
 \value{
 a movement dataframe
