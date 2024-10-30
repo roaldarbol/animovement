@@ -7,7 +7,7 @@
 read_sleap(path)
 }
 \arguments{
-\item{path}{A SLEAP data frame}
+\item{path}{A SLEAP analysis data frame in HDF5 (.h5) format}
 }
 \value{
 a movement dataframe
