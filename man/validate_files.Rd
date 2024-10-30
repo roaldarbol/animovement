@@ -8,7 +8,7 @@ validate_files(
   path,
   expected_permission = "r",
   expected_suffix = NULL,
-  expected_headers = c("x", "y", "time")
+  expected_headers = NULL
 )
 }
 \arguments{

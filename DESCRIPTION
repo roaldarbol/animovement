@@ -22,6 +22,7 @@ Imports:
     cli,
     collapse,
     dplyr,
+    janitor,
     lifecycle,
     rhdf5,
     rlang,

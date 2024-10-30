@@ -13,7 +13,7 @@
 #' @return a movement dataframe
 #' @export
 read_sleap <- function(path) {
-  ensure_file_has_expected_suffix(path, c("h5", "csv"))
+  validate_files(path, expected_suffix = c("h5", "csv"))
 
   file_ext <- .get_file_ext(path)
   if (file_ext == "h5"){
