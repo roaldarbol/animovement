@@ -9,6 +9,8 @@ path_wrong <- here("tests", "data", "single", "opticalflow_sensor_12.csv")
 path_wrong_suffix <- here("tests", "data", "single", "opticalflow_sensor_12.txt")
 paths_multiple <- c(path_correct, path_correct2)
 
+path_sleap <- here::here("tests", "data", "sleap", "SLEAP_single-mouse_EPM.analysis.h5")
+
 # Directory
 test_that("Test whether file is not a directory", {
   expect_no_error(
@@ -59,11 +61,24 @@ test_that("Test whether files have the expected suffix", {
   expect_error(
     ensure_file_has_expected_suffix(path_wrong_suffix, expected_suffix = "csv")
   )
+  expect_error(
+    ensure_file_has_expected_suffix(path_sleap, expected_suffix = "csv")
+  )
 })
 
 # Headers present
+test_that("Test whether files have headers", {
+  expect_no_error(
+    ensure_file_has_headers(path_correct)
+  )
+})
 
 # Correct headers present
+test_that("Test whether files have headers", {
+  expect_no_error(
+    ensure_file_has_expected_headers(path_correct, expected_headers = c("time", "x", "y"))
+  )
+})
 
 # Full validation
 test_that("Test whether the full validation function works", {

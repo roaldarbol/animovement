@@ -23,7 +23,7 @@ validate_files <- function(
     path,
     expected_permission = "r",
     expected_suffix = NULL,
-    expected_headers = c("x", "y", "time")) {
+    expected_headers = NULL) {
   # Perform checks on all supplied paths
   for (p in path) {
     ensure_is_not_dir(p)
@@ -32,8 +32,12 @@ validate_files <- function(
     if (!is.null(expected_suffix)) {
       ensure_file_has_expected_suffix(p, expected_suffix)
     }
-    ensure_file_has_headers(p)
-    ensure_file_has_expected_headers(p, expected_headers)
+
+    # Check file headers
+    if (!is.null(expected_headers)){
+      ensure_file_has_headers(p)
+      ensure_file_has_expected_headers(p, expected_headers)
+    }
   }
 }
 

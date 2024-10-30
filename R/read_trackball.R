@@ -37,7 +37,7 @@ read_trackball <- function(
     distance_scale = NULL,
     distance_unit = NULL,
     verbose = FALSE) {
-  validate_files(paths, expected_suffix = "csv")
+  validate_files(paths, expected_suffix = "csv", expected_headers = c("x", "y", "time"))
   validate_trackball(paths, setup, col_time)
   n_sensors <- length(paths)
 
