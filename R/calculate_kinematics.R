@@ -7,7 +7,7 @@
 #'
 #' @param data Data frame
 #'
-#' @return An data frame data frame with kinematics calculated
+#' @return A data frame with kinematics calculated
 #' @export
 #' @import dplyr
 #' @importFrom rlang :=
