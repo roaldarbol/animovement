@@ -1,0 +1,22 @@
+{
+    "version": "6.0.0a0",
+    "video_paths": [
+        "/home/jordi/idtrackerai/test_B.avi"
+    ],
+    "frames_per_second": 28,
+    "body_length": 57.70181956601033,
+    "estimated_accuracy": 0.9981476581106112,
+    "identities_labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+    ],
+    "estimated_accuracy_after_interpolation": 1.0,
+    "fraction_identified": 0.9982775590551181,
+    "estimated_accuracy_identified": 1.0
+}
