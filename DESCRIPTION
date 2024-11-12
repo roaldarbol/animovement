@@ -18,6 +18,7 @@ Encoding: UTF-8
 LazyData: true
 biocViews:
 Imports: 
+    arrow,
     circular,
     cli,
     collapse,
