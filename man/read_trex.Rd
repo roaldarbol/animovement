@@ -4,10 +4,10 @@
 \alias{read_trex}
 \title{Read TRex data}
 \usage{
-read_trex(data)
+read_trex(path)
 }
 \arguments{
-\item{data}{A TRex data frame}
+\item{path}{Path to a TRex data frame in CSV format.}
 }
 \value{
 a movement dataframe

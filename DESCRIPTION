@@ -16,6 +16,7 @@ URL: http://www.roald-arboel.com/animovement/, https://github.com/roaldarbol/ani
 BugReports: https://github.com/roaldarbol/animovement/issues
 Encoding: UTF-8
 LazyData: true
+biocViews:
 Imports: 
     circular,
     cli,
@@ -23,6 +24,7 @@ Imports:
     dplyr,
     janitor,
     lifecycle,
+    rhdf5,
     rlang,
     stringi,
     tidyr,
