@@ -71,8 +71,8 @@ read_animalta_with_roi <- function(path){
                         names_sep = "_",
                         values_to = "val") |>
     tidyr::pivot_wider(id_cols = c("time", "individual", "arena"),
-                       names_from = .data$coordinate,
-                       values_from = .data$val) |>
+                       names_from = "coordinate",
+                       values_from = "val") |>
     tidyr::unite("individual", c("individual", "arena")) |>
     dplyr::mutate(individual = factor(.data$individual))
   return(data)
