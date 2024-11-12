@@ -10,7 +10,7 @@ calculate_kinematics(data)
 \item{data}{Data frame}
 }
 \value{
-An data frame data frame with kinematics calculated
+A data frame with kinematics calculated
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
