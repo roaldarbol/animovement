@@ -26,7 +26,7 @@ read_bonsai <- function(path) {
                   x = tidyselect::contains("X"),
                   y = tidyselect::contains("Y")) |>
     dplyr::mutate(keypoint = factor("centroid")) |>
-    dplyr::relocate("keypoint", .after = .data$time)
+    dplyr::relocate("keypoint", .after = "time")
 
   attributes(data)$spec <- NULL
   attributes(data)$problems <- NULL

@@ -5,7 +5,7 @@ path_correct <- here("tests", "data", "bonsai", "LI850.csv")
 
 # File headers
 test_that("File headers", {
-  expect_true(
+  expect_no_error(
     ensure_file_has_headers(path_correct)
   )
 })

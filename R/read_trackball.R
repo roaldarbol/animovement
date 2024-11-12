@@ -80,7 +80,7 @@ read_trackball <- function(
 #' @keywords internal
 read_opticalflow <- function(path, col_time, verbose = FALSE) {
   # Read file
-  if (ensure_file_has_expected_headers(path, c("x", "y", "time"))) {
+  if (does_file_have_expected_headers(path, c("x", "y", "time"))) {
     data <- vroom::vroom(
       path,
       delim = ",",
