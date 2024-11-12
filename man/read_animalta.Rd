@@ -4,10 +4,12 @@
 \alias{read_animalta}
 \title{Read AnimalTA data}
 \usage{
-read_animalta(path)
+read_animalta(path, with_roi = FALSE)
 }
 \arguments{
 \item{path}{An AnimalTA data frame}
+
+\item{with_roi}{Were one or more ROIs used?}
 }
 \value{
 a movement dataframe

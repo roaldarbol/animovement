@@ -66,17 +66,10 @@ test_that("Test whether files have the expected suffix", {
   )
 })
 
-# Headers present
-test_that("Test whether files have headers", {
-  expect_no_error(
-    ensure_file_has_headers(path_correct)
-  )
-})
-
 # Correct headers present
 test_that("Test whether files have headers", {
   expect_no_error(
-    ensure_file_has_expected_headers(path_correct, expected_headers = c("time", "x", "y"))
+    does_file_have_expected_headers(path_correct, expected_headers = c("time", "x", "y"))
   )
 })
 

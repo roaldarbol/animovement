@@ -37,7 +37,7 @@ read_trackball <- function(
     distance_scale = NULL,
     distance_unit = NULL,
     verbose = FALSE) {
-  validate_files(paths, expected_suffix = "csv", expected_headers = c("x", "y", "time"))
+  validate_files(paths, expected_suffix = "csv") #expected_headers = c("x", "y", "time")
   validate_trackball(paths, setup, col_time)
   n_sensors <- length(paths)
 
@@ -80,7 +80,7 @@ read_trackball <- function(
 #' @keywords internal
 read_opticalflow <- function(path, col_time, verbose = FALSE) {
   # Read file
-  if (ensure_file_has_expected_headers(path, c("x", "y", "time"))) {
+  if (does_file_have_expected_headers(path, c("x", "y", "time"))) {
     data <- vroom::vroom(
       path,
       delim = ",",

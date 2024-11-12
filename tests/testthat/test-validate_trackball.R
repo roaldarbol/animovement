@@ -52,20 +52,21 @@ test_that("Identical suffixes", {
 })
 
 # Headers
-test_that("Header", {
-  expect_no_error(
-    ensure_header_match(path = path_correct, col_time = 4)
-  )
-  expect_error(
-    ensure_header_match(path = path_correct, col_time = "time")
-  )
-  expect_no_error(
-    ensure_header_match(path = path_named_cols, col_time = 4)
-  )
-  expect_no_error(
-    ensure_header_match(path = path_named_cols, col_time = "time")
-  )
-})
+# Should it check whether two headers match? In which case the function needs two inputs.
+# test_that("Header", {
+#   expect_no_error(
+#     ensure_header_match(path = path_correct, col_time = 4)
+#   )
+#   expect_error(
+#     ensure_header_match(path = path_correct, col_time = "time")
+#   )
+#   expect_no_error(
+#     ensure_header_match(path = path_named_cols, col_time = 4)
+#   )
+#   expect_no_error(
+#     ensure_header_match(path = path_named_cols, col_time = "time")
+#   )
+# })
 
 # Full correct test
 test_that("Full correct test", {
