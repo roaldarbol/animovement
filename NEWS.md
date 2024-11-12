@@ -1,3 +1,7 @@
+# animovement 0.4.0
+
+Added readers for AnimalTA (`read_animalta`) and idtracker.ai (`read_idtracker`).
+
 # animovement 0.3.0
 
 Has added the ability to read centroid tracking from Bonsai files through `read_bonsai()`.

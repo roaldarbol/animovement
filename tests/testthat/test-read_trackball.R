@@ -12,10 +12,10 @@ paths_multiple_wrong <- c(path_correct, path_wrong_suffix)
 # File headers
 test_that("File headers", {
   expect_false(
-    ensure_file_has_headers(path_correct)
+    does_file_have_expected_headers(path_correct)
   )
   expect_true(
-    ensure_file_has_headers(path_named_cols)
+    does_file_have_expected_headers(path_named_cols, expected_headers = c("x", "y", "t"))
   )
 })
 
