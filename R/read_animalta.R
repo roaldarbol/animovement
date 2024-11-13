@@ -1,10 +1,10 @@
 #' Read AnimalTA data
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`
+#' @description `r lifecycle::badge('experimental')`
 #'
 #' @param path An AnimalTA data frame
-#' @param with_roi Were one or more ROIs used?
+#' @param detailed Animal export either raw (default) or detailed data files. We
+#'   only have limited support for detailed data.
 #'
 #' @import dplyr
 #' @import vroom
@@ -12,22 +12,22 @@
 #'
 #' @return a movement dataframe
 #' @export
-read_animalta <- function(path, with_roi = FALSE) {
+read_animalta <- function(path, detailed = FALSE) {
   # Inspect headers
-  if (with_roi == FALSE){
+  if (detailed == TRUE){
     validate_files(
       path,
       expected_suffix = "csv",
       expected_headers = c("X", "Y", "Time")
       )
-    data <- read_animalta_no_roi(path)
+    data <- read_animalta_detailed(path)
   } else {
     validate_files(
       path,
       expected_suffix = "csv",
       expected_headers = c("Time", "X_Arena0_Ind0", "Y_Arena0_Ind0")
     )
-    data <- read_animalta_with_roi(path)
+    data <- read_animalta_raw(path)
   }
   data <- data |>
     dplyr::mutate(keypoint = factor("centroid")) |>
@@ -37,7 +37,7 @@ read_animalta <- function(path, with_roi = FALSE) {
 
 #' @inheritParams read_animalta
 #' @keywords internal
-read_animalta_no_roi <- function(path){
+read_animalta_detailed <- function(path){
   data <- vroom::vroom(
     path,
     delim = ";",
@@ -57,7 +57,7 @@ read_animalta_no_roi <- function(path){
 #' @inheritParams read_animalta
 #' @import tidyr
 #' @keywords internal
-read_animalta_with_roi <- function(path){
+read_animalta_raw <- function(path){
   data <- vroom::vroom(
     path,
     delim = ";",
