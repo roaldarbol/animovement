@@ -1,3 +1,12 @@
+# animovement 0.5.0
+A big update! There are three major updates:
+- We finally stabilised on a **data format** and **implemented it for all readers**! 
+- We've introduced **metadata**. It's still experimental, but an important step in the right direction.
+- We added tests to ensure the output data frames from readers always contain the expected columns and column classes.
+- We also added tests to ensure metadata is present after reading a data frame.
+
+We are not nearly done with the work on metadata, but are exited to finally get it started.
+
 # animovement 0.4.0
 
 Added readers for AnimalTA (`read_animalta`) and idtracker.ai (`read_idtracker`).
