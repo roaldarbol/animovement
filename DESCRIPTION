@@ -31,8 +31,7 @@ Imports:
     stringi,
     tidyr,
     tidyselect,
-    vroom,
-    zoo
+    vroom
 Suggests: 
     knitr,
     rmarkdown,

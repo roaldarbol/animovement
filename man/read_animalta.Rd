@@ -15,5 +15,12 @@ read_animalta(path, with_roi = FALSE)
 a movement dataframe
 }
 \description{
-Read AnimalTA data
+Read a data frame from AnimalTA
+}
+\references{
+\itemize{
+\item Chiara, V., & Kim, S.-Y. (2023). AnimalTA: A highly flexible and easy-to-use
+program for tracking and analysing animal movement in different environments.
+\emph{Methods in Ecology and Evolution}, 14, 1699–1707. \doi{0.1111/2041-210X.14115}.
+}
 }

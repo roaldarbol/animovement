@@ -1,6 +1,7 @@
-#' Read AnimalTA data
+#' @title Read AnimalTA data
+#' @name read_animalta
 #'
-#' @description
+#' @description Read a data frame from AnimalTA
 #'
 #' @param path An AnimalTA data frame
 #' @param with_roi Were one or more ROIs used?
@@ -10,6 +11,12 @@
 #' @importFrom janitor clean_names
 #'
 #' @return a movement dataframe
+#'
+#' @references
+#' - Chiara, V., & Kim, S.-Y. (2023). AnimalTA: A highly flexible and easy-to-use
+#' program for tracking and analysing animal movement in different environments.
+#' *Methods in Ecology and Evolution*, 14, 1699–1707. \doi{0.1111/2041-210X.14115}.
+#'
 #' @export
 read_animalta <- function(path, with_roi = FALSE) {
   # Inspect headers

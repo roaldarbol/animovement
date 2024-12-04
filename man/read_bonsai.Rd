@@ -13,5 +13,5 @@ read_bonsai(path)
 a movement dataframe
 }
 \description{
-Read centroid tracking data from Bonsai
+Read a Bonsai data frame
 }
