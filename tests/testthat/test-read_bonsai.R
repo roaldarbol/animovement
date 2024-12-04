@@ -1,7 +1,6 @@
 # Test arguments
-library(here)
-here::i_am("tests/testthat/test-read_bonsai.R")
-path_correct <- here("tests", "data", "bonsai", "LI850.csv")
+
+path_correct <- here::here("tests", "data", "bonsai", "LI850.csv")
 
 # File headers
 test_that("File headers", {

@@ -1,8 +1,5 @@
 #' Read SLEAP data
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`
-#'
 #' @param path A SLEAP analysis data frame in HDF5 (.h5) format
 #'
 #' @import dplyr
@@ -21,6 +18,10 @@ read_sleap <- function(path) {
   } else if (file_ext == "csv"){
     cli::cli_abort("We hope to support SLEAP CSV import soon!")
   }
+
+  # Init metadata
+  data <- data |>
+    init_metadata()
 
   return(data)
 }
@@ -80,11 +81,9 @@ read_sleap_h5 <- function(path){
 
   data <- data |>
     dplyr::relocate("individual", .after = "time") |>
-    dplyr::arrange(.data$time, .data$individual)
+    dplyr::arrange(.data$time, .data$individual) |>
+    dplyr::mutate(keypoint = factor(.data$keypoint),
+                  individual = factor(.data$individual))
 
-  if (length(unique(data$individual)) < 2){
-    data <- data |>
-      dplyr::select(-"individual")
-  }
   return(data)
 }

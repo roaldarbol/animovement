@@ -1,5 +1,3 @@
-library(here)
-
 path_single <- here::here("tests", "data", "sleap", "SLEAP_single-mouse_EPM.analysis.h5")
 path_multi <- here::here("tests", "data", "sleap", "SLEAP_three-mice_Aeon_mixed-labels.analysis.h5")
 
@@ -27,3 +25,4 @@ test_that("Read multi-animal file", {
     c("time", "individual", "keypoint", "x", "y", "confidence")
   )
 })
+

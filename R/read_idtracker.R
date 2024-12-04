@@ -1,8 +1,5 @@
 #' Read idtracker.ai data
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`
-#'
 #' @param path Path to an idtracker.ai data frame
 #' @param path_probabilities Path to a csv file with probabilities. Only needed if you are reading csv files as they are included in h5 files.
 #' @param version idtracker.ai version. Currently only v6 output is implemented
@@ -27,6 +24,10 @@ read_idtracker <- function(path, path_probabilities = NULL, version = 6) {
   } else if(.get_file_ext(path) == "h5"){
     data <- read_idtracker_h5(path, version = version)
   }
+
+  # Init metadata
+  data <- data |>
+    init_metadata()
 
   return(data)
 }

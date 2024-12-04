@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 # animovement
 <!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![DOI](https://zenodo.org/badge/773406370.svg)](https://zenodo.org/doi/10.5281/zenodo.13235277)
 [![R-CMD-check](https://github.com/roaldarbol/animovement/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/animovement/actions/workflows/R-CMD-check.yaml)
 [![animovement status

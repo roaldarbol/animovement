@@ -1,5 +1,3 @@
-library(here)
-
 path_single <- here::here("tests", "data", "deeplabcut", "mouse_single.csv")
 path_multi <- here::here("tests", "data", "deeplabcut", "mouse_multi.csv")
 

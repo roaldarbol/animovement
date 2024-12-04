@@ -38,8 +38,16 @@ reference:
   - calculate_kinematics
   - calculate_statistics
 
+- title: "Metadata"
+  desc: These functions allow you to interact with your metadata.
+  contents:
+  - init_metadata
+  - get_metadata
+  - set_uuid
+  - set_start_datetime
+
 - title: "Helpers"
-  desc: These functions help you along the way
+  desc: These functions help you along the way.
   contents:
   - group_every
 

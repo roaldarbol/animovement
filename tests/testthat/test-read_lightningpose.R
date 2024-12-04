@@ -1,5 +1,3 @@
-library(here)
-
 path_single <- here::here("tests", "data", "lightningpose", "mouse_single.csv")
 path_twoview <- here::here("tests", "data", "lightningpose", "mouse_twoview.csv")
 
