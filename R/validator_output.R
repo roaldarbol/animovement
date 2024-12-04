@@ -21,7 +21,9 @@ ensure_output_header_class <- function(
 }
 
 ensure_output_no_nan <- function(data){
-
+  if (any(sapply(data, is.nan))){
+    cli::cli_warn("The data frame contains NaN's. It is suggested to convert them to NAs.")
+  }
 }
 
 check_metadata_exists <- function(data){

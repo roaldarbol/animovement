@@ -26,6 +26,10 @@
     all()
 }
 
+convert_nan_to_na <- function(data){
+  dplyr::mutate(data, across(everything(), function(x) ifelse(is.nan(x), NA, x)))
+}
+
 # For TRex files
 get_individual_from_path <- function(path){
   strsplit(tools::file_path_sans_ext(basename(path)), "_(?!.*_)", perl=TRUE)[[1]]

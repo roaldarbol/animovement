@@ -28,7 +28,8 @@ read_bonsai <- function(path) {
                   individual = factor(NA),
                   confidence = as.numeric(NA)) |>
     dplyr::relocate("keypoint", .after = "time") |>
-    dplyr::relocate("individual", .after = "time")
+    dplyr::relocate("individual", .after = "time") |>
+    convert_nan_to_na()
 
   attributes(data)$spec <- NULL
   attributes(data)$problems <- NULL

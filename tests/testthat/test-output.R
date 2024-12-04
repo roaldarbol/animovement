@@ -90,3 +90,23 @@ test_that("Test that metadata has been initiated", {
   expect_no_error(ensure_metadata_exists(df_trex))
   expect_no_error(ensure_metadata_exists(df_trackball))
 })
+
+# Test that there are no NaN's in data
+df_animalta_roi_NaN <- df_animalta_roi |>
+  mutate(x = NaN)
+test_that("Test that there aren't any NaNs created", {
+  expect_no_warning(ensure_output_no_nan(df_animalta_roi))
+  expect_no_warning(ensure_output_no_nan(df_animalta_no_roi))
+  expect_no_warning(ensure_output_no_nan(df_bonsai))
+  expect_no_warning(ensure_output_no_nan(df_dlc_single))
+  expect_no_warning(ensure_output_no_nan(df_dlc_multi))
+  expect_no_warning(ensure_output_no_nan(df_idtracker_h5))
+  expect_no_warning(ensure_output_no_nan(df_idtracker_csv))
+  expect_no_warning(ensure_output_no_nan(df_lightningpose_single))
+  expect_no_warning(ensure_output_no_nan(df_lightningpose_twoview))
+  expect_no_warning(ensure_output_no_nan(df_sleap_single))
+  expect_no_warning(ensure_output_no_nan(df_sleap_multi))
+  expect_no_warning(ensure_output_no_nan(df_trex))
+  expect_no_warning(ensure_output_no_nan(df_trackball))
+  expect_warning(ensure_output_no_nan(df_animalta_roi_NaN))
+})
