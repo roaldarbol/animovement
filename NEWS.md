@@ -7,6 +7,10 @@ A big update! There are three major updates:
 
 We are not nearly done with the work on metadata, but are exited to finally get it started.
 
+# animovement 0.4.1
+
+Changed parameter in `read_animalta()`.
+
 # animovement 0.4.0
 
 Added readers for AnimalTA (`read_animalta`) and idtracker.ai (`read_idtracker`).
