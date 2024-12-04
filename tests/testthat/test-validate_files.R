@@ -1,12 +1,10 @@
 # Test arguments
-library(here)
-here::i_am("tests/testthat/test-validate_files.R")
 
-path_directory <- here("tests", "data", "single")
-path_correct <- here("tests", "data", "single", "opticalflow_sensor_1.csv")
-path_correct2 <- here("tests", "data", "single", "opticalflow_sensor_2.csv")
-path_wrong <- here("tests", "data", "single", "opticalflow_sensor_12.csv")
-path_wrong_suffix <- here("tests", "data", "single", "opticalflow_sensor_12.txt")
+path_directory <- here::here("tests", "data", "single")
+path_correct <- here::here("tests", "data", "single", "opticalflow_sensor_1.csv")
+path_correct2 <- here::here("tests", "data", "single", "opticalflow_sensor_2.csv")
+path_wrong <- here::here("tests", "data", "single", "opticalflow_sensor_12.csv")
+path_wrong_suffix <- here::here("tests", "data", "single", "opticalflow_sensor_12.txt")
 paths_multiple <- c(path_correct, path_correct2)
 
 path_sleap <- here::here("tests", "data", "sleap", "SLEAP_single-mouse_EPM.analysis.h5")
@@ -82,3 +80,5 @@ test_that("Test whether the full validation function works", {
     validate_files(paths_multiple, expected_suffix = "csv")
   )
 })
+
+#

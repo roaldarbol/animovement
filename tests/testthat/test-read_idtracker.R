@@ -1,5 +1,3 @@
-library(here)
-
 path_csv <- here::here("tests", "data", "idtrackerai", "trajectories_csv", "trajectories.csv")
 path_probabilities <- here::here("tests", "data", "idtrackerai", "trajectories_csv", "id_probabilities.csv")
 path_h5 <- here::here("tests", "data", "idtrackerai", "trajectories.h5")

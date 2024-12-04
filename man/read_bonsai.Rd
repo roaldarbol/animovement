@@ -13,5 +13,5 @@ read_bonsai(path)
 a movement dataframe
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Read centroid tracking data from Bonsai
 }

@@ -16,3 +16,17 @@
       dplyr::mutate(across(all_of(variables), ~ .x / scaling_factor))
   }
 }
+
+.has_attributes <- function(data, attributes){
+  attributes %in% names(attributes(data))
+}
+
+.has_all_attributes <- function(data, attributes){
+  attributes %in% names(attributes(data)) |>
+    all()
+}
+
+# For TRex files
+get_individual_from_path <- function(path){
+  strsplit(tools::file_path_sans_ext(basename(path)), "_(?!.*_)", perl=TRUE)[[1]]
+}

@@ -44,13 +44,13 @@ Voilá! We've arrived at the final step, and all that's left is to calculate sum
 ```{r}
 library(tinytable)
 df_kinematics_clean |>
-  calculate_statistics(measures = "median_mad") |>
-  select(-uid) |>
-  mutate(across(everything(), as.numeric)) |>
-  tidyr::pivot_longer(everything(),
+  calculate_statistics(measures = "median_mad") |> 
+  mutate(across(where(is.numeric), as.numeric)) |>
+  tidyr::pivot_longer(where(is.numeric),
     names_to = "Measure",
     values_to = "Value"
-  ) |>
+  ) |> 
+  select(-c("individual", "keypoint")) |> 
   tt() |>
   format_tt(digits = 2)
 ```

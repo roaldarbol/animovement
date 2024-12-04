@@ -1,7 +1,6 @@
 #' Read centroid tracking data from Bonsai
 #'
 #' @description
-#' `r lifecycle::badge('experimental')`
 #'
 #' @param path Path to a Bonsai data file
 #' @import dplyr
@@ -25,11 +24,19 @@ read_bonsai <- function(path) {
     dplyr::rename(time = tidyselect::contains("Timestamp"),
                   x = tidyselect::contains("X"),
                   y = tidyselect::contains("Y")) |>
-    dplyr::mutate(keypoint = factor("centroid")) |>
-    dplyr::relocate("keypoint", .after = "time")
+    dplyr::mutate(keypoint = factor("centroid"),
+                  individual = factor(NA),
+                  confidence = as.numeric(NA)) |>
+    dplyr::relocate("keypoint", .after = "time") |>
+    dplyr::relocate("individual", .after = "time")
 
   attributes(data)$spec <- NULL
   attributes(data)$problems <- NULL
 
+  # Metadata
+  data <- data |>
+    init_metadata() |>
+    set_start_datetime(data$time[[1]]) |>
+    dplyr::mutate(time = as.numeric(.data$time - min(.data$time, na.rm = TRUE)))
   return(data)
 }

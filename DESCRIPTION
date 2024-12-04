@@ -18,6 +18,7 @@ Encoding: UTF-8
 LazyData: true
 biocViews:
 Imports: 
+    anytime,
     circular,
     cli,
     collapse,
@@ -26,6 +27,7 @@ Imports:
     lifecycle,
     rhdf5,
     rlang,
+    roll,
     stringi,
     tidyr,
     tidyselect,

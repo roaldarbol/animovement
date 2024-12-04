@@ -1,7 +1,5 @@
 #' Read DeepLabCut data
 #'
-#' @description `r lifecycle::badge('experimental')`
-#'
 #' Read csv files from DeepLabCut (DLC). The function recognises whether it is a
 #' single- or multi-animal dataset.
 #'
@@ -36,6 +34,11 @@ read_deeplabcut <- function(path, multianimal = NULL) {
   } else if (multianimal == TRUE){
     data <- read_deeplabcut_multi(path)
   }
+
+  # Init metadata
+  data <- data |>
+    init_metadata()
+
   return(data)
 }
 
@@ -90,7 +93,11 @@ read_deeplabcut_single <- function(path){
     tidyr::pivot_wider(id_cols = c("time", "keypoint"),
                 names_from = "pos",
                 values_from = "val") |>
-    dplyr::rename(confidence = "likelihood")
+    dplyr::rename(confidence = "likelihood") |>
+    dplyr::mutate(individual = factor(NA),
+                  keypoint = factor(.data$keypoint)) |>
+    dplyr::relocate("individual", .after = "time")
+
   return(data)
 }
 
@@ -154,6 +161,8 @@ read_deeplabcut_multi <- function(path){
     tidyr::pivot_wider(id_cols = c("time", "individual", "keypoint"),
                        names_from = "pos",
                        values_from = "val") |>
-    dplyr::rename(confidence = "likelihood")
+    dplyr::rename(confidence = "likelihood") |>
+    dplyr::mutate(individual = factor(.data$individual),
+                  keypoint = factor(.data$keypoint))
   return(data)
 }

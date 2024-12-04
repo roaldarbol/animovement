@@ -1,8 +1,5 @@
 #' Read trackball data
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`
-#'
 #' Read trackball data from a variety of setups and configurations.
 #'
 #' @param paths Two file paths, one for each sensor (although one is allowed for a fixed setup, `of_fixed`).
@@ -48,29 +45,35 @@ read_trackball <- function(
       data_list[[i]] <- read_opticalflow(paths[i], col_time) |>
         dplyr::mutate(sensor_n = i)
     }
-    df <- join_trackball_files(data_list, sampling_rate)
+    data <- join_trackball_files(data_list, sampling_rate)
   } else {
-    df <- read_opticalflow(paths[i], col_time)
+    data <- read_opticalflow(paths[i], col_time)
   }
 
   # Calculate coordinates (free/fixed)
   if (setup == "of_free") {
-    df <- df |>
+    data <- data |>
       compute_xy_coordinates_free()
   } else if (setup == "of_fixed") {
-    df <- df |>
+    data <- data |>
       compute_xy_coordinates_fixed(n_sensors, ball_diameter, ball_calibration, distance_scale)
   }
 
   # Scale distance and time and select output columns
-  df <- df |>
-    dplyr::mutate(keypoint = "centroid") |>
+  data <- data |>
+    dplyr::mutate(keypoint = factor("centroid")) |>
     .scale_values(c("x", "y", "dx", "dy"), distance_scale) |>
-    dplyr::mutate(time = .data$time / sampling_rate) |>
-    dplyr::mutate(uid = stringi::stri_rand_strings(1, 20, pattern = "[A-Z0-9]")) |>
-    dplyr::select("uid", "time", "keypoint", "x", "y", "dx", "dy")
+    dplyr::mutate(time = .data$time / sampling_rate,
+                  individual = factor(NA),
+                  confidence = as.numeric(NA)) |>
+    # dplyr::mutate(uid = stringi::stri_rand_strings(1, 20, pattern = "[A-Z0-9]")) |>
+    dplyr::select("time", "individual", "keypoint", "x", "y", "confidence", "dx", "dy")
 
-  return(df)
+  # Init metadata
+  data <- data |>
+    init_metadata()
+
+  return(data)
 }
 
 #' Read optical flow sensor file
@@ -149,7 +152,7 @@ join_trackball_files <- function(data_list, sampling_rate) {
     )
 
   # We then merge the two data frames
-  df <- full_join(
+  data <- full_join(
     data_list[[1]], data_list[[2]],
     by = "time_group",
     suffix = c("_1", "_2")
@@ -162,20 +165,20 @@ join_trackball_files <- function(data_list, sampling_rate) {
     )
 
   # Some times do not have any sensor data, so we add those in with zeros
-  min_t <- min(df$time_group)
-  max_t <- max(df$time_group)
+  min_t <- min(data$time_group)
+  max_t <- max(data$time_group)
   full_t_seq <- seq(from = min_t, to = max_t, by = 1)
   missing_times <- tibble(
-    time_group = setdiff(full_t_seq, df$time_group),
+    time_group = setdiff(full_t_seq, data$time_group),
     x_1 = 0,
     x_2 = 0,
     y_1 = 0,
     y_2 = 0
   )
 
-  df <- dplyr::bind_rows(df, missing_times) |>
+  data <- dplyr::bind_rows(data, missing_times) |>
     dplyr::arrange(.data$time_group)
-  return(df)
+  return(data)
 }
 
 #' @inheritParams read_trackball

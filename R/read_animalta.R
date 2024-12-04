@@ -1,7 +1,6 @@
 #' Read AnimalTA data
 #'
 #' @description
-#' `r lifecycle::badge('experimental')`
 #'
 #' @param path An AnimalTA data frame
 #' @param with_roi Were one or more ROIs used?
@@ -31,7 +30,15 @@ read_animalta <- function(path, with_roi = FALSE) {
   }
   data <- data |>
     dplyr::mutate(keypoint = factor("centroid")) |>
-    dplyr::relocate("keypoint", .after = "individual")
+    dplyr::relocate("keypoint", .after = "individual") |>
+    dplyr::mutate(confidence = as.numeric(NA),
+                  keypoint = factor(.data$keypoint),
+                  individual = factor(.data$individual))
+
+  # Init metadata
+  data <- data |>
+    init_metadata()
+
   return(data)
 }
 
