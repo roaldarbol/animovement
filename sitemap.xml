@@ -36,8 +36,10 @@
 <url><loc>http://www.roald-arboel.com/animovement/reference/ensure_is_not_dir.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/ensure_not_zero.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/ensure_trackball_setup.html</loc></url>
+<url><loc>http://www.roald-arboel.com/animovement/reference/get_metadata.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/group_every.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/index.html</loc></url>
+<url><loc>http://www.roald-arboel.com/animovement/reference/init_metadata.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/join_trackball_files.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/read_animalta.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/read_bonsai.html</loc></url>
@@ -54,6 +56,8 @@
 <url><loc>http://www.roald-arboel.com/animovement/reference/read_treadmill.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/read_trex.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/read_trex_csv.html</loc></url>
+<url><loc>http://www.roald-arboel.com/animovement/reference/set_start_datetime.html</loc></url>
+<url><loc>http://www.roald-arboel.com/animovement/reference/set_uuid.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/smooth_track.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/validate_animalta.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/validate_deeplabcut_csv.html</loc></url>

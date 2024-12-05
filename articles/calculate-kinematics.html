@@ -8,8 +8,8 @@
 <title>Calculate kinematics • animovement</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Calculate kinematics">
 </head>
 <body>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">animovement</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@
       <h1>Calculate kinematics</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/roaldarbol/animovement/blob/v0.4.1-beta/vignettes/articles/calculate-kinematics.Rmd" class="external-link"><code>vignettes/articles/calculate-kinematics.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/roaldarbol/animovement/blob/main/vignettes/articles/calculate-kinematics.Rmd" class="external-link"><code>vignettes/articles/calculate-kinematics.Rmd</code></a></small>
       <div class="d-none name"><code>calculate-kinematics.Rmd</code></div>
     </div>
 
@@ -124,19 +124,20 @@ observation.</li>
 <span>  <span class="fu"><a href="../reference/calculate_kinematics.html">calculate_kinematics</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">df_kinematics</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 37,039</span></span>
-<span><span class="co">#&gt; Columns: 12</span></span>
-<span><span class="co">#&gt; $ uid           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2UL50GHAQRV61BE7E2DZ", "2UL50GHAQRV61BE7E2DZ", "2UL50GH…</span></span>
+<span><span class="co">#&gt; Columns: 13</span></span>
 <span><span class="co">#&gt; $ time          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.00000000, 0.01666667, 0.03333333, 0.05000000, 0.066666…</span></span>
-<span><span class="co">#&gt; $ keypoint      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "centroid", "centroid", "centroid", "centroid", "centroi…</span></span>
-<span><span class="co">#&gt; $ x             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, 0.002538071, 0.012690355, 0.025380711, 0.038…</span></span>
-<span><span class="co">#&gt; $ y             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, 0.005076142, 0.022842640, 0.060913706, 0.109…</span></span>
-<span><span class="co">#&gt; $ distance      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, 0.02046258, 0.04013043, 0.04986518, 0.05…</span></span>
-<span><span class="co">#&gt; $ v_translation <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, 1.2277550, 2.4078256, 2.9919111, 3.03424…</span></span>
-<span><span class="co">#&gt; $ a_translation <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, NA, 7.080424e+01, 3.504513e+01, 2.539884…</span></span>
-<span><span class="co">#&gt; $ direction     <span style="color: #949494; font-style: italic;">&lt;circular&gt;</span> NA, NA, NA, NA, 1.0516502, 1.2490458, 1.3134726, 1.…</span></span>
-<span><span class="co">#&gt; $ rotation      <span style="color: #949494; font-style: italic;">&lt;circular&gt;</span> NA, NA, NA, NA, NA, 1.973956e-01, 6.442684e-02, -4.…</span></span>
-<span><span class="co">#&gt; $ v_rotation    <span style="color: #949494; font-style: italic;">&lt;circular&gt;</span> NA, NA, NA, NA, NA, -1.184373e+01, -3.865610e+00, 2…</span></span>
-<span><span class="co">#&gt; $ a_rotation    <span style="color: #949494; font-style: italic;">&lt;circular&gt;</span> NA, NA, NA, NA, NA, NA, 478.6874, 406.7352, -174.79…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ individual    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span><span class="co">#&gt; $ keypoint      <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> centroid, centroid, centroid, centroid, centroid, centro…</span></span>
+<span><span class="co">#&gt; $ x             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, NA, 0.002538071, 0.012690355, 0.02538071…</span></span>
+<span><span class="co">#&gt; $ y             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, NA, 0.005076142, 0.022842640, 0.06091370…</span></span>
+<span><span class="co">#&gt; $ confidence    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span><span class="co">#&gt; $ distance      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, NA, NA, 0.02046258, 0.04013043, 0.049865…</span></span>
+<span><span class="co">#&gt; $ v_translation <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, NA, NA, 1.2277550, 2.4078256, 2.9919111,…</span></span>
+<span><span class="co">#&gt; $ a_translation <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> NA, NA, NA, NA, NA, NA, NA, 7.080424e+01, 3.504513e+01, …</span></span>
+<span><span class="co">#&gt; $ direction     <span style="color: #949494; font-style: italic;">&lt;circular&gt;</span> NA, NA, NA, NA, NA, NA, 1.0516502, 1.2490458, 1.313…</span></span>
+<span><span class="co">#&gt; $ rotation      <span style="color: #949494; font-style: italic;">&lt;circular&gt;</span> NA, NA, NA, NA, NA, NA, NA, 1.973956e-01, 6.442684e…</span></span>
+<span><span class="co">#&gt; $ v_rotation    <span style="color: #949494; font-style: italic;">&lt;circular&gt;</span> NA, NA, NA, NA, NA, NA, NA, -1.184373e+01, -3.86561…</span></span>
+<span><span class="co">#&gt; $ a_rotation    <span style="color: #949494; font-style: italic;">&lt;circular&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, 478.6874, 406.7352,…</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="clean-kinematics">Clean kinematics<a class="anchor" aria-label="anchor" href="#clean-kinematics"></a>
 </h3>
@@ -189,16 +190,9 @@ these in two ways:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">rotation</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">performance</span><span class="fu">::</span><span class="fu"><a href="https://easystats.github.io/performance/reference/check_outliers.html" class="external-link">check_outliers</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 90 outliers detected: cases 37, 327, 332, 380, 383, 388, 473, 474, 475,</span></span>
-<span><span class="co">#&gt;   523, 764, 807, 907, 1306, 1350, 1364, 1479, 1777, 1802, 1838, 1855,</span></span>
-<span><span class="co">#&gt;   1888, 1982, 1985, 1987, 2003, 2125, 2126, 2276, 2415, 2486, 2890, 3319,</span></span>
-<span><span class="co">#&gt;   3380, 3396, 3513, 3569, 3590, 3687, 4080, 4099, 4104, 4236, 4284, 4318,</span></span>
-<span><span class="co">#&gt;   4369, 4481, 4482, 4529, 4637, 4724, 4725, 4765, 4767, 4810, 4840, 4856,</span></span>
-<span><span class="co">#&gt;   4891, 4892, 4893, 4906, 4972, 5019, 5102, 5103, 5146, 5272, 5298, 5317,</span></span>
-<span><span class="co">#&gt;   5318, 5335, 5337, 5370, 5374, 5376, 5384, 5398, 5406, 5519, 5523, 5531,</span></span>
-<span><span class="co">#&gt;   5533, 5534, 5538, 5543, 5564, 5575, 5598, 5609, 5642.</span></span>
+<span><span class="co">#&gt; OK: No outliers detected.</span></span>
 <span><span class="co">#&gt; - Based on the following method and threshold: mahalanobis (10.828).</span></span>
-<span><span class="co">#&gt; - For variable: rotation.</span></span></code></pre></div>
+<span><span class="co">#&gt; - For variable: rotation</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pl_direction</span> <span class="op">&lt;-</span> <span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># filter(time &lt; 20) |&gt;</span></span>
