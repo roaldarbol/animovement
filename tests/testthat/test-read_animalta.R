@@ -1,8 +1,6 @@
 # Test arguments
-library(here)
-here::i_am("tests/testthat/test-read_animalta.R")
-path_raw <- here("tests", "data", "animalta", "single_individual_multi_arena.csv")
-path_detailed <- here("tests", "data", "animalta", "variable_individuals_single_arena.csv")
+path_raw <- here::here("tests", "data", "animalta", "single_individual_multi_arena.csv")
+path_detailed <- here::here("tests", "data", "animalta", "variable_individuals_single_arena.csv")
 
 # File headers
 test_that("File headers", {

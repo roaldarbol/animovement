@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![DOI](https://zenodo.org/badge/773406370.svg)](https://zenodo.org/doi/10.5281/zenodo.13235277)
 [![R-CMD-check](https://github.com/roaldarbol/animovement/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/animovement/actions/workflows/R-CMD-check.yaml)
 [![animovement status
@@ -31,7 +33,7 @@ You can install the development version of *animovement* with:
 
 | Type | Source | Command |
 |----|----|----|
-| Development | R-universe | `install.packages("animovement", repos = c("https://roaldarbol.r-universe.dev", "https://cloud.r-project.org"))` |
+| Development | R-universe | `install.packages("animovement", repos = "https://roaldarbol.r-universe.dev")` |
 
 Once you have installed the package, you can load it with:
 

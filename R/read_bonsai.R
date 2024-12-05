@@ -1,7 +1,6 @@
 #' Read centroid tracking data from Bonsai
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`
+#' @description Read a Bonsai data frame
 #'
 #' @param path Path to a Bonsai data file
 #' @import dplyr
@@ -9,6 +8,7 @@
 #' @importFrom vroom vroom
 #'
 #' @return a movement dataframe
+#'
 #' @export
 read_bonsai <- function(path) {
   # There can be tracking from multiple ROIs at the same time
@@ -21,15 +21,25 @@ read_bonsai <- function(path) {
     show_col_types = FALSE
     ) |>
     suppressMessages() |>
+    convert_nan_to_na() |>
     dplyr::select(tidyselect::contains(c("Timestamp", "Centroid"))) |>
     dplyr::rename(time = tidyselect::contains("Timestamp"),
                   x = tidyselect::contains("X"),
                   y = tidyselect::contains("Y")) |>
-    dplyr::mutate(keypoint = factor("centroid")) |>
-    dplyr::relocate("keypoint", .after = "time")
+    dplyr::mutate(keypoint = factor("centroid"),
+                  individual = factor(NA),
+                  confidence = as.numeric(NA)) |>
+    dplyr::relocate("keypoint", .after = "time") |>
+    dplyr::relocate("individual", .after = "time")
+
 
   attributes(data)$spec <- NULL
   attributes(data)$problems <- NULL
 
+  # Metadata
+  data <- data |>
+    init_metadata() |>
+    set_start_datetime(data$time[[1]]) |>
+    dplyr::mutate(time = as.numeric(.data$time - min(.data$time, na.rm = TRUE)))
   return(data)
 }

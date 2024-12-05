@@ -87,15 +87,16 @@ we may want to filter out all the `0` readings At first sight, it all looks fine
 
 ```{r}
 library(performance)
+library(tidyr)
 df |>
   mutate(
     ax = dx - lag(dx),
     ay = dy - lag(dy)
   ) |>
-  na.omit() |>
+  tidyr::drop_na(ax, ay) |> 
   filter(time < 200) |>
   filter(dx != 0) |>
-  select(ax, ay) |>
+  select(ax, ay) |> 
   check_outliers() |>
   plot()
 ```

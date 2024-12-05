@@ -1,8 +1,5 @@
 #' Read TRex data
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`
-#'
 #' @param path Path to a TRex data frame in CSV format.
 #'
 #' @import dplyr
@@ -20,12 +17,18 @@ read_trex <- function(path) {
   if (file_ext == "csv"){
     data <- read_trex_csv(path)
   }
+
+  # Init metadata
+  data <- data |>
+    init_metadata()
+
   return(data)
 }
 
 #' Read TRex CSV file
 #' @keywords internal
 read_trex_csv <- function(path){
+
   # Read function
   data <- vroom::vroom(
     path,
@@ -46,6 +49,11 @@ read_trex_csv <- function(path){
                         values_to = "val") |>
     tidyr::pivot_wider(id_cols = c("time", "keypoint"),
                        names_from = "pos",
-                       values_from = "val")
+                       values_from = "val") |>
+    dplyr::mutate(individual = factor(NA),
+                  confidence = as.numeric(NA),
+                  keypoint = factor(.data$keypoint)) |>
+    dplyr::relocate("individual", .after = "time")
+
   return(data)
 }

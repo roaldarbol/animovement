@@ -1,5 +1,3 @@
-library(here)
-
 path <- here::here("tests", "data", "trex", "beetle.csv")
 
 # Read file

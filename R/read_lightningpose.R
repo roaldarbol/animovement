@@ -1,7 +1,5 @@
 #' Read LightningPose data
 #'
-#' @description `r lifecycle::badge('experimental')`
-#'
 #' Read csv files from LightningPose (LP).
 #'
 #' @param path Path to a LightningPose data file

@@ -9,7 +9,7 @@ smooth_track(data, method = c("rolling_median"), window_width = 5)
 \arguments{
 \item{data}{Data frame}
 
-\item{method}{Which smoothing method to use. Currently only rolling mean is implemented ("rolling_mean").}
+\item{method}{Which smoothing method to use. options:  "rolling_median (default), "rolling_mean".}
 
 \item{window_width}{How many observations to use for rolling window filters (e.g. "rolling_mean" or "rolling_median").}
 }

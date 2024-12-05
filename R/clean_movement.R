@@ -9,14 +9,13 @@
 #'
 #'
 #' @param data Data frame
-#' @param method Which smoothing method to use. Currently only rolling mean is implemented ("rolling_mean").
+#' @param method Which smoothing method to use. options:  "rolling_median (default), "rolling_mean".
 #' @param window_width How many observations to use for rolling window filters (e.g. "rolling_mean" or "rolling_median").
 #'
 #' @return A movement data frame
 #' @export
 #' @import dplyr
-#' @importFrom zoo rollmean
-#' @importFrom rlang :=
+#' @importFrom roll roll_mean roll_median
 #'
 smooth_track <- function(
     data,
@@ -33,14 +32,14 @@ smooth_track <- function(
   if (method == "rolling_mean") {
     data <- data |>
       dplyr::mutate(
-        dx = zoo::rollmean(.data$dx, k = window_width, fill = NA),
-        dy = zoo::rollmean(.data$dy, k = window_width, fill = NA)
+        dx = roll::roll_mean(.data$dx, width = window_width),
+        dy = roll::roll_mean(.data$dy, width = window_width)
       )
   } else if (method == "rolling_median") {
     data <- data |>
       dplyr::mutate(
-        dx = zoo::rollmedian(.data$dx, k = window_width, fill = NA),
-        dy = zoo::rollmedian(.data$dy, k = window_width, fill = NA)
+        dx = roll::roll_median(.data$dx, width = window_width),
+        dy = roll::roll_median(.data$dy, width = window_width)
       )
   }
 

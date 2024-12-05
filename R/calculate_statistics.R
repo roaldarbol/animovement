@@ -24,9 +24,9 @@ calculate_statistics <- function(
 
   # Calculate translational and rotational separately (maybe?) and gather at the end
   totals <- data |>
-    dplyr::summarise(across(c(.data$distance, .data$rotation), ~ collapse::fsum(abs(.x)), .names = "total_{.col}"),
-      across(c(.data$x, .data$y), ~ dplyr::last(.x, na_rm = TRUE), .names = "last_{.col}"),
-      .by = .data$uid
+    dplyr::summarise(across(c("distance", "rotation"), ~ collapse::fsum(abs(.x)), .names = "total_{.col}"),
+      across(c("x", "y"), ~ dplyr::last(.x, na_rm = TRUE), .names = "last_{.col}"),
+      .by = c("individual", "keypoint")
     )
 
   totals <- totals |>
@@ -36,25 +36,25 @@ calculate_statistics <- function(
 
   if (measures == "median_mad") {
     data <- data |>
-      dplyr::summarise(across(c(.data$direction), ~ collapse::fmean(circular::circular(.x, modulo = "2pi")), .names = "median_{.col}"),
-        across(c(.data$direction), ~ calculate_circular_mad(circular::circular(.x, modulo = "2pi")), .names = "mad_{.col}"),
-        across(c(.data$v_translation, .data$a_translation, .data$v_rotation, .data$a_rotation), ~ collapse::fmedian(abs(.x)), .names = "median_{.col}"),
-        across(c(.data$v_translation, .data$a_translation, .data$v_rotation, .data$a_rotation), ~ stats::mad(abs(.x), na.rm = TRUE), .names = "mad_{.col}"),
-        .by = .data$uid
+      dplyr::summarise(across(c("direction"), ~ collapse::fmean(circular::circular(.x, modulo = "2pi")), .names = "median_{.col}"),
+        across(c("direction"), ~ calculate_circular_mad(circular::circular(.x, modulo = "2pi")), .names = "mad_{.col}"),
+        across(c("v_translation", "a_translation", "v_rotation", "a_rotation"), ~ collapse::fmedian(abs(.x)), .names = "median_{.col}"),
+        across(c("v_translation", "a_translation", "v_rotation", "a_rotation"), ~ stats::mad(abs(.x), na.rm = TRUE), .names = "mad_{.col}"),
+        .by = c("individual", "keypoint")
       ) |>
       left_join(totals) |>
-      select(-c(.data$last_x, .data$last_y)) |>
+      select(-c("last_x", "last_y")) |>
       suppressMessages()
   } else if (measures == "mean_sd") {
     data <- data |>
-      dplyr::summarise(across(c(.data$direction), ~ collapse::fmean(circular::circular(.x)), .names = "mean_{.col}"),
-        across(c(.data$direction), ~ circular::sd(circular::circular(.x)), .names = "sd_{.col}"),
-        across(c(.data$v_translation, .data$a_translation, .data$v_rotation, .data$a_rotation), ~ collapse::fmean(abs(.x)), .names = "mean_{.col}"),
-        across(c(.data$v_translation, .data$a_translation, .data$v_rotation, .data$a_rotation), ~ collapse::fsd(abs(.x)), .names = "sd_{.col}"),
-        .by = .data$uid
+      dplyr::summarise(across(c("direction"), ~ collapse::fmean(circular::circular(.x)), .names = "mean_{.col}"),
+        across(c("direction"), ~ circular::sd(circular::circular(.x)), .names = "sd_{.col}"),
+        across(c("v_translation", "a_translation", "v_rotation", "a_rotation"), ~ collapse::fmean(abs(.x)), .names = "mean_{.col}"),
+        across(c("v_translation", "a_translation", "v_rotation", "a_rotation"), ~ collapse::fsd(abs(.x)), .names = "sd_{.col}"),
+        .by = c("individual", "keypoint")
       ) |>
       left_join(totals) |>
-      select(-c(.data$last_x, .data$last_y)) |>
+      select(-c("last_x", "last_y")) |>
       suppressMessages()
   }
 
