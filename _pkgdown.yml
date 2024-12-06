@@ -32,9 +32,19 @@ reference:
   - smooth_track
   - clean_kinematics
 
+- title: "Transformations"
+  desc: |
+    These functions allow you to make tranformations to your coordinate system,
+    such as translations, rotations or conversion to polar coordinates.
+  contents:
+  - translate_coords
+  - map_to_cartesian
+  - map_to_polar
+
 - title: "Calculate"
   desc: These functions are where your results begin to emerge.
   contents:
+  - add_centroid
   - calculate_kinematics
   - calculate_statistics
 
