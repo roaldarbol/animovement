@@ -99,3 +99,45 @@ calculate_derivative <- function(from_x, to_x, from_t, to_t) {
 adjust_direction <- function(direction) {
   circular::circular(direction, modulo = "2pi")
 }
+
+#' Calculate the centroid
+#'
+#' @param data a movement data frame
+#' @param include_keypoints choose a subset of keypoints used for computing the centorid
+#' @param exclude_keypoints chosose a subset of keypoints that are excluded when conputing the centroid
+add_centroid <- function(data, include_keypoints=NULL, exclude_keypoints=NULL){
+  # Check that centroid isn't there
+  # Check that it's a movement data frame
+  # To be optimised with collapse later on
+  if (!is.null(include_keypoints)){
+    df_centroid <- data |>
+      dplyr::filter(.data$keypoint %in% include_keypoints)
+  } else if (!is.null(exclude_keypoints)){
+    df_centroid <- data |>
+      dplyr::filter(!.data$keypoint %in% exclude_keypoints)
+  } else {
+    df_centroid <- data
+  }
+
+  df_centroid <- df_centroid |>
+    dplyr::group_by(.data$individual, .data$time) |>
+    dplyr::summarise(x = mean(.data$x, na.rm=TRUE),
+                     y = mean(.data$y, na.rm=TRUE),
+                     confidence = NA,
+                     .groups = "keep") |>
+    dplyr::mutate(keypoint = "centroid") |>
+    convert_nan_to_na()
+
+  data <- bind_rows(data, df_centroid) |>
+    dplyr::arrange(.data$time, .data$individual, .data$keypoint)
+
+  return(data)
+}
+
+calculate_centroid_x <- function(x){
+ mean(x, na.rm=TRUE)
+}
+
+calculate_centroid_y <- function(y){
+  mean(y, na.rm=TRUE)
+}
