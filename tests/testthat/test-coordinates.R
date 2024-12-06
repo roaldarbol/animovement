@@ -4,6 +4,25 @@ coords <- data.frame(
   theta = c(pi*0.25, pi*0.75, pi*1.25, pi*1.75), digits = 5
   )
 
+# Test basic functions
+test_that("Test coordinate mappings", {
+  # Radians to degrees
+  expect_equal(rad_to_deg(pi), 180)
+  expect_equal(rad_to_deg(0), 0)
+  expect_equal(rad_to_deg(pi/2), 90)
+  expect_equal(rad_to_deg(pi*1.5), 270)
+
+  # Degrees to radians
+  expect_equal(deg_to_rad(180), pi)
+  expect_equal(deg_to_rad(0), 0)
+  expect_equal(deg_to_rad(90), pi/2)
+  expect_equal(deg_to_rad(270), pi*1.50)
+
+  # Needs some tests with negative values
+  # expect_equal(deg_to_rad(-90), pi*1.50)
+})
+
+
 # Test coordinate mappings
 test_that("Test coordinate mappings", {
   # Test theta
@@ -46,7 +65,7 @@ test_that("Test coordinate mappings", {
   # Test theta
   expect_equal(
     coords |>
-      convert_polar_to_cartesian() |>
-      convert_cartesian_to_polar(),
+      map_to_cartesian() |>
+      map_to_polar(),
     expected = coords)
 })
