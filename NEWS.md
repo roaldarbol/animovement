@@ -1,4 +1,10 @@
 # animovement 0.5.1
+Previously, `smooth_track` was only built to smoothen trackball data. In this fix, we fixed it by doing the following:
+- Changed the name to `smooth_movement`
+- Added parameter `use_derivatives` (default: `FALSE`) which is how trackball data should be smoothed
+- Written the non-derivative code
+
+So now `smooth_movement` should be able to smooth all your movement data!
 
 # animovement 0.5.0
 A big update! There are three major updates:
