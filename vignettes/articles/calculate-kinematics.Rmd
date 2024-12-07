@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
 library(animovement)
 library(tibble)
 library(ggplot2)
+library(tidyr)
 library(dplyr, warn.conflicts = FALSE)
 library(readxl)
 library(here)
@@ -34,7 +35,7 @@ df <- read_trackball(
 
 # Smooth tracks
 df_smooth <- df |>
-  smooth_track(method = "rolling_median", window_width = 5)
+  smooth_movement(method = "rolling_median", window_width = 5, use_derivatives = TRUE)
 ```
 
 ## Calculate kinematics
@@ -102,7 +103,7 @@ f <- df_kinematics_clean |>
 
 library(performance)
 df_kinematics_clean |>
-  na.omit() |>
+  tidyr::drop_na(rotation) |>
   select(rotation) |>
   performance::check_outliers()
 ```

@@ -15,6 +15,7 @@ ensure_output_header_class <- function(
   data <- data |>
     dplyr::select(all_of(expected_headers))
   header_classes <- sapply(data, class)
+  header_classes <- sapply(header_classes, function(x) if_else(x == "integer", "numeric", x))
   if (!all(expected_header_class == header_classes)){
     cli::cli_abort("Expected output headers to be {expected_header_class}, got {header_classes}.")
   }
