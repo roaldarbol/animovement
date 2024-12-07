@@ -29,7 +29,7 @@ reference:
 - title: "Clean"
   desc: These functions ensure that your data is ready for analysis.
   contents:
-  - smooth_track
+  - smooth_movement
   - clean_kinematics
 
 - title: "Calculate"
