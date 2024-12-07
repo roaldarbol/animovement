@@ -125,7 +125,7 @@ Let's try smoothing our data with a `rolling_mean` filter with 0.5 second (30 ob
 
 ```{r}
 df_smooth <- df |>
-  smooth_track(method = "rolling_median", window_width = 5)
+  smooth_movement(method = "rolling_median", window_width = 5, use_derivatives = TRUE)
 ```
 
 Let's visualise how they compare. Note that although the difference may seem negligible when plotting paths, they may become important when computing derivatives such as velocity and acceleration.

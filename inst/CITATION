@@ -9,4 +9,4 @@ bibentry(bibtype = "Misc",
          year = "2024",
          url = "http://www.roald-arboel.com/animovement/",
          abstract = "An R toolbox for analysing animal movement across space and time.",
-         version = "0.5.0")
+         version = "0.5.1")

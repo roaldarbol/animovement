@@ -22,6 +22,10 @@ calculate_statistics <- function(
     straightness = c("A", "B", "C", "D")) {
   validate_statistics()
 
+  # Ungroup (makes summarise work better)
+  data <- data |>
+    dplyr::ungroup()
+
   # Calculate translational and rotational separately (maybe?) and gather at the end
   totals <- data |>
     dplyr::summarise(across(c("distance", "rotation"), ~ collapse::fsum(abs(.x)), .names = "total_{.col}"),
