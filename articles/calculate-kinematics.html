@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">animovement</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,6 +89,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.roald-arboel.com/animovement/">animovement</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span>, warn.conflicts <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org" class="external-link">readxl</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://here.r-lib.org/" class="external-link">here</a></span><span class="op">)</span></span>
@@ -125,6 +126,7 @@ observation.</li>
 <span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">df_kinematics</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 37,039</span></span>
 <span><span class="co">#&gt; Columns: 13</span></span>
+<span><span class="co">#&gt; Groups: individual, keypoint [1]</span></span>
 <span><span class="co">#&gt; $ time          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.00000000, 0.01666667, 0.03333333, 0.05000000, 0.066666…</span></span>
 <span><span class="co">#&gt; $ individual    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
 <span><span class="co">#&gt; $ keypoint      <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> centroid, centroid, centroid, centroid, centroid, centro…</span></span>
@@ -187,12 +189,21 @@ these in two ways:</p>
 <code class="sourceCode R"><span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://easystats.github.io/performance/" class="external-link">performance</a></span><span class="op">)</span></span>
 <span><span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="va">rotation</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">rotation</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">performance</span><span class="fu">::</span><span class="fu"><a href="https://easystats.github.io/performance/reference/check_outliers.html" class="external-link">check_outliers</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; OK: No outliers detected.</span></span>
+<span><span class="co">#&gt; Adding missing grouping variables: `individual`, `keypoint`</span></span>
+<span><span class="co">#&gt; 103 outliers detected: cases 38, 329, 334, 382, 385, 390, 477, 478, 479,</span></span>
+<span><span class="co">#&gt;   527, 770, 814, 914, 1253, 1315, 1359, 1362, 1376, 1491, 1789, 1814,</span></span>
+<span><span class="co">#&gt;   1850, 1867, 1900, 1994, 1997, 1999, 2016, 2018, 2140, 2141, 2291, 2432,</span></span>
+<span><span class="co">#&gt;   2503, 2908, 3338, 3399, 3415, 3533, 3589, 3610, 3708, 3808, 4103, 4122,</span></span>
+<span><span class="co">#&gt;   4123, 4128, 4266, 4314, 4349, 4400, 4512, 4513, 4560, 4668, 4673, 4712,</span></span>
+<span><span class="co">#&gt;   4758, 4759, 4799, 4801, 4844, 4866, 4873, 4877, 4893, 4928, 4929, 4930,</span></span>
+<span><span class="co">#&gt;   4943, 5010, 5047, 5058, 5128, 5142, 5143, 5188, 5315, 5345, 5364, 5365,</span></span>
+<span><span class="co">#&gt;   5384, 5386, 5423, 5425, 5429, 5431, 5439, 5457, 5466, 5588, 5592, 5600,</span></span>
+<span><span class="co">#&gt;   5602, 5603, 5607, 5612, 5633, 5645, 5669, 5681, 5703, 5716.</span></span>
 <span><span class="co">#&gt; - Based on the following method and threshold: mahalanobis (10.828).</span></span>
-<span><span class="co">#&gt; - For variable: rotation</span></span></code></pre></div>
+<span><span class="co">#&gt; - For variable: rotation.</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pl_direction</span> <span class="op">&lt;-</span> <span class="va">df_kinematics_clean</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># filter(time &lt; 20) |&gt;</span></span>

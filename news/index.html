@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">animovement</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,11 @@
       <small>Source: <a href="https://github.com/roaldarbol/animovement/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.1" id="animovement-051">animovement 0.5.1<a class="anchor" aria-label="anchor" href="#animovement-051"></a></h2>
+<p>Previously, <code>smooth_track</code> was only built to smoothen trackball data. In this fix, we fixed it by doing the following: - Changed the name to <code>smooth_movement</code> - Added parameter <code>use_derivatives</code> (default: <code>FALSE</code>) which is how trackball data should be smoothed - Written the non-derivative code</p>
+<p>So now <code>smooth_movement</code> should be able to smooth all your movement data!</p>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="animovement-050">animovement 0.5.0<a class="anchor" aria-label="anchor" href="#animovement-050"></a></h2>
 <p>A big update! There are three major updates: - We finally stabilised on a <strong>data format</strong> and <strong>implemented it for all readers</strong>! - We’ve introduced <strong>metadata</strong>. It’s still experimental, but an important step in the right direction. - We added tests to ensure the output data frames from readers always contain the expected columns and column classes. - We also added tests to ensure metadata is present after reading a data frame.</p>

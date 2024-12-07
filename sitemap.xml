@@ -61,7 +61,8 @@
 <url><loc>http://www.roald-arboel.com/animovement/reference/read_trex_csv.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/set_start_datetime.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/set_uuid.html</loc></url>
-<url><loc>http://www.roald-arboel.com/animovement/reference/smooth_track.html</loc></url>
+<url><loc>http://www.roald-arboel.com/animovement/reference/smooth_derivatives.html</loc></url>
+<url><loc>http://www.roald-arboel.com/animovement/reference/smooth_movement.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/translate_coords.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/translate_coords_keypoint.html</loc></url>
 <url><loc>http://www.roald-arboel.com/animovement/reference/translate_coords_vector.html</loc></url>

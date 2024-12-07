@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">animovement</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -224,7 +224,7 @@ use <code>group_by</code> with our metadata for a
 <em>tidyverse</em>-friendly workflow.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_smooth</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/smooth_track.html">smooth_track</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"rolling_median"</span>, window_width <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/smooth_movement.html">smooth_movement</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"rolling_median"</span>, window_width <span class="op">=</span> <span class="fl">5</span>, use_derivatives <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Let’s visualise how they compare. Note that although the difference
 may seem negligible when plotting paths, they may become important when
 computing derivatives such as velocity and acceleration.</p>
