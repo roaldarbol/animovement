@@ -1,4 +1,4 @@
-#' Smooth tracks
+#' Smooth movement
 #'
 #' @description
 #' `r lifecycle::badge('experimental')`
@@ -11,17 +11,60 @@
 #' @param data Data frame
 #' @param method Which smoothing method to use. options:  "rolling_median (default), "rolling_mean".
 #' @param window_width How many observations to use for rolling window filters (e.g. "rolling_mean" or "rolling_median").
+#' @param use_derivatives whether to use the derivatives (difference between frames) to perform the smoothing. Useful for trackball data.
 #'
 #' @return A movement data frame
 #' @export
 #' @import dplyr
 #' @importFrom roll roll_mean roll_median
 #'
-smooth_track <- function(
+smooth_movement <- function(
     data,
     method = c("rolling_median"),
-    window_width = 5) {
+    window_width = 5,
+    use_derivatives = FALSE) {
+
+  # Quick checks on the data
+  ensure_output_header_names(data)
+  ensure_output_header_class(data)
+
+  data <- data |>
+    dplyr::group_by(.data$individual, .data$keypoint)
+
   # Back-transform to dx and dy
+  if (use_derivatives == TRUE){
+    data <- smooth_derivatives(data, method, window_width)
+  }
+
+  # Rolling mean
+  else if (method == "rolling_mean"){
+    data <- data |>
+      dplyr::mutate(
+        x = roll::roll_mean(.data$x, width = window_width),
+        y = roll::roll_mean(.data$y, width = window_width)
+      )
+  }
+
+  # Rolling median
+  else if (method == "rolling_median") {
+    data <- data |>
+      dplyr::mutate(
+        x = roll::roll_median(.data$x, width = window_width),
+        y = roll::roll_median(.data$y, width = window_width)
+      )
+  }
+
+  return(data)
+}
+
+#' Smooth derivatives (when original data measured differences between movements)
+#'
+#' @inheritParams smooth_movement
+#'
+#' @keywords internal
+smooth_derivatives <- function(data, method, window_width){
+
+  # Back-transform to derivatives
   data <- data |>
     dplyr::mutate(
       dx = .data$x - lag(.data$x),
@@ -49,6 +92,7 @@ smooth_track <- function(
       x = cumsum(coalesce(.data$dx, 0)) + .data$dx * 0,
       y = cumsum(coalesce(.data$dy, 0)) + .data$dy * 0
     ) |>
-    select(-.data$dx, -.data$dy)
+    select(-"dx", -"dy")
+
   return(data)
 }
