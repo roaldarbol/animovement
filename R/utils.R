@@ -27,7 +27,7 @@
 }
 
 convert_nan_to_na <- function(data){
-  dplyr::mutate(data, across(everything(), function(x) ifelse(is.nan(x), NA, x)))
+  dplyr::mutate(data, across(where(is.numeric), function(x) ifelse(is.nan(x), NA, x)))
 }
 
 # For TRex files

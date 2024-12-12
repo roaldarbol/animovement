@@ -22,10 +22,10 @@ translate_coords <- function(data, to_x=0, to_y=0, to_z=NULL, to_keypoint=NULL){
   if (!is.null(to_keypoint)){
     if (is.character(to_keypoint)){
       if (length(to_keypoint) > 1){
-        cli::cli_abort()
+        cli::cli_abort("Only 1 keypoint can be supplied to `to_keypoint`, received {length(to_keypoint)}.")
       }
       if (!to_keypoint %in% unique(data$keypoint)){
-        cli::cli_abort()
+        cli::cli_abort("Keypoint {to_keypoint} is not among the keypoints in the data, which are {unique(data$keypoint)}.")
       }
       data <- translate_coords_keypoint(data, to_keypoint)
     }

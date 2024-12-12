@@ -105,7 +105,10 @@ adjust_direction <- function(direction) {
 #' @param data a movement data frame
 #' @param include_keypoints choose a subset of keypoints used for computing the centorid
 #' @param exclude_keypoints chosose a subset of keypoints that are excluded when conputing the centroid
-add_centroid <- function(data, include_keypoints=NULL, exclude_keypoints=NULL){
+add_centroid <- function(data,
+                         include_keypoints=NULL,
+                         exclude_keypoints=NULL,
+                         centroid_name="centroid"){
   # Check that centroid isn't there
   # Check that it's a movement data frame
   # To be optimised with collapse later on
@@ -125,7 +128,7 @@ add_centroid <- function(data, include_keypoints=NULL, exclude_keypoints=NULL){
                      y = mean(.data$y, na.rm=TRUE),
                      confidence = NA,
                      .groups = "keep") |>
-    dplyr::mutate(keypoint = "centroid") |>
+    dplyr::mutate(keypoint = factor(as.character(centroid_name))) |>
     convert_nan_to_na()
 
   data <- bind_rows(data, df_centroid) |>

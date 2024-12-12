@@ -28,6 +28,7 @@ Imports:
     rhdf5,
     rlang,
     roll,
+    signal,
     stringi,
     tidyr,
     tidyselect,
