@@ -29,6 +29,11 @@ reference:
 - title: "Clean"
   desc: These functions ensure that your data is ready for analysis.
   contents:
+  - check_na_timing
+  - check_na_gapsize
+  - check_confidence
+  - check_pose
+  - filter_
   - smooth_movement
   - clean_kinematics
 
