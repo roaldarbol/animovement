@@ -4,7 +4,12 @@
 \alias{add_centroid}
 \title{Calculate the centroid}
 \usage{
-add_centroid(data, include_keypoints = NULL, exclude_keypoints = NULL)
+add_centroid(
+  data,
+  include_keypoints = NULL,
+  exclude_keypoints = NULL,
+  centroid_name = "centroid"
+)
 }
 \arguments{
 \item{data}{a movement data frame}

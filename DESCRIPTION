@@ -23,8 +23,10 @@ Imports:
     cli,
     collapse,
     dplyr,
+    ggtext,
     janitor,
     lifecycle,
+    patchwork,
     rhdf5,
     rlang,
     roll,
@@ -43,7 +45,6 @@ Suggests:
     tinyplot,
     tinytable,
     ggplot2,
-    patchwork,
     performance,
     see,
     markdown
