@@ -22,11 +22,13 @@ smooth_movement <- function(
     data,
     method = c("rolling_median"),
     window_width = 5,
+    min_obs = 1,
     use_derivatives = FALSE) {
 
   # Quick checks on the data
   ensure_output_header_names(data)
   ensure_output_header_class(data)
+
 
   data <- data |>
     dplyr::group_by(.data$individual, .data$keypoint)
@@ -40,8 +42,8 @@ smooth_movement <- function(
   else if (method == "rolling_mean"){
     data <- data |>
       dplyr::mutate(
-        x = roll::roll_mean(.data$x, width = window_width),
-        y = roll::roll_mean(.data$y, width = window_width)
+        x = roll::roll_mean(.data$x, width = window_width, min_obs = min_obs),
+        y = roll::roll_mean(.data$y, width = window_width, min_obs = min_obs)
       )
   }
 
@@ -49,8 +51,8 @@ smooth_movement <- function(
   else if (method == "rolling_median") {
     data <- data |>
       dplyr::mutate(
-        x = roll::roll_median(.data$x, width = window_width),
-        y = roll::roll_median(.data$y, width = window_width)
+        x = roll::roll_median(.data$x, width = window_width, min_obs = min_obs),
+        y = roll::roll_median(.data$y, width = window_width, min_obs = min_obs)
       )
   }
 
@@ -75,14 +77,14 @@ smooth_derivatives <- function(data, method, window_width){
   if (method == "rolling_mean") {
     data <- data |>
       dplyr::mutate(
-        dx = roll::roll_mean(.data$dx, width = window_width),
-        dy = roll::roll_mean(.data$dy, width = window_width)
+        dx = roll::roll_mean(.data$dx, width = window_width, min_obs = min_obs),
+        dy = roll::roll_mean(.data$dy, width = window_width, min_obs = min_obs)
       )
   } else if (method == "rolling_median") {
     data <- data |>
       dplyr::mutate(
-        dx = roll::roll_median(.data$dx, width = window_width),
-        dy = roll::roll_median(.data$dy, width = window_width)
+        dx = roll::roll_median(.data$dx, width = window_width, min_obs = min_obs),
+        dy = roll::roll_median(.data$dy, width = window_width, min_obs = min_obs)
       )
   }
 

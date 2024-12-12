@@ -8,6 +8,7 @@ smooth_movement(
   data,
   method = c("rolling_median"),
   window_width = 5,
+  min_obs = 1,
   use_derivatives = FALSE
 )
 }
