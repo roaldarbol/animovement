@@ -4,10 +4,12 @@
 \alias{check_pose}
 \title{Analyze the distribution of distances from keypoints to the centroid}
 \usage{
-check_pose(data, type = "histogram")
+check_pose(data, reference_keypoint, type = "histogram")
 }
 \arguments{
 \item{data}{A data frame containing at least the columns \code{keypoint}, \code{x}, and \code{y}.}
+
+\item{reference_keypoint}{The keypoint used as a reference to calculate the distance.}
 
 \item{type}{Character string specifying the type of plot to create. Options are:
 \itemize{

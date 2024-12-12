@@ -5,6 +5,7 @@
 #' distance distributions, but it can also create confidence plots if specified.
 #'
 #' @param data A data frame containing at least the columns `keypoint`, `x`, and `y`.
+#' @param reference_keypoint The keypoint used as a reference to calculate the distance.
 #' @param type Character string specifying the type of plot to create. Options are:
 #' - `"histogram"`: Histograms of the distance distributions (default).
 #' - `"confidence"`: Plots showing confidence intervals for the distances.
@@ -35,7 +36,7 @@
 #' check_pose(data, type = "histogram")
 #'
 #' @export
-check_pose <- function(data, type = "histogram"){
+check_pose <- function(data, reference_keypoint, type = "histogram"){
   # Parameters
   keypoints <- unique(data$keypoint)
   n_keypoints <- length(keypoints)
@@ -43,7 +44,10 @@ check_pose <- function(data, type = "histogram"){
   color_total = "steelblue"
   color_border = "black"
   na_plots <- list()
-  centroid_name <- "test_centroid"
+  d_ref <- data |>
+    dplyr::filter(keypoint == reference_keypoint) |>
+    dplyr::mutate(keypoint = "reference_keypoint")
+  data <- dplyr::bind_rows(data, d_ref)
 
   if (n_keypoints <= 1){
     cli::cli_abort("Can only check poses when the data contains more than 1 keypoint.")
@@ -51,9 +55,8 @@ check_pose <- function(data, type = "histogram"){
 
   # Calculate distance to centroid
   data <- data |>
-    add_centroid(centroid_name = centroid_name) |>
-    calculate_distance_to_centroid(centroid_name = centroid_name) |>
-    dplyr::filter(.data$keypoint != centroid_name) |>
+    calculate_distance_to_centroid(centroid_name = "reference_keypoint") |>
+    dplyr::filter(.data$keypoint != "reference_keypoint") |>
     dplyr::mutate(keypoint = factor(.data$keypoint))
 
   for (i in 1:length(keypoints)){
