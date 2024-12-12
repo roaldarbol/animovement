@@ -227,7 +227,7 @@ na_interpolation <- function(x, option = "linear", maxgap = Inf, ...) {
     ##
     ## 2. Imputation Code
     ##
-    if (is_false(skip)){
+    if (isFALSE(skip)){
       n <- length(data)
 
       allindx <- 1:n
