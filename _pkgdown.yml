@@ -33,7 +33,8 @@ reference:
   - check_na_gapsize
   - check_confidence
   - check_pose
-  - filter_
+  - filter_by_confidence
+  - filter_by_speed
   - smooth_movement
   - clean_kinematics
 
