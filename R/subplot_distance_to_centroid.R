@@ -1,7 +1,8 @@
 subplot_dist_to_centroid_hist <- function(data, keypoint){
   p <- data |>
     ggplot2::ggplot(aes(dist_to_centroid)) +
-    ggplot2::geom_histogram() +
+    ggplot2::geom_histogram(bins = 30) +
+    ggplot2::scale_y_log10() +
     ggplot2::ggtitle("", subtitle = keypoint)
 
   return(p)
@@ -29,9 +30,8 @@ subplot_confidence <- function(data, keypoint){
   p <- data |>
     ggplot2::ggplot(ggplot2::aes(confidence)) +
     coord_cartesian(xlim = c(-minx, maxx)) +
-    ggplot2::scale_y_log10() +
     # ggplot2::scale_x_continuous(limits = c(minx, maxx)) +
-    geom_histogram() +
+    ggplot2::geom_histogram(bins = 30) +
     ggplot2::ggtitle("", subtitle = keypoint)
   return(p)
 }
