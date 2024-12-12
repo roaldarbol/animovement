@@ -21,6 +21,7 @@
 #' @importFrom ggplot2 ggplot theme
 #' @importFrom patchwork wrap_plots plot_annotation plot_layout
 #' @importFrom ggtext element_markdown
+#' @importFrom cli cli_inform
 #'
 #' @examples
 #' library(dplyr)
@@ -51,13 +52,23 @@ check_na_timing <- function(data,
         dplyr::filter(.data$keypoint == keypoints[j]) |>
         dplyr::select("x")
 
-      na_plots[[j]] <- ggplot_na_timing(df, keypoint = keypoints[j], title = NULL, subtitle = NULL)
+      if (!all(is.na(df$x))){
+        na_plots[[j]] <- ggplot_na_timing(df, keypoint = keypoints[j], title = NULL, subtitle = NULL)
+      } else {
+        cli::cli_inform("All values for {keypoints[j]} were NA. Returning a blank plot.")
+        na_plots[[j]] <- ggplot()
+      }
     }
   } else {
     df <- data |>
       dplyr::select("x")
 
-    na_plots[[1]] <- ggplot_na_timing(df, title = NULL, subtitle = NULL)
+    if (!all(is.na(df$x))){
+      na_plots[[1]] <- ggplot_na_timing(df, title = NULL, subtitle = NULL)
+    } else {
+      cli::cli_inform("All values for {keypoints[j]} were NA. Returning a blank plot.")
+      na_plots[[j]] <- ggplot()
+    }
   }
 
   output_plot <- patchwork::wrap_plots(na_plots) +
