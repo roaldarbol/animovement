@@ -147,6 +147,9 @@ na_interpolation <- function(x, option = "linear", maxgap = Inf, ...) {
   # 'x' needs to stay unchanged to be able to return the same ts class in the end
   data <- x
 
+  ## Set 'skip' variable, which let's the functions know whether to do the interpolation or simply return the un-interpolated data
+  skip <- FALSE
+
   #----------------------------------------------------------
   # Mulivariate Input
   # The next 20 lines are just for checking and handling multivariate input.
