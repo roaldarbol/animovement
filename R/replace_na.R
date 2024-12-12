@@ -1,4 +1,49 @@
-replace_missing <- function(data, method = "spline", maxgap = 10){
+#' @title Replace Missing Values in Pose Data
+#'
+#' @description Replaces missing values (NAs) in `x` and `y` coordinates of keypoints
+#' for grouped data using a specified interpolation method. This function is tailored
+#' for pose estimation datasets, where observations are grouped by individuals and keypoints.
+#'
+#' @param data A data frame containing the columns `individual`, `keypoint`, `x`, and `y`.
+#'  Missing values in the `x` and `y` columns will be replaced.
+#' @param method A character string specifying the interpolation method to use.
+#'  Options include:
+#'  \itemize{
+#'    \item{"linear" - for linear interpolation (default).}
+#'    \item{"spline" - for spline interpolation.}
+#'    \item{"stine" - for Stineman interpolation.}
+#'  }
+#' @param maxgap An integer specifying the maximum number of consecutive missing values
+#'  to interpolate. If the run of missing values exceeds `maxgap`, those values will
+#'  remain as `NA`. Default is 10.
+#'
+#' @return A data frame with missing values in the `x` and `y` columns replaced according
+#'  to the specified interpolation method. The grouping by `individual` and `keypoint` is preserved.
+#'
+#' @details The function utilizes the `na_interpolation` function from the `imputeTS` package
+#' to perform the interpolation. The interpolation respects groupings by `individual`
+#' and `keypoint`, allowing for independent treatment of each keypoint's trajectory within
+#' each individual.
+#'
+#' @examples
+#' # Example data
+#' data <- data.frame(
+#'   individual = c(1, 1, 1, 1, 2, 2, 2, 2),
+#'   keypoint = c("nose", "nose", "nose", "nose", "eye", "eye", "eye", "eye"),
+#'   x = c(1, NA, 3, 4, 2, NA, NA, 5),
+#'   y = c(5, 6, NA, 8, NA, 2, 3, 4)
+#' )
+#'
+#' # Replace missing values using linear interpolation
+#' replace_missing(data, method = "linear", maxgap = 2)
+#'
+#' # Replace missing values using spline interpolation
+#' replace_missing(data, method = "spline")
+#'
+#' @seealso \code{\link[imputeTS]{na_interpolation}}, \code{\link[dplyr]{mutate}}
+#' @importFrom dplyr group_by mutate
+#' @export
+replace_missing <- function(data, method = "linear", maxgap = 10){
   d <- data |>
     dplyr::group_by(.data$individual, .data$keypoint) |>
     dplyr::mutate(x = na_interpolation(x, option = method, maxgap = maxgap),
