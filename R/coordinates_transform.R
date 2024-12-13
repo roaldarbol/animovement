@@ -51,19 +51,23 @@ translate_coords <- function(data, to_x=0, to_y=0, to_z=NULL, to_keypoint=NULL){
 #' @inheritParams translate_coords
 #' @keywords internal
 translate_coords_keypoint <- function(data, to_keypoint){
-  ref_coords <- data |>
-    dplyr::filter(.data$keypoint == to_keypoint) |>
-    dplyr::group_by(.data$individual)
+  out_data <- data.frame()
+  individuals <- unique(data$individual)
+  for (i in 1:length(individuals)){
+    ref_coords <- data |>
+      dplyr::filter(.data$individual == individuals[i]) |>
+      dplyr::filter(.data$keypoint == to_keypoint)
+    data_individual <- data |>
+      dplyr::filter(.data$individual == individuals[i]) |>
+      dplyr::group_by(.data$individual, .data$keypoint) |>
+      dplyr::mutate(x = .data$x - ref_coords$x,
+                    y = .data$y - ref_coords$y) |>
+      # dplyr::bind_rows(ref_coords) |>
+      dplyr::arrange(.data$time, .data$individual, .data$keypoint)
+    out_data <- bind_rows(out_data, data_individual)
+  }
 
-  data <- data |>
-    # dplyr::filter(.data$keypoint != to_keypoint) |>
-    dplyr::group_by(.data$individual, .data$time) |>
-    dplyr::mutate(x = .data$x - .data$x[.data$keypoint == to_keypoint],
-                  y = .data$y - .data$y[.data$keypoint == to_keypoint]) |>
-    # dplyr::bind_rows(ref_coords) |>
-    dplyr::arrange(.data$time, .data$individual, .data$keypoint)
-
-  return(data)
+  return(out_data)
 }
 
 #' Translate coordinates relative to coordinates
