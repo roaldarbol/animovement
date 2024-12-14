@@ -8,8 +8,7 @@
 #' @param data A data frame containing at least the columns `x` and `y`.
 #' @param threshold A numeric value specifying the speed threshold. Observations
 #' with speeds greater than this value will have their `x`, `y`, and `confidence`
-#' values replaced with `NA`. If set to `"auto"`, the function will throw an error
-#' as automatic threshold determination is not yet implemented.
+#' values replaced with `NA`. If set to `"auto"`, the function will set the threshold at the mean speed + 3 standard deviations (SD).
 #'
 #' @return A data frame with the same columns as the input `data`, but with
 #' values replaced by `NA` where the speed exceeds the threshold.
@@ -42,7 +41,7 @@ filter_by_speed <- function(data, threshold = "auto"){
   d <- data |>
     calculate_kinematics()
   if (threshold == "auto"){
-    cli::cli_abort("Not implemented yet.")
+    threshold <- mean(d$v_translation) + 3*sd(d$v_translation)
   } else {
   d <- d |>
     dplyr::mutate(x = dplyr::if_else(abs(.data$v_translation) < threshold, NA, .data$x),

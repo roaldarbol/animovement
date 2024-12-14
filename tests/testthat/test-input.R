@@ -1,16 +1,16 @@
 # Test arguments
 
 # Paths to test data
-path_animalta_raw <- here::here("tests", "data", "animalta", "single_individual_multi_arena.csv")
-path_animalta_detailed <- here::here("tests", "data", "animalta", "variable_individuals_single_arena.csv")
-path_bonsai <- here::here("tests", "data", "bonsai", "LI850.csv")
-path_dlc_single <- here::here("tests", "data", "deeplabcut", "mouse_single.csv")
-path_dlc_multi <- here::here("tests", "data", "deeplabcut", "mouse_multi.csv")
-path_idtracker_csv <- here::here("tests", "data", "idtrackerai", "trajectories_csv", "trajectories.csv")
-path_idtracker_csv_probabilities <- here::here("tests", "data", "idtrackerai", "trajectories_csv", "id_probabilities.csv")
-path_lightningpose_single <- here::here("tests", "data", "lightningpose", "mouse_single.csv")
-path_lightningpose_twoview <- here::here("tests", "data", "lightningpose", "mouse_twoview.csv")
-path_trex <- here::here("tests", "data", "trex", "beetle.csv")
+path_animalta_raw <- testthat::test_path("data", "animalta", "single_individual_multi_arena.csv")
+path_animalta_detailed <- testthat::test_path("data", "animalta", "variable_individuals_single_arena.csv")
+path_bonsai <- testthat::test_path("data", "bonsai", "LI850.csv")
+path_dlc_single <- testthat::test_path("data", "deeplabcut", "mouse_single.csv")
+path_dlc_multi <- testthat::test_path("data", "deeplabcut", "mouse_multi.csv")
+path_idtracker_csv <- testthat::test_path("data", "idtrackerai", "trajectories_csv", "trajectories.csv")
+path_idtracker_csv_probabilities <- testthat::test_path("data", "idtrackerai", "trajectories_csv", "id_probabilities.csv")
+path_lightningpose_single <- testthat::test_path("data", "lightningpose", "mouse_single.csv")
+path_lightningpose_twoview <- testthat::test_path("data", "lightningpose", "mouse_twoview.csv")
+path_trex <- testthat::test_path("data", "trex", "beetle.csv")
 
 # File headers (not including h5 files)
 test_that("Test output header names", {

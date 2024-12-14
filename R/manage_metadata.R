@@ -73,6 +73,30 @@ set_start_datetime <- function(data, start_datetime){
   return(data)
 }
 
+set_individual <- function(data, individual){
+  new_id <- individual
+  data <- data |>
+    dplyr::ungroup() |>
+    dplyr::mutate(individual = factor(new_id))
+  return(data)
+}
+
+set_framerate <- function(data, framerate, old_framerate=1){
+  scaling_factor <- old_framerate / framerate
+
+  # Ensure frame numbers start at zero
+  if (is.integer(data$time)){
+    data <- data |>
+      dplyr::mutate(time = .data$time - min(.data$time, na.rm = TRUE))
+  }
+  data <- data |>
+    dplyr::mutate(time = .data$time * scaling_factor)
+
+  attributes(data)$metadata$framerate <- framerate
+
+  return(data)
+}
+
 #' @keywords internal
 check_class <- function(x, class){
   class %in% class(x)

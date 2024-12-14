@@ -29,7 +29,7 @@ subplot_confidence <- function(data, keypoint){
   maxx <- max(data$confidence, na.rm = TRUE)
   p <- data |>
     ggplot2::ggplot(ggplot2::aes(confidence)) +
-    coord_cartesian(xlim = c(-minx, maxx)) +
+    ggplot2::coord_cartesian(xlim = c(-minx, maxx)) +
     # ggplot2::scale_x_continuous(limits = c(minx, maxx)) +
     ggplot2::geom_histogram(bins = 30) +
     ggplot2::ggtitle("", subtitle = keypoint)

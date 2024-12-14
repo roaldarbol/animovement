@@ -35,7 +35,7 @@ smooth_movement <- function(
 
   # Back-transform to dx and dy
   if (use_derivatives == TRUE){
-    data <- smooth_derivatives(data, method, window_width)
+    data <- smooth_derivatives(data, method, window_width, min_obs)
   }
 
   # Rolling mean
@@ -64,7 +64,7 @@ smooth_movement <- function(
 #' @inheritParams smooth_movement
 #'
 #' @keywords internal
-smooth_derivatives <- function(data, method, window_width){
+smooth_derivatives <- function(data, method, window_width, min_obs){
 
   # Back-transform to derivatives
   data <- data |>
