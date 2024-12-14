@@ -2,11 +2,18 @@
 % Please edit documentation in R/read_trex.R
 \name{read_trex_csv}
 \alias{read_trex_csv}
-\title{Read TRex CSV file}
+\title{Read and Process TRex CSV File}
 \usage{
 read_trex_csv(path)
 }
+\arguments{
+\item{path}{Character string specifying path to TRex CSV file}
+}
+\value{
+A processed data frame in movement data format
+}
 \description{
-Read TRex CSV file
+Internal function that handles the actual reading and processing of
+TRex CSV files. Called by read_trex() after file validation.
 }
 \keyword{internal}
