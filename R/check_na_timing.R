@@ -27,7 +27,7 @@
 #' library(dplyr)
 #' library(ggplot2)
 #' library(patchwork)
-#' data <- tibble::tibble(
+#' data <- dplyr::tibble(
 #'   x = c(1, 2, NA, 4, NA, 6),
 #'   individual = rep("A", 6),
 #'   keypoint = factor(rep(c("head", "arm"), each = 3))

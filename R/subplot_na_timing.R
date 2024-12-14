@@ -1,141 +1,76 @@
-#' @title Stacked Barplot to Visualize Missing Values per Interval
+#' Visualize Distribution of Missing Values Across Time
 #'
-#' @description Visualization of missing values in barplot form.
-#' Especially useful when looking at specific intervals and for
-#' time series with a lot of observations.
+#' @description
+#' Creates a stacked barplot visualization of missing values across time intervals.
+#' Particularly useful for examining patterns in missing data across large datasets.
+#' Adapted from the `ggplot_na_distribution2` function in the imputeTS package
+#' (Moritz & Gatscha, GPL-3).
 #'
-#' @param x Numeric Vector (\code{\link[base]{vector}}) or Time Series
-#' (\code{\link[stats]{ts}}) object containing NAs. This is the only mandatory
-#' parameter - all other parameters are only needed for adjusting the plot appearance.
+#' @param data Numeric vector containing NAs.
+#' @param number_intervals Integer specifying number of bins. Default (NULL) uses
+#'   Sturges' formula via `nclass.Sturges()`. Ignored if interval_size is set.
+#' @param interval_size Integer specifying number of observations per bin. If set,
+#'   overrides number_intervals.
+#' @param measure Character string specifying display units:
+#'   - `"percent"`: Show as percentages (default)
+#'   - `"count"`: Show absolute numbers
+#' @param color_missing Color for missing values (default: "indianred2")
+#' @param color_existing Color for existing values (default: "steelblue")
+#' @param alpha_missing Transparency for missing values (default: 0.8)
+#' @param alpha_existing Transparency for existing values (default: 0.3)
+#' @param title Plot title (default: "Missing Values per Interval")
+#' @param subtitle Plot subtitle (default: "Amount of NA and non-NA for successive intervals")
+#' @param xlab X-axis label (default shows interval size)
+#' @param ylab Y-axis label (automatically set based on measure)
+#' @param color_border Color for interval borders (default: "white")
+#' @param theme ggplot2 theme (default: theme_linedraw())
+#' @param keypoint Optional keypoint name for subtitle
 #'
-#' @param number_intervals Defines the number of bins to be created. Default
-#' number of intervals (denoted by NULL) is calculated by \code{\link[grDevices]{nclass.Sturges}}
-#' using Sturges' formula. If the interval_size parameter is set to a value
-#' different to NULL this parameter is ignored.
+#' @return A ggplot2 object that can be further customized using ggplot2 syntax
 #'
-#' @param interval_size Defines how many observations should be in one bin/interval.
-#' The required number of overall bins is afterwards calculated automatically.
-#' If used this parameter overwrites the number_intervals parameter.
-#' For a very long time series be sure to make the interval_size not extremely
-#' small, otherwise because of  overplotting issues nothing can be seen until
-#' you also increase the plot width.
+#' @details
+#' This function creates a stacked barplot showing the distribution of missing values
+#' across time. Instead of showing individual observations, it groups them into
+#' intervals/bins, making it easier to visualize patterns in large datasets.
 #'
-#' @param measure Whether the NA / non-NA ratio should be given as
-#' percent or absolute numbers.
-#'
-#' \itemize{
-#'    \item{"percent" - for percentages}
-#'
-#'    \item{"count" - for absolute numbers of NAs}
-#'    }
-#'
-#' @param color_missing Color for the amount of missing values.
-#'
-#' @param color_existing Color for the amount of existing values.
-#'
-#' @param alpha_missing Alpha (transparency) value for the missing values.
-#'
-#' @param alpha_existing Alpha (transparency) value for the existing values.
-#'
-#' @param title Title of the Plot (NULL for deactivating title).
-#'
-#' @param subtitle Subtitle of the Plot (NULL for deactivating subtitle).
-#'
-#' @param xlab Label for x-Axis. Automatically set to the current interval size, if
-#' no custom text is chosen.
-#'
-#' @param ylab Label for y-Axis. As default (NULL), the axis is automatically set
-#'  to either 'Percent' or 'Count' dependent on the settings of parameter \code{measure}.
-#'
-#' @param color_border Color for the small borders between the intervals/bins.
-#' Default is 'white'.
-#'
-#' @param theme Set a Theme for ggplot2. Default is ggplot2::theme_linedraw().
-#' (\code{\link[ggplot2]{theme_linedraw})}
-#'
-#' @details This function visualizes the distribution of missing values within
-#' a time series. In comparison to the \code{\link[imputeTS]{ggplot_na_distribution}}
-#' function this is not done by plotting each observation of the time series
-#' separately. Instead observations for time intervals are represented as
-#' intervals/bins of multiple values. For these intervals information about
-#' the amount of missing values are shown. This has the advantage, that also
-#' for large time series a plot which is easy to overview can be created.
-#'
-#' The only really needed parameter for this function is x (the univariate
-#' time series that shall be visualized). All other parameters are solely
-#' for altering the appearance of the plot.
-#'
-#' As long as the input is univariate and numeric the function also takes
-#' data.frame, tibble, tsibble, zoo, xts as an input.
-#'
-#' The plot can be adjusted to your needs via the function parameters.
-#' Additionally, for more complex adjustments, the output can also be
-#' adjusted via ggplot2 syntax. This is possible, since the output
-#' of the function is a ggplot2 object. Also take a look at the Examples
-#' to see how adjustments are made.
-#'
-#' @author Steffen Moritz, Sebastian Gatscha
-#'
-#' @seealso \code{\link[imputeTS]{ggplot_na_distribution}},
-#'  \code{\link[imputeTS]{ggplot_na_gapsize}},
-#'  \code{\link[imputeTS]{ggplot_na_imputations}}
+#' The size of intervals can be controlled either by specifying the total number
+#' of intervals (`number_intervals`) or by setting a fixed number of observations
+#' per interval (`interval_size`).
 #'
 #' @examples
-#' # Example 1: Visualize the missing values in tsNH4 time series as percentages
-#' ggplot_na_distribution2(tsNH4)
+#' \dontrun{
+#' # Basic usage with default settings
+#' ggplot_na_timing(movement_data)
 #'
-#' # Example 2: Visualize the missing values in tsNH4 time series as counts
-#' ggplot_na_distribution2(tsNH4, measure = "count")
+#' # Show counts instead of percentages
+#' ggplot_na_timing(movement_data, measure = "count")
 #'
-#' # Example 3: Visualize the missing values in tsHeating time series
-#' ggplot_na_distribution2(tsHeating)
+#' # Custom interval size
+#' ggplot_na_timing(movement_data, interval_size = 300)
 #'
-#' # Example 4: Same as example 1, just written with pipe operator
-#' tsNH4 %>% ggplot_na_distribution2()
+#' # Customize colors and transparency
+#' ggplot_na_timing(movement_data,
+#'                  color_missing = "red",
+#'                  color_existing = "blue",
+#'                  alpha_missing = 0.6)
 #'
-#' # Example 5: Visualize NAs in tsNH4 - exactly 8 intervals
-#' ggplot_na_distribution2(tsNH4, number_intervals = 8)
-#'
-#' # Example 6: Visualize NAs in tsNH4 - 300 observations per interval
-#' ggplot_na_distribution2(tsNH4, interval_size = 300)
-#'
-#' # Example 7: Visualize NAs in tsAirgap - different color for NAs
-#' # Plot adjustments via ggplot_na_distribution2 function parameters
-#' ggplot_na_distribution2(tsAirgap, color_missing = "pink")
-#'
-#' # Example 8: Visualize NAs in tsNH4 - different theme
-#' # Plot adjustments via ggplot_na_distribution2 function parameters
-#' ggplot_na_distribution2(tsNH4, theme = ggplot2::theme_classic())
-#'
-#' # Example 9: Visualize NAs in tsAirgap - title, subtitle in center
-#' # Plot adjustments via ggplot2 syntax
-#' ggplot_na_distribution2(tsAirgap) +
-#'   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
-#'   ggplot2::theme(plot.subtitle = ggtext::element_markdown(hjust = 0.5))
-#'
-#' # Example 10: Visualize NAs in tsAirgap - title in center, no subtitle
-#' # Plot adjustments via ggplot2 syntax and function parameters
-#' ggplot_na_distribution2(tsAirgap, subtitle = NULL) +
-#'   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-#'
-#' # Example 11: Visualize NAs in tsAirgap - x-axis texts with angle
-#' # Plot adjustments via ggplot2 syntax and function parameters
-#' ggplot_na_distribution2(tsAirgap, color_missing = "grey") +
-#'   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 60, hjust = 1))
-#'
-#' @importFrom magrittr %>%
+#' # Add custom ggplot2 modifications
+#' ggplot_na_timing(movement_data) +
+#'   theme(axis.text.x = element_text(angle = 45))
+#' }
 #'
 #' @importFrom grDevices nclass.Sturges
-#'
 #' @importFrom ggplot2 theme_linedraw alpha ggplot aes scale_fill_manual
 #' theme element_blank scale_x_continuous scale_y_continuous
 #' labs xlab ylab stat_bin after_stat theme_classic
-#'
 #' @importFrom ggtext element_markdown
 #'
-#' @export
+#' @note
+#' This function is adapted from the imputeTS package (version 3.3) by
+#' Steffen Moritz and Sebastian Gatscha, available under GPL-3 license.
+#'
 #' @keywords internal
-ggplot_na_timing <- function(x,
+ggplot_na_timing <- function(data,
                              number_intervals = NULL,
                              interval_size = NULL,
                              measure = "percent",
@@ -150,9 +85,6 @@ ggplot_na_timing <- function(x,
                              color_border = "white",
                              theme = ggplot2::theme_linedraw(),
                              keypoint = NULL) {
-  data <- x
-
-
 
   ##
   ## 1. Input Check and Transformation

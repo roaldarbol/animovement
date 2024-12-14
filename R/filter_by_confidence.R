@@ -15,12 +15,12 @@
 #'
 #' @examples
 #' library(dplyr)
-#' data <- tibble::tibble(
+#' data <- dplyr::tibble(
 #'   x = 1:5,
 #'   y = 6:10,
 #'   confidence = c(0.5, 0.7, 0.4, 0.8, 0.9)
 #' )
-#' filter_confidence(data, threshold = 0.6)
+#' filter_by_confidence(data, threshold = 0.6)
 #'
 #' @export
 filter_by_confidence <- function(data, threshold=0.6){

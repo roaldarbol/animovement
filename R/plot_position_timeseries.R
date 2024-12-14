@@ -39,6 +39,11 @@
 #' `translate_coords()` for the coordinate translation functionality used when
 #' `reference_keypoint` is specified.
 #'
+#' @importFrom dplyr ungroup filter
+#' @importFrom patchwork wrap_plots plot_annotation plot_layout
+#' @importFrom ggplot2 theme
+#' @importFrom ggtext element_markdown
+#'
 #' @export
 plot_position_timeseries <- function(data, reference_keypoint=NULL, dimension = "xy"){
   n_keypoints <- nlevels(data$keypoint)
@@ -70,7 +75,7 @@ plot_position_timeseries <- function(data, reference_keypoint=NULL, dimension = 
   if (dimension == "xy"){
     output_plot <- output_plot +
       patchwork::plot_annotation(subtitle = paste0(
-      "Timeseries for <b style='color:", orange, ";' >X</b> and <b style='color:", blue, "' >Y</b> coordinates
+        "Timeseries for <b style='color:", orange, ";' >X</b> and <b style='color:", blue, "' >Y</b> coordinates
                     over time"))
   } else if (dimension == "x"){
     output_plot <- output_plot +
@@ -98,6 +103,9 @@ plot_position_timeseries <- function(data, reference_keypoint=NULL, dimension = 
 #' @param dimension Character string: "xy", "x", or "y"
 #'
 #' @return A ggplot object showing the time series for the specified coordinates
+#'
+#' @importFrom ggplot2 ggplot aes geom_line ggtitle theme_linedraw scale_y_continuous
+#' @importFrom scales rescale
 #'
 #' @keywords internal
 subplot_position_timeseries <- function(data, keypoint, dimension = "xy") {

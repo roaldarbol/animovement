@@ -7,12 +7,21 @@
 filter_by_speed(data, threshold = "auto")
 }
 \arguments{
-\item{data}{A data frame containing at least the columns \code{x} and \code{y}.}
+\item{data}{A data frame containing the following required columns:
+\itemize{
+\item \code{x}: x-coordinates
+\item \code{y}: y-coordinates
+\item \code{time}: time values
+Optional column:
+\item \code{confidence}: confidence values for each observation
+}}
 
-\item{threshold}{A numeric value specifying the speed threshold. Observations
-with speeds greater than this value will have their \code{x}, \code{y}, and \code{confidence}
-values replaced with \code{NA}. If set to \code{"auto"}, the function will throw an error
-as automatic threshold determination is not yet implemented.}
+\item{threshold}{A numeric value specifying the speed threshold, or "auto".
+\itemize{
+\item If numeric: Observations with speeds greater than this value will have their
+\code{x}, \code{y}, and \code{confidence} values replaced with \code{NA}
+\item If "auto": Sets threshold at mean speed + 3 standard deviations
+}}
 }
 \value{
 A data frame with the same columns as the input \code{data}, but with
@@ -25,23 +34,25 @@ a specified threshold. Values for \code{x}, \code{y}, and \code{confidence} are 
 using the \code{calculate_kinematics} function.
 }
 \details{
-\itemize{
-\item The speed is calculated using the \code{calculate_kinematics} function, which
+The speed is calculated using the \code{calculate_kinematics} function, which
 computes translational velocity (\code{v_translation}) and other kinematic parameters.
-\item The \code{"auto"} threshold option is currently not implemented and will result
-in an error.
-\item The output data frame retains the original columns and structure of the input
-data.
-}
+When using \code{threshold = "auto"}, the function calculates the threshold as the
+mean speed plus three standard deviations, which assumes normally distributed speeds.
 }
 \examples{
-library(dplyr)
-data <- tibble::tibble(
+\dontrun{
+data <- dplyr::tibble(
+  time = 1:5,
   x = c(1, 2, 4, 7, 11),
   y = c(1, 1, 2, 3, 5),
   confidence = c(0.8, 0.9, 0.7, 0.85, 0.6)
 )
+
 # Filter data by a speed threshold of 3
 filter_by_speed(data, threshold = 3)
+
+# Use automatic threshold
+filter_by_speed(data, threshold = "auto")
+}
 
 }

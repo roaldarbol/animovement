@@ -39,7 +39,7 @@ and border outlines (\code{black}).
 library(dplyr)
 library(ggplot2)
 library(patchwork)
-data <- tibble::tibble(
+data <- dplyr::tibble(
   x = c(NA, NA, 3, NA, 5, 6, NA, NA, NA, 10),
   keypoint = factor(rep(c("head", "arm"), each = 5))
 )

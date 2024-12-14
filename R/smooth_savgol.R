@@ -1,27 +1,50 @@
-#' Smooth a trajectory using a Savitzky-Golay filter
+#' Smooth Movement Data Using Savitzky-Golay Filter
 #'
-#' Smooths a trajectory using a Savitzky-Golay smoothing filter.
+#' @description
+#' Applies a Savitzky-Golay smoothing filter to x and y coordinates in movement data.
+#' Adapted from the `TrajSmoothSG` function in the trajr package (McLean & Skowron Volponi, MIT License).
 #'
-#' Consider carefully the effects of smoothing a trajectory with temporal gaps
-#' in the data. If the smoothed trajectory is used to derive speed and/or
-#' acceleration, it may be advisable to fill in the gaps before smoothing,
-#' possibly by calling \code{TrajResampleTime}.
+#' @param data A data frame containing movement data with the following required columns:
+#'   - `individual`: Identifier for each tracked subject
+#'   - `keypoint`: Identifier for each tracked point
+#'   - `x`: x-coordinates
+#'   - `y`: y-coordinates
+#' @param p Integer specifying the polynomial order for the filter (default: 3)
+#' @param n Integer specifying the filter window size. Must be odd and less than
+#'   the number of observations (default: p + 3 - p%%2)
+#' @param ... Additional arguments passed to signal::sgolayfilt()
 #'
-#' @param data a movement data frame
-#' @param p polynomial order (passed to \code{\link[signal]{sgolayfilt}}).
-#' @param n Filter length (or window size), must be an odd number.  Passed to
-#'   \code{\link[signal]{sgolayfilt}}.
-#' @param ... Additional arguments are passed to
-#'   \code{\link[signal]{sgolayfilt}}.
-#' @return A new trajectory which is a smoothed version of the input trajectory.
+#' @return A data frame with the same structure as the input, but with smoothed
+#'   x and y coordinates.
 #'
-#' @seealso \code{\link[signal]{sgolayfilt}}
+#' @details
+#' The Savitzky-Golay filter smooths data by fitting successive sub-sets of adjacent data
+#' points with a low-degree polynomial using linear least squares regression. This method
+#' is particularly effective at preserving higher moments of the data while reducing noise.
+#'
+#' When working with data that contains temporal gaps, consider whether these gaps need
+#' to be filled before smoothing, especially if the smoothed trajectories will be used
+#' to calculate speed or acceleration.
+#'
 #' @examples
-#' set.seed(3)
-#' trj <- TrajGenerate(500, random = TRUE, angularErrorSd = .25)
-#' smoothed <- TrajSmoothSG(trj, 3, 31)
-#' plot(trj)
-#' plot(smoothed, col = "red", add = TRUE)
+#' \dontrun{
+#' # Basic usage with default parameters
+#' smooth_by_savgol(movement_data)
+#'
+#' # Specify polynomial order and window size
+#' smooth_by_savgol(movement_data, p = 3, n = 31)
+#'
+#' # Using a larger window for more smoothing
+#' smooth_by_savgol(movement_data, p = 3, n = 51)
+#' }
+#'
+#' @seealso
+#' - signal::sgolayfilt() for details on the Savitzky-Golay filter implementation
+#' - Original trajr package: McLean & Skowron Volponi (2018)
+#'
+#' @importFrom dplyr group_by mutate
+#' @importFrom signal sgolayfilt
+#' @importFrom cli cli_abort
 #'
 #' @export
 smooth_by_savgol <- function(data, p = 3, n = p + 3 - p%%2, ...) {

@@ -2,10 +2,10 @@
 % Please edit documentation in R/subplot_na_gapsize.R
 \name{ggplot_na_gapsize}
 \alias{ggplot_na_gapsize}
-\title{Visualize Occurrences of NA gap sizes}
+\title{Visualize NA Gap Sizes in Time Series Data}
 \usage{
 ggplot_na_gapsize(
-  x,
+  data,
   limit = 10,
   include_total = TRUE,
   ranked_by = "occurrence",
@@ -26,147 +26,90 @@ ggplot_na_gapsize(
 )
 }
 \arguments{
-\item{x}{Numeric Vector (\code{\link[base]{vector}}) or Time Series
-(\code{\link[stats]{ts}}) object containing NAs. This is the only mandatory
-parameter - all other parameters are only needed for adjusting the plot appearance.}
+\item{data}{Numeric vector containing NAs.}
 
-\item{limit}{Specifies how many of the most common gap sizes are shown in
-the plot.Default is 10. So only the 10 most often occurring gapsizes will
-be shown. If more or all present gap sizes should be displayed, the limit needs
-to be increased. Since this might add a lot of additional data, having
-parameter  \code{orientation} set to 'horizontal' avoids overlaps in the axis
-labels.}
+\item{limit}{Integer specifying how many of the most common gap sizes to show
+(default: 10).}
 
-\item{include_total}{When set to TRUE the total NA count for a gapsize is
-included in the plot (total = number occurrence x gap size).
-E.g. if a gapsize of 3 occurs 10 times, this means this gap size makes
-up for 30 NAs in total. This can be a good indicator of the
-overall impact of a gapsize.}
+\item{include_total}{Logical. If TRUE, shows total NA count for each gap size
+(gap size × frequency) (default: TRUE).}
 
-\item{ranked_by}{Should the results be sorted according to the number of
-occurrence or total resulting NAs for a gapsize. Total resulting NAs
-are calculated by (total = number occurrence x gap size).
+\item{ranked_by}{Character string specifying sorting method. Options:
 \itemize{
-\item{"occurrence" - Sorting by 'number of occurrence' of a gap size}
+\item \code{"occurrence"}: Sort by frequency of gap size (default)
+\item \code{"total"}: Sort by total number of NAs (frequency × gap size)
+}}
 
-\item{"total" - Sorting by 'total resulting NAs' of a gap size}
-}
+\item{color_occurrence}{Color for frequency bars (default: "indianred")}
 
-The default setting is "occurrence".}
+\item{color_total}{Color for total NA bars (default: "steelblue")}
 
-\item{color_occurrence}{Defines the Color for the Bars of
-'number of occurrence'.}
+\item{color_border}{Color for bar borders (default: "black")}
 
-\item{color_total}{Defines the color for the bars of
-'total resulting NAs'.}
+\item{alpha_bars}{Transparency value for bars (default: 1)}
 
-\item{color_border}{Defines the color for the border of the bars.}
+\item{title}{Plot title (default: "Occurrence of gap sizes")}
 
-\item{alpha_bars}{Alpha (transparency) value used for filling the bars.}
+\item{subtitle}{Plot subtitle (default: "Gap sizes (NAs in a row) ordered by most common")}
 
-\item{title}{Title of the Plot.}
+\item{xlab}{X-axis label (default: NULL)}
 
-\item{subtitle}{Subtitle of the Plot.}
+\item{ylab}{Y-axis label (default: "Number occurrence")}
 
-\item{xlab}{Label for x-Axis.}
+\item{legend}{Logical. If TRUE, shows legend (default: TRUE)}
 
-\item{ylab}{Label for y-Axis.}
+\item{orientation}{Character string. Either "vertical" or "horizontal" (default: "horizontal")}
 
-\item{legend}{If TRUE a legend is added at the bottom.}
+\item{label_occurrence}{Legend label for frequency bars (default: "Number occurrence gapsize")}
 
-\item{orientation}{Can be either 'vertical' or 'horizontal'. Defines
-if the bars are plotted vertically or horizontally. For large amounts
-of different gap sizes horizontal illustration is favorable (also see
-parameter \code{limit}).}
+\item{label_total}{Legend label for total bars (default: "Resulting NAs for gapsize")}
 
-\item{label_occurrence}{Defines the label assigned to 'number of occurrence'
-in the legend.}
+\item{theme}{ggplot2 theme (default: theme_linedraw())}
 
-\item{label_total}{Defines the label assigned to 'total resulting NAs'
-in the legend.}
-
-\item{theme}{Set a Theme for ggplot2. Default is ggplot2::theme_linedraw().
-(\code{\link[ggplot2]{theme_linedraw})}}
+\item{keypoint}{Optional keypoint name for subtitle}
 }
 \value{
-The output is a \code{\link[ggplot2]{ggplot2}} object that can be
-further adjusted by using the ggplot syntax
+A ggplot2 object that can be further customized using ggplot2 syntax
 }
 \description{
-Visualize the Number of Occurrences for existing NA Gap Sizes
-(NAs in a row) in a Time Series
+Creates a visualization of the frequency of different NA gap sizes (consecutive NAs)
+in time series data. Adapted from the \code{ggplot_na_gapsize} function in the
+imputeTS package (Moritz & Gatscha, GPL-3).
 }
 \details{
-This plotting function can be used to visualize the length of
-the NA gaps (NAs in a row) in a time series. It shows a ranking of which
-gap sizes occur most often. This ranking can be ordered by the number
-occurrence of the gap sizes or by total resulting NAs for this gap size
-(occurrence * gap length). A NA-gap of 3 occurring 10 times means 30 total
-resulting NAs.
+This function visualizes the distribution of NA gaps in your data, showing how
+often gaps of different lengths occur. For example, it might show that:
+\itemize{
+\item 2-NA gaps occur 27 times
+\item 9-NA gaps occur 11 times
+\item 27-NA gaps occur 1 time
+}
 
-A resulting plot can for example be described like this:
-a 2 NA-gap (2 NAs in a row) occurred  27 times,
-a 9 NA-gap (9 NAs in a row) occurred  11 times,
-a 27 NA-gap (27 NAs in a row) occurred  1 times, ...
-
-The only really needed parameter for this function is x (the univariate
-time series with NAs that shall be visualized). All other parameters
-are solely for altering the appearance of the plot.
-
-As long as the input is univariate and numeric, the function also takes
-data.frame, tibble, tsibble, zoo, xts as an input.
-
-The plot can be adjusted to your needs via the function parameters.
-Additionally, for more complex adjustments, the output can also be
-adjusted via ggplot2 syntax. This is possible, since the output
-of the function is a ggplot2 object. Also take a look at the Examples
-to see how adjustments are made.
+The plot can be customized using the function parameters or by adding
+additional ggplot2 layers to the returned object.
+}
+\note{
+This function is adapted from the imputeTS package (version 3.3) by
+Steffen Moritz and Sebastian Gatscha, available under GPL-3 license.
 }
 \examples{
-# Example 1: Visualize the top gap sizes in tsNH4 (top 10 by default)
-ggplot_na_gapsize(tsNH4)
+\dontrun{
+# Basic usage with default settings
+ggplot_na_gapsize(movement_data)
 
-# Example 2: Visualize the top gap sizes in tsAirgap - horizontal bars
-ggplot_na_gapsize(tsAirgap, orientation = "vertical")
+# Show top 20 gap sizes horizontally
+ggplot_na_gapsize(movement_data, limit = 20, orientation = "horizontal")
 
-# Example 3: Same as example 1, just written with pipe operator
-tsNH4 \%>\% ggplot_na_gapsize()
+# Sort by total NAs and change colors
+ggplot_na_gapsize(movement_data,
+                  ranked_by = "total",
+                  color_occurrence = "darkred",
+                  color_total = "navy")
 
-# Example 4: Visualize the top 20 gap sizes in tsNH4
-ggplot_na_gapsize(tsNH4, limit = 20)
-
-# Example 5: Visualize top gap sizes in tsNH4 without showing total NAs
-ggplot_na_gapsize(tsNH4, limit = 20, include_total = FALSE)
-
-# Example 6: Visualize top gap sizes in tsNH4 but ordered by total NAs
-# (total = occurrence * gap length)
-ggplot_na_gapsize(tsNH4, limit = 20, ranked_by = "total")
-
-# Example 7: Visualize top gap sizes in tsNH4 - different theme
-# Plot adjustments via ggplot_na_gapsize function parameters
-ggplot_na_gapsize(tsNH4, theme = ggplot2::theme_classic())
-
-# Example 8: Visualize top gap sizes in tsNH4 - title, subtitle in center
-# Plot adjustments via ggplot2 syntax
-ggplot_na_gapsize(tsNH4) +
-  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
-  ggplot2::theme(plot.subtitle = ggplot2::element_text(hjust = 0.5))
-
-# Example 9: Visualize top gap sizes in tsNH4 - title in center, no subtitle
-# Plot adjustments via ggplot2 syntax and function parameters
-ggplot_na_gapsize(tsNH4, subtitle = NULL) +
-  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
-# Example 10: Top gap sizes in tsNH4 - legend on the right and color change
-# Plot adjustments via ggplot2 syntax and function parameters
-ggplot_na_gapsize(tsNH4, color_total = "grey") +
-  ggplot2::theme(legend.position = "right")
+# Customize using ggplot2
+ggplot_na_gapsize(movement_data) +
+  theme(legend.position = "right") +
+  ggtitle("Custom Title")
 }
-\seealso{
-\code{\link[imputeTS]{ggplot_na_distribution}},
-\code{\link[imputeTS]{ggplot_na_distribution2}},
-\code{\link[imputeTS]{ggplot_na_imputations}}
-}
-\author{
-Steffen Moritz, Sebastian Gatscha
+
 }

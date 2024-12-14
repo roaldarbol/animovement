@@ -1,146 +1,131 @@
-#' @title Replace Missing Values in Pose Data
+#' Replace Missing Values in Movement Data
 #'
-#' @description Replaces missing values (NAs) in `x` and `y` coordinates of keypoints
-#' for grouped data using a specified interpolation method. This function is tailored
-#' for pose estimation datasets, where observations are grouped by individuals and keypoints.
+#' @description
+#' Replaces missing values in x and y coordinates using interpolation,
+#' handling each individual and keypoint trajectory independently.
+#' Uses interpolation methods adapted from the imputeTS package
+#' (Moritz & Hause, GPL-3).
 #'
-#' @param data A data frame containing the columns `individual`, `keypoint`, `x`, and `y`.
-#'  Missing values in the `x` and `y` columns will be replaced.
-#' @param method A character string specifying the interpolation method to use.
-#'  Options include:
-#'  \itemize{
-#'    \item{"linear" - for linear interpolation (default).}
-#'    \item{"spline" - for spline interpolation.}
-#'    \item{"stine" - for Stineman interpolation.}
-#'  }
-#' @param maxgap An integer specifying the maximum number of consecutive missing values
-#'  to interpolate. If the run of missing values exceeds `maxgap`, those values will
-#'  remain as `NA`. Default is 10.
+#' @param data A data frame containing movement tracking data with the following
+#'   required columns:
+#'   - `individual`: Identifier for each tracked subject
+#'   - `keypoint`: Identifier for each tracked point
+#'   - `x`: x-coordinates with potential NAs
+#'   - `y`: y-coordinates with potential NAs
+#' @param method Character string specifying interpolation method:
+#'   - `"linear"`: Linear interpolation (default)
+#'   - `"spline"`: Spline interpolation for smoother curves
+#'   - `"stine"`: Stineman interpolation preserving data shape
+#' @param maxgap Integer specifying maximum gap size to interpolate.
+#'   Gaps longer than this will remain NA (default: 10)
 #'
-#' @return A data frame with missing values in the `x` and `y` columns replaced according
-#'  to the specified interpolation method. The grouping by `individual` and `keypoint` is preserved.
+#' @return A data frame with the same structure as the input, but with
+#'   missing values replaced by interpolated values where possible.
 #'
-#' @details The function utilizes the `na_interpolation` function from the `imputeTS` package
-#' to perform the interpolation. The interpolation respects groupings by `individual`
-#' and `keypoint`, allowing for independent treatment of each keypoint's trajectory within
-#' each individual.
+#' @details
+#' The function applies interpolation separately to each keypoint's x and y
+#' coordinates for each individual. This ensures that interpolation only
+#' uses relevant trajectory data and doesn't cross between different
+#' keypoints or individuals.
 #'
 #' @examples
-#' # Example data
+#' \dontrun{
+#' # Create sample data with missing values
 #' data <- data.frame(
-#'   individual = c(1, 1, 1, 1, 2, 2, 2, 2),
-#'   keypoint = c("nose", "nose", "nose", "nose", "eye", "eye", "eye", "eye"),
+#'   individual = rep(1:2, each = 4),
+#'   keypoint = c(rep("head", 4), rep("tail", 4)),
 #'   x = c(1, NA, 3, 4, 2, NA, NA, 5),
 #'   y = c(5, 6, NA, 8, NA, 2, 3, 4)
 #' )
 #'
-#' # Replace missing values using linear interpolation
-#' replace_missing(data, method = "linear", maxgap = 2)
+#' # Basic linear interpolation
+#' replace_missing(data)
 #'
-#' # Replace missing values using spline interpolation
-#' replace_missing(data, method = "spline")
+#' # Spline interpolation with smaller max gap
+#' replace_missing(data, method = "spline", maxgap = 2)
+#' }
 #'
-#' @seealso \code{\link[imputeTS]{na_interpolation}}, \code{\link[dplyr]{mutate}}
+#' @seealso
+#' - `na_interpolation()` for details on the interpolation methods
+#'
 #' @importFrom dplyr group_by mutate
+#'
 #' @export
 replace_missing <- function(data, method = "linear", maxgap = 10){
   d <- data |>
     dplyr::group_by(.data$individual, .data$keypoint) |>
-    dplyr::mutate(x = na_interpolation(x, option = method, maxgap = maxgap),
-                  y = na_interpolation(x, option = method, maxgap = maxgap))
+    dplyr::mutate(x = na_interpolation(.data$x, option = method, maxgap = maxgap),
+                  y = na_interpolation(.data$y, option = method, maxgap = maxgap))
 
   return(d)
 }
 
 
 
-#' @title Missing Value Imputation by Interpolation
+#' Interpolate Missing Values in Movement Data
 #'
-#' @description Uses either linear, spline or stineman interpolation
-#' to replace missing values.
+#' @description
+#' Replaces missing values using linear, spline, or stineman interpolation.
+#' Adapted from the `na_interpolation` function in the imputeTS package
+#' (Moritz & Hause, GPL-3).
 #'
-#' @param x Numeric Vector (\code{\link{vector}}) or Time Series (\code{\link{ts}})
-#'  object in which missing values shall be replaced
+#' @param x A vector or data frame containing numeric data with missing values (NAs)
+#' @param option Character string specifying interpolation method:
+#'   - `"linear"`: Linear interpolation using stats::approx (default)
+#'   - `"spline"`: Spline interpolation using stats::spline
+#'   - `"stine"`: Stineman interpolation using stinepack::stinterp
+#' @param maxgap Integer specifying maximum gap size to interpolate. Gaps longer
+#'   than this will be left as NA. Default is Inf (no limit).
+#' @param ... Additional parameters passed to the underlying interpolation functions
 #'
-#' @param option Algorithm to be used. Accepts the following input:
-#' \itemize{
-#'    \item{"linear" - for linear interpolation using \link{approx} } (default choice)
-#'    \item{"spline" - for spline interpolation using \link{spline}}
-#'    \item{"stine" - for Stineman interpolation using \link[stinepack]{stinterp}}
-#'    }
+#' @return An object of the same type as the input, with NA values replaced by
+#' interpolated values where possible.
 #'
-#' @param maxgap Maximum number of successive NAs to still perform imputation on.
-#'  Default setting is to replace all NAs without restrictions. With this
-#'  option set, consecutive NAs runs, that are longer than 'maxgap' will
-#'  be left NA. This option mostly makes sense if you want to
-#'  treat long runs of NA afterwards separately.
+#' @details
+#' The function requires at least 2 non-NA values to perform interpolation. For
+#' each interpolation method:
+#' - Linear: Connects points with straight lines
+#' - Spline: Uses cubic splines for smoother curves
+#' - Stineman: Preserves monotonicity and shape of the data
 #'
-#' @param ... Additional parameters to be passed through to \link{approx} or
-#'  \link{spline} interpolation functions
-#'
-#' @return Vector (\code{\link{vector}}) or Time Series (\code{\link{ts}})
-#'  object (dependent on given input at parameter x)
-#'
-#' @details Missing values get replaced by values of \link{approx}, \link{spline}
-#' or \link[stinepack]{stinterp} interpolation.
-#'
-#'  The na_interpolation function also supports the use of additional parameters from the respective
-#'  underlying interpolation functions. While usually not really needed, it is useful to know that
-#'  this advanced use is in principle possible. These additional parameters are not specified explicitly
-#'  in the na_interpolation function documentation. Take a look into the documentation of the \link[stinepack]{stinterp}, \link{approx} and \link{spline} functions to get an overview about these additional parameters.
-#'
-#'  An example for such a parameter is the 'method' argument of spline, which can be used to
-#'  further specify the type of spline to be used. Possible values are "fmm", "natural",
-#'  "periodic", "monoH.FC" and "hyman" (as can be seen in the \link{spline}
-#'   documentation). The respective function call using this additional parameter would
-#'   look like this:
-#'   \code{na_interpolation(x, option ="spline", method ="natural")}
-#'
-#'  Like in this example other additional detail parameters (gained from \link{approx},
-#'  \link{spline}, \link[stinepack]{stinterp} documentation) can be used by just including
-#'  them in the na_interpolation function call. As already mentioned, these advanced possibilities
-#'  for settings parameters are only helpful for specific use cases. For regular use
-#'  the standard parameters provided directly in the na_interpolation documentation should be
-#'  more than enough.
-#'
-#'
-#' @author Steffen Moritz, Ron Hause
-#'
-#' @seealso  \code{\link[imputeTS]{na_kalman}}, \code{\link[imputeTS]{na_locf}},
-#'  \code{\link[imputeTS]{na_ma}}, \code{\link[imputeTS]{na_mean}},
-#'  \code{\link[imputeTS]{na_random}}, \code{\link[imputeTS]{na_replace}},
-#'  \code{\link[imputeTS]{na_seadec}}, \code{\link[imputeTS]{na_seasplit}}
+#' Additional parameters can be passed to the underlying functions:
+#' - For linear: see ?stats::approx
+#' - For spline: see ?stats::spline
+#' - For stineman: see ?stinepack::stinterp
 #'
 #' @examples
-#' # Prerequisite: Create Time series with missing values
-#' x <- ts(c(2, 3, 4, 5, 6, NA, 7, 8))
+#' \dontrun{
+#' # Basic linear interpolation
+#' data <- c(1, 2, NA, 4, 5)
+#' na_interpolation(data)
 #'
-#' # Example 1: Perform linear interpolation
-#' na_interpolation(x)
+#' # Spline interpolation
+#' na_interpolation(data, option = "spline")
 #'
-#' # Example 2: Perform spline interpolation
-#' na_interpolation(x, option = "spline")
+#' # Only interpolate gaps of size 2 or less
+#' na_interpolation(data, maxgap = 2)
 #'
-#' # Example 3: Perform stine interpolation
-#' na_interpolation(x, option = "stine")
+#' # Using additional parameters
+#' na_interpolation(data, option = "spline", method = "natural")
+#' }
 #'
-#' # Example 4: Perform linear interpolation, with additional parameter pass through from spline()
-#' # Take a look at the 'Details' section of the na_interpolation documentation
-#' # for more information about advanced parameter pass through options
-#' na_interpolation(x, option ="spline", method ="natural")
+#' @seealso
+#' - stats::approx for linear interpolation details
+#' - stats::spline for spline interpolation details
+#' - stinepack::stinterp for Stineman interpolation details
 #'
-#' # Example 5: Same as example 1, just written with pipe operator
-#' x %>% na_interpolation()
+#' @references
+#' Johannesson et al. (2015). "Package stinepack"
 #'
-#' # Example 6: Same as example 2, just written with pipe operator
-#' x %>% na_interpolation(option = "spline")
-#' @references Johannesson, Tomas, et al. (2015). "Package stinepack".
-#' @importFrom stats ts approx spline
+#' @note
+#' This function is adapted from the imputeTS package (version 3.3) by
+#' Steffen Moritz and Ron Hause, available under GPL-3 license.
+#'
+#' @importFrom stats approx spline
 #' @importFrom methods hasArg
 #' @importFrom stinepack stinterp
-#' @importFrom magrittr %>%
+#'
 #' @export
-
 na_interpolation <- function(x, option = "linear", maxgap = Inf, ...) {
 
   # Variable 'data' is used for all transformations to the time series

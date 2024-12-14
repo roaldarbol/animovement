@@ -32,6 +32,7 @@ Imports:
     rhdf5,
     rlang,
     roll,
+    scales,
     signal,
     stinepack,
     stringi,

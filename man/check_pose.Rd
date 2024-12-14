@@ -13,8 +13,8 @@ check_pose(data, reference_keypoint, type = "histogram")
 
 \item{type}{Character string specifying the type of plot to create. Options are:
 \itemize{
-\item \code{"histogram"}: Histograms of the distance distributions (default).
-\item \code{"confidence"}: Plots showing confidence intervals for the distances.
+\item \code{"histogram"}: Histograms of the distance distributions (default)
+\item \code{"confidence"}: Plots showing confidence intervals for the distances
 }}
 }
 \value{
@@ -27,22 +27,26 @@ a calculated centroid in the data. By default, it produces histograms of the
 distance distributions, but it can also create confidence plots if specified.
 }
 \details{
-\itemize{
-\item The centroid is computed using the \code{add_centroid} function and distances are
+The centroid is computed using the \code{add_centroid} function and distances are
 calculated with the \code{calculate_distance_to_centroid} function.
-\item The function automatically excludes the centroid itself from the visualizations.
-\item Histograms provide an overview of distance distributions, while confidence plots
+The function automatically excludes the centroid itself from the visualizations.
+Histograms provide an overview of distance distributions, while confidence plots
 summarize variability with intervals.
 }
-}
 \examples{
-library(dplyr)
-library(patchwork)
-data <- tibble::tibble(
+\dontrun{
+# Create sample data
+data <- dplyr::tibble(
   keypoint = rep(c("head", "arm", "leg", "torso"), each = 10),
   x = rnorm(40, mean = 0, sd = 1),
   y = rnorm(40, mean = 0, sd = 1)
 )
-check_pose(data, type = "histogram")
+
+# Plot histogram of distances
+check_pose(data, reference_keypoint = "head", type = "histogram")
+
+# Plot confidence intervals
+check_pose(data, reference_keypoint = "head", type = "confidence")
+}
 
 }

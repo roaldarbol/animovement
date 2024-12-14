@@ -2,41 +2,59 @@
 % Please edit documentation in R/smooth_savgol.R
 \name{smooth_by_savgol}
 \alias{smooth_by_savgol}
-\title{Smooth a trajectory using a Savitzky-Golay filter}
+\title{Smooth Movement Data Using Savitzky-Golay Filter}
 \usage{
 smooth_by_savgol(data, p = 3, n = p + 3 - p\%\%2, ...)
 }
 \arguments{
-\item{data}{a movement data frame}
+\item{data}{A data frame containing movement data with the following required columns:
+\itemize{
+\item \code{individual}: Identifier for each tracked subject
+\item \code{keypoint}: Identifier for each tracked point
+\item \code{x}: x-coordinates
+\item \code{y}: y-coordinates
+}}
 
-\item{p}{polynomial order (passed to \code{\link[signal]{sgolayfilt}}).}
+\item{p}{Integer specifying the polynomial order for the filter (default: 3)}
 
-\item{n}{Filter length (or window size), must be an odd number.  Passed to
-\code{\link[signal]{sgolayfilt}}.}
+\item{n}{Integer specifying the filter window size. Must be odd and less than
+the number of observations (default: p + 3 - p\%\%2)}
 
-\item{...}{Additional arguments are passed to
-\code{\link[signal]{sgolayfilt}}.}
+\item{...}{Additional arguments passed to signal::sgolayfilt()}
 }
 \value{
-A new trajectory which is a smoothed version of the input trajectory.
+A data frame with the same structure as the input, but with smoothed
+x and y coordinates.
 }
 \description{
-Smooths a trajectory using a Savitzky-Golay smoothing filter.
+Applies a Savitzky-Golay smoothing filter to x and y coordinates in movement data.
+Adapted from the \code{TrajSmoothSG} function in the trajr package (McLean & Skowron Volponi, MIT License).
 }
 \details{
-Consider carefully the effects of smoothing a trajectory with temporal gaps
-in the data. If the smoothed trajectory is used to derive speed and/or
-acceleration, it may be advisable to fill in the gaps before smoothing,
-possibly by calling \code{TrajResampleTime}.
+The Savitzky-Golay filter smooths data by fitting successive sub-sets of adjacent data
+points with a low-degree polynomial using linear least squares regression. This method
+is particularly effective at preserving higher moments of the data while reducing noise.
+
+When working with data that contains temporal gaps, consider whether these gaps need
+to be filled before smoothing, especially if the smoothed trajectories will be used
+to calculate speed or acceleration.
 }
 \examples{
-set.seed(3)
-trj <- TrajGenerate(500, random = TRUE, angularErrorSd = .25)
-smoothed <- TrajSmoothSG(trj, 3, 31)
-plot(trj)
-plot(smoothed, col = "red", add = TRUE)
+\dontrun{
+# Basic usage with default parameters
+smooth_by_savgol(movement_data)
+
+# Specify polynomial order and window size
+smooth_by_savgol(movement_data, p = 3, n = 31)
+
+# Using a larger window for more smoothing
+smooth_by_savgol(movement_data, p = 3, n = 51)
+}
 
 }
 \seealso{
-\code{\link[signal]{sgolayfilt}}
+\itemize{
+\item signal::sgolayfilt() for details on the Savitzky-Golay filter implementation
+\item Original trajr package: McLean & Skowron Volponi (2018)
+}
 }

@@ -1,23 +1,60 @@
-#' Smooth movement
+#' Smooth Movement Data
 #'
 #' @description
 #' `r lifecycle::badge('experimental')`
 #'
-#' Filtering/smoothing tracks is standard practice to root out noise in movement data.
-#' Here we provide some filter functions to do this. The function expects the data to be in the standard format,
-#' containing at least x, y and time variables.
+#' Applies smoothing filters to movement tracking data to reduce noise. The function
+#' supports different smoothing methods and can operate on either positions directly
+#' or their derivatives (frame-to-frame differences).
 #'
+#' @param data A data frame containing movement tracking data with the following
+#'   required columns:
+#'   - `individual`: Identifier for each tracked subject
+#'   - `keypoint`: Identifier for each tracked point
+#'   - `x`: x-coordinates
+#'   - `y`: y-coordinates
+#'   - `time`: Time values
+#' @param method Character string specifying the smoothing method. Options:
+#'   - `"rolling_median"`: Rolling median filter (default)
+#'   - `"rolling_mean"`: Rolling mean filter
+#' @param window_width Integer specifying how many observations to include in the
+#'   rolling window (default: 5)
+#' @param min_obs Integer specifying the minimum number of non-NA values required
+#'   to calculate the rolling statistics (default: 1)
+#' @param use_derivatives Logical. If TRUE, smoothing is applied to frame-to-frame
+#'   differences rather than positions directly. Useful for trackball data. (default: FALSE)
 #'
-#' @param data Data frame
-#' @param method Which smoothing method to use. options:  "rolling_median (default), "rolling_mean".
-#' @param window_width How many observations to use for rolling window filters (e.g. "rolling_mean" or "rolling_median").
-#' @param use_derivatives whether to use the derivatives (difference between frames) to perform the smoothing. Useful for trackball data.
+#' @return A data frame with the same structure as the input, but with smoothed
+#'   x and y coordinates.
 #'
-#' @return A movement data frame
+#' @details
+#' The function first validates the input data structure using `ensure_output_header_names()`
+#' and `ensure_output_header_class()`. It then applies the selected smoothing method
+#' separately to each individual and keypoint combination.
+#'
+#' When `use_derivatives = TRUE`, the function calls `smooth_derivatives()` which
+#' applies smoothing to the differences between consecutive positions before
+#' reconstructing the smoothed trajectory.
+#'
+#' @examples
+#' \dontrun{
+#' # Apply default rolling median smoothing
+#' smooth_movement(tracking_data, window_width = 5)
+#'
+#' # Use rolling mean with a larger window
+#' smooth_movement(tracking_data, method = "rolling_mean", window_width = 7)
+#'
+#' # Smooth derivatives instead of positions
+#' smooth_movement(tracking_data, use_derivatives = TRUE)
+#' }
+#'
+#' @seealso
+#' - `smooth_derivatives()` for details on derivative-based smoothing
+#' - `ensure_output_header_names()` and `ensure_output_header_class()` for data validation
+#'
 #' @export
 #' @import dplyr
 #' @importFrom roll roll_mean roll_median
-#'
 smooth_movement <- function(
     data,
     method = c("rolling_median"),

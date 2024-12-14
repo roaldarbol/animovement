@@ -2,94 +2,78 @@
 % Please edit documentation in R/replace_na.R
 \name{na_interpolation}
 \alias{na_interpolation}
-\title{Missing Value Imputation by Interpolation}
+\title{Interpolate Missing Values in Movement Data}
 \usage{
 na_interpolation(x, option = "linear", maxgap = Inf, ...)
 }
 \arguments{
-\item{x}{Numeric Vector (\code{\link{vector}}) or Time Series (\code{\link{ts}})
-object in which missing values shall be replaced}
+\item{x}{A vector or data frame containing numeric data with missing values (NAs)}
 
-\item{option}{Algorithm to be used. Accepts the following input:
+\item{option}{Character string specifying interpolation method:
 \itemize{
-\item{"linear" - for linear interpolation using \link{approx} } (default choice)
-\item{"spline" - for spline interpolation using \link{spline}}
-\item{"stine" - for Stineman interpolation using \link[stinepack]{stinterp}}
+\item \code{"linear"}: Linear interpolation using stats::approx (default)
+\item \code{"spline"}: Spline interpolation using stats::spline
+\item \code{"stine"}: Stineman interpolation using stinepack::stinterp
 }}
 
-\item{maxgap}{Maximum number of successive NAs to still perform imputation on.
-Default setting is to replace all NAs without restrictions. With this
-option set, consecutive NAs runs, that are longer than 'maxgap' will
-be left NA. This option mostly makes sense if you want to
-treat long runs of NA afterwards separately.}
+\item{maxgap}{Integer specifying maximum gap size to interpolate. Gaps longer
+than this will be left as NA. Default is Inf (no limit).}
 
-\item{...}{Additional parameters to be passed through to \link{approx} or
-\link{spline} interpolation functions}
+\item{...}{Additional parameters passed to the underlying interpolation functions}
 }
 \value{
-Vector (\code{\link{vector}}) or Time Series (\code{\link{ts}})
-object (dependent on given input at parameter x)
+An object of the same type as the input, with NA values replaced by
+interpolated values where possible.
 }
 \description{
-Uses either linear, spline or stineman interpolation
-to replace missing values.
+Replaces missing values using linear, spline, or stineman interpolation.
+Adapted from the \code{na_interpolation} function in the imputeTS package
+(Moritz & Hause, GPL-3).
 }
 \details{
-Missing values get replaced by values of \link{approx}, \link{spline}
-or \link[stinepack]{stinterp} interpolation.
+The function requires at least 2 non-NA values to perform interpolation. For
+each interpolation method:
+\itemize{
+\item Linear: Connects points with straight lines
+\item Spline: Uses cubic splines for smoother curves
+\item Stineman: Preserves monotonicity and shape of the data
+}
 
-The na_interpolation function also supports the use of additional parameters from the respective
-underlying interpolation functions. While usually not really needed, it is useful to know that
-this advanced use is in principle possible. These additional parameters are not specified explicitly
-in the na_interpolation function documentation. Take a look into the documentation of the \link[stinepack]{stinterp}, \link{approx} and \link{spline} functions to get an overview about these additional parameters.
-
-An example for such a parameter is the 'method' argument of spline, which can be used to
-further specify the type of spline to be used. Possible values are "fmm", "natural",
-"periodic", "monoH.FC" and "hyman" (as can be seen in the \link{spline}
-documentation). The respective function call using this additional parameter would
-look like this:
-\code{na_interpolation(x, option ="spline", method ="natural")}
-
-Like in this example other additional detail parameters (gained from \link{approx},
-\link{spline}, \link[stinepack]{stinterp} documentation) can be used by just including
-them in the na_interpolation function call. As already mentioned, these advanced possibilities
-for settings parameters are only helpful for specific use cases. For regular use
-the standard parameters provided directly in the na_interpolation documentation should be
-more than enough.
+Additional parameters can be passed to the underlying functions:
+\itemize{
+\item For linear: see ?stats::approx
+\item For spline: see ?stats::spline
+\item For stineman: see ?stinepack::stinterp
+}
+}
+\note{
+This function is adapted from the imputeTS package (version 3.3) by
+Steffen Moritz and Ron Hause, available under GPL-3 license.
 }
 \examples{
-# Prerequisite: Create Time series with missing values
-x <- ts(c(2, 3, 4, 5, 6, NA, 7, 8))
+\dontrun{
+# Basic linear interpolation
+data <- c(1, 2, NA, 4, 5)
+na_interpolation(data)
 
-# Example 1: Perform linear interpolation
-na_interpolation(x)
+# Spline interpolation
+na_interpolation(data, option = "spline")
 
-# Example 2: Perform spline interpolation
-na_interpolation(x, option = "spline")
+# Only interpolate gaps of size 2 or less
+na_interpolation(data, maxgap = 2)
 
-# Example 3: Perform stine interpolation
-na_interpolation(x, option = "stine")
+# Using additional parameters
+na_interpolation(data, option = "spline", method = "natural")
+}
 
-# Example 4: Perform linear interpolation, with additional parameter pass through from spline()
-# Take a look at the 'Details' section of the na_interpolation documentation
-# for more information about advanced parameter pass through options
-na_interpolation(x, option ="spline", method ="natural")
-
-# Example 5: Same as example 1, just written with pipe operator
-x \%>\% na_interpolation()
-
-# Example 6: Same as example 2, just written with pipe operator
-x \%>\% na_interpolation(option = "spline")
 }
 \references{
-Johannesson, Tomas, et al. (2015). "Package stinepack".
+Johannesson et al. (2015). "Package stinepack"
 }
 \seealso{
-\code{\link[imputeTS]{na_kalman}}, \code{\link[imputeTS]{na_locf}},
-\code{\link[imputeTS]{na_ma}}, \code{\link[imputeTS]{na_mean}},
-\code{\link[imputeTS]{na_random}}, \code{\link[imputeTS]{na_replace}},
-\code{\link[imputeTS]{na_seadec}}, \code{\link[imputeTS]{na_seasplit}}
+\itemize{
+\item stats::approx for linear interpolation details
+\item stats::spline for spline interpolation details
+\item stinepack::stinterp for Stineman interpolation details
 }
-\author{
-Steffen Moritz, Ron Hause
 }

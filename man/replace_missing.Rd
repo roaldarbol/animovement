@@ -2,57 +2,66 @@
 % Please edit documentation in R/replace_na.R
 \name{replace_missing}
 \alias{replace_missing}
-\title{Replace Missing Values in Pose Data}
+\title{Replace Missing Values in Movement Data}
 \usage{
 replace_missing(data, method = "linear", maxgap = 10)
 }
 \arguments{
-\item{data}{A data frame containing the columns \code{individual}, \code{keypoint}, \code{x}, and \code{y}.
-Missing values in the \code{x} and \code{y} columns will be replaced.}
-
-\item{method}{A character string specifying the interpolation method to use.
-Options include:
+\item{data}{A data frame containing movement tracking data with the following
+required columns:
 \itemize{
-\item{"linear" - for linear interpolation (default).}
-\item{"spline" - for spline interpolation.}
-\item{"stine" - for Stineman interpolation.}
+\item \code{individual}: Identifier for each tracked subject
+\item \code{keypoint}: Identifier for each tracked point
+\item \code{x}: x-coordinates with potential NAs
+\item \code{y}: y-coordinates with potential NAs
 }}
 
-\item{maxgap}{An integer specifying the maximum number of consecutive missing values
-to interpolate. If the run of missing values exceeds \code{maxgap}, those values will
-remain as \code{NA}. Default is 10.}
+\item{method}{Character string specifying interpolation method:
+\itemize{
+\item \code{"linear"}: Linear interpolation (default)
+\item \code{"spline"}: Spline interpolation for smoother curves
+\item \code{"stine"}: Stineman interpolation preserving data shape
+}}
+
+\item{maxgap}{Integer specifying maximum gap size to interpolate.
+Gaps longer than this will remain NA (default: 10)}
 }
 \value{
-A data frame with missing values in the \code{x} and \code{y} columns replaced according
-to the specified interpolation method. The grouping by \code{individual} and \code{keypoint} is preserved.
+A data frame with the same structure as the input, but with
+missing values replaced by interpolated values where possible.
 }
 \description{
-Replaces missing values (NAs) in \code{x} and \code{y} coordinates of keypoints
-for grouped data using a specified interpolation method. This function is tailored
-for pose estimation datasets, where observations are grouped by individuals and keypoints.
+Replaces missing values in x and y coordinates using interpolation,
+handling each individual and keypoint trajectory independently.
+Uses interpolation methods adapted from the imputeTS package
+(Moritz & Hause, GPL-3).
 }
 \details{
-The function utilizes the \code{na_interpolation} function from the \code{imputeTS} package
-to perform the interpolation. The interpolation respects groupings by \code{individual}
-and \code{keypoint}, allowing for independent treatment of each keypoint's trajectory within
-each individual.
+The function applies interpolation separately to each keypoint's x and y
+coordinates for each individual. This ensures that interpolation only
+uses relevant trajectory data and doesn't cross between different
+keypoints or individuals.
 }
 \examples{
-# Example data
+\dontrun{
+# Create sample data with missing values
 data <- data.frame(
-  individual = c(1, 1, 1, 1, 2, 2, 2, 2),
-  keypoint = c("nose", "nose", "nose", "nose", "eye", "eye", "eye", "eye"),
+  individual = rep(1:2, each = 4),
+  keypoint = c(rep("head", 4), rep("tail", 4)),
   x = c(1, NA, 3, 4, 2, NA, NA, 5),
   y = c(5, 6, NA, 8, NA, 2, 3, 4)
 )
 
-# Replace missing values using linear interpolation
-replace_missing(data, method = "linear", maxgap = 2)
+# Basic linear interpolation
+replace_missing(data)
 
-# Replace missing values using spline interpolation
-replace_missing(data, method = "spline")
+# Spline interpolation with smaller max gap
+replace_missing(data, method = "spline", maxgap = 2)
+}
 
 }
 \seealso{
-\code{\link[imputeTS]{na_interpolation}}, \code{\link[dplyr]{mutate}}
+\itemize{
+\item \code{na_interpolation()} for details on the interpolation methods
+}
 }

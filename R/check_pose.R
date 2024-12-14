@@ -7,17 +7,17 @@
 #' @param data A data frame containing at least the columns `keypoint`, `x`, and `y`.
 #' @param reference_keypoint The keypoint used as a reference to calculate the distance.
 #' @param type Character string specifying the type of plot to create. Options are:
-#' - `"histogram"`: Histograms of the distance distributions (default).
-#' - `"confidence"`: Plots showing confidence intervals for the distances.
+#'   - `"histogram"`: Histograms of the distance distributions (default)
+#'   - `"confidence"`: Plots showing confidence intervals for the distances
 #'
 #' @return A `patchwork` object combining plots for each keypoint, visualizing
 #' the distances to the centroid.
 #'
 #' @details
-#' - The centroid is computed using the `add_centroid` function and distances are
+#' The centroid is computed using the `add_centroid` function and distances are
 #' calculated with the `calculate_distance_to_centroid` function.
-#' - The function automatically excludes the centroid itself from the visualizations.
-#' - Histograms provide an overview of distance distributions, while confidence plots
+#' The function automatically excludes the centroid itself from the visualizations.
+#' Histograms provide an overview of distance distributions, while confidence plots
 #' summarize variability with intervals.
 #'
 #' @importFrom dplyr filter mutate
@@ -26,14 +26,20 @@
 #' @importFrom cli cli_abort
 #'
 #' @examples
-#' library(dplyr)
-#' library(patchwork)
-#' data <- tibble::tibble(
+#' \dontrun{
+#' # Create sample data
+#' data <- dplyr::tibble(
 #'   keypoint = rep(c("head", "arm", "leg", "torso"), each = 10),
 #'   x = rnorm(40, mean = 0, sd = 1),
 #'   y = rnorm(40, mean = 0, sd = 1)
 #' )
-#' check_pose(data, type = "histogram")
+#'
+#' # Plot histogram of distances
+#' check_pose(data, reference_keypoint = "head", type = "histogram")
+#'
+#' # Plot confidence intervals
+#' check_pose(data, reference_keypoint = "head", type = "confidence")
+#' }
 #'
 #' @export
 check_pose <- function(data, reference_keypoint, type = "histogram"){
@@ -45,7 +51,7 @@ check_pose <- function(data, reference_keypoint, type = "histogram"){
   color_border = "black"
   na_plots <- list()
   d_ref <- data |>
-    dplyr::filter(keypoint == reference_keypoint) |>
+    dplyr::filter(.data$keypoint == reference_keypoint) |>
     dplyr::mutate(keypoint = "reference_keypoint")
   data <- dplyr::bind_rows(data, d_ref)
 

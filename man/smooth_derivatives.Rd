@@ -4,14 +4,30 @@
 \alias{smooth_derivatives}
 \title{Smooth derivatives (when original data measured differences between movements)}
 \usage{
-smooth_derivatives(data, method, window_width)
+smooth_derivatives(data, method, window_width, min_obs)
 }
 \arguments{
-\item{data}{Data frame}
+\item{data}{A data frame containing movement tracking data with the following
+required columns:
+\itemize{
+\item \code{individual}: Identifier for each tracked subject
+\item \code{keypoint}: Identifier for each tracked point
+\item \code{x}: x-coordinates
+\item \code{y}: y-coordinates
+\item \code{time}: Time values
+}}
 
-\item{method}{Which smoothing method to use. options:  "rolling_median (default), "rolling_mean".}
+\item{method}{Character string specifying the smoothing method. Options:
+\itemize{
+\item \code{"rolling_median"}: Rolling median filter (default)
+\item \code{"rolling_mean"}: Rolling mean filter
+}}
 
-\item{window_width}{How many observations to use for rolling window filters (e.g. "rolling_mean" or "rolling_median").}
+\item{window_width}{Integer specifying how many observations to include in the
+rolling window (default: 5)}
+
+\item{min_obs}{Integer specifying the minimum number of non-NA values required
+to calculate the rolling statistics (default: 1)}
 }
 \description{
 Smooth derivatives (when original data measured differences between movements)

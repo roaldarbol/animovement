@@ -14,8 +14,8 @@
 #' @examples
 #' \dontrun{
 #' # Inside dplyr pipeline
-#' data %>%
-#'   group_by(keypoint) %>%
+#' data |>
+#'   group_by(keypoint) |>
 #'   mutate(speed = calculate_speed(x, y, time))
 #' }
 #'

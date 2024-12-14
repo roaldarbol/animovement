@@ -29,7 +29,7 @@ function.
 \examples{
 library(dplyr)
 library(patchwork)
-data <- tibble::tibble(
+data <- dplyr::tibble(
   keypoint = rep(c("head", "arm", "leg", "torso"), each = 10),
   confidence = runif(40, min = 0, max = 1)
 )
