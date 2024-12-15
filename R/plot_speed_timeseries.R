@@ -54,9 +54,6 @@ plot_speed_timeseries <- function(data, y_max = NULL) {
     }
   }
 
-
-  }
-
   output_plot <- patchwork::wrap_plots(plot_ts, ncol = 1) +
     patchwork::plot_annotation(
       title = "Time Series of Keypoint Speed",
