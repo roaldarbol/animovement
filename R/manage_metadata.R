@@ -84,6 +84,8 @@ set_start_datetime <- function(data, start_datetime){
 #'
 #' @return A modified data frame with the new individual identifier applied as a factor
 #'
+#' @export
+#'
 #' @importFrom dplyr ungroup mutate
 #'
 #' @examples
@@ -108,6 +110,8 @@ set_individual <- function(data, individual){
 #' @param old_framerate The original framerate of the data (defaults to 1)
 #'
 #' @return A modified data frame with adjusted time values and updated metadata
+#'
+#' @export
 #'
 #' @importFrom dplyr mutate
 #'
