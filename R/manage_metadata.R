@@ -84,6 +84,8 @@ set_start_datetime <- function(data, start_datetime){
 #'
 #' @return A modified data frame with the new individual identifier applied as a factor
 #'
+#' @importFrom dplyr ungroup mutate
+#'
 #' @examples
 #' data <- data.frame(time = 1:5, value = rnorm(5))
 #' result <- set_individual(data, "subject_A")
@@ -106,6 +108,8 @@ set_individual <- function(data, individual){
 #' @param old_framerate The original framerate of the data (defaults to 1)
 #'
 #' @return A modified data frame with adjusted time values and updated metadata
+#'
+#' @importFrom dplyr mutate
 #'
 #' @details The function calculates a scaling factor based on the ratio of old to
 #' new framerates. For integer time values, it ensures they start from zero. All
