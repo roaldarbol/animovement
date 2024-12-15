@@ -44,8 +44,17 @@ plot_speed_timeseries <- function(data, y_max = NULL) {
     df <- data |>
       dplyr::filter(.data$keypoint == keypoints[j])
 
-    plot_ts[[j]] <- df |>
-      subplot_speed_timeseries(keypoint = keypoints[j], y_max = y_max)
+    if (!all(is.na(df$x))){
+      plot_ts[[j]] <- df |>
+        subplot_speed_timeseries(keypoint = keypoints[j], y_max = y_max)
+    } else {
+      cli::cli_inform("All values for {keypoints[j]} were NA. Returning a blank plot.")
+      plot_ts[[j]] <- ggplot2::ggplot() +
+        ggplot2::ggtitle("", subtitle = keypoints[j])
+    }
+  }
+
+
   }
 
   output_plot <- patchwork::wrap_plots(plot_ts, ncol = 1) +

@@ -62,8 +62,14 @@ plot_position_timeseries <- function(data, reference_keypoint=NULL, dimension = 
       dplyr::ungroup() |>
       dplyr::filter(.data$keypoint == keypoints[j])
 
-    plot_ts[[j]] <- df |>
-      subplot_position_timeseries(keypoint = keypoints[j], dimension = dimension)
+    if (!all(is.na(df$x))){
+      plot_ts[[j]] <- df |>
+        subplot_position_timeseries(keypoint = keypoints[j], dimension = dimension)
+    } else {
+      cli::cli_inform("All values for {keypoints[j]} were NA. Returning a blank plot.")
+      plot_ts[[j]] <- ggplot2::ggplot() +
+        ggplot2::ggtitle("", subtitle = keypoints[j])
+    }
   }
 
   output_plot <- patchwork::wrap_plots(plot_ts, ncol = 1) +
