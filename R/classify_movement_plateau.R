@@ -42,6 +42,7 @@
 #'   - 1: High activity state
 #'   - 0: Low activity state
 #'   - NA: Unable to classify (usually due to missing data)
+#' @export
 classify_movement_plateau <- function(speed,
                                       window_size = 30,
                                       min_plateau_length = 30,
