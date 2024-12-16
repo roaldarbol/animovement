@@ -163,3 +163,49 @@ test_that("prominence works with plateaus", {
   peaks <- which(find_peaks(x, min_prominence = 1, plateau_handling = "all"))
   expect_equal(peaks, c(2:4, 6:7))  # Both plateaus qualify
 })
+
+test_that("window size parameter works correctly", {
+  # Test case where wider window identifies fewer peaks
+  x <- c(1, 3, 2, 4, 3, 5, 4, 6, 5, 7, 6)
+  peaks_w3 <- which(find_peaks(x, window_size = 3))
+  peaks_w5 <- which(find_peaks(x, window_size = 5))
+  expect_true(length(peaks_w3) > length(peaks_w5))
+
+  # Test window size validation
+  expect_error(find_peaks(1:10, window_size = 2))  # Too small
+  expect_error(find_peaks(1:10, window_size = 4))  # Even number
+  expect_error(find_peaks(1:10, window_size = "3"))  # Not numeric
+
+  # Test behavior with window size larger than data
+  x_short <- 1:5
+  expect_equal(find_peaks(x_short, window_size = 7), rep(NA, 5))
+
+  # Test edge handling with different window sizes
+  x <- c(1, 3, 2, 4, 2, 3, 1)
+  result_w3 <- find_peaks(x, window_size = 3)
+  result_w5 <- find_peaks(x, window_size = 5)
+  expect_equal(sum(is.na(result_w3)), 2)  # First and last points
+  expect_equal(sum(is.na(result_w5)), 4)  # Two points on each end
+
+  # Test with noisy data
+  set.seed(123)
+  x <- sin(seq(0, 4*pi, length.out = 100)) + rnorm(100, 0, 0.1)
+  peaks_w3 <- sum(find_peaks(x, window_size = 3), na.rm = TRUE)
+  peaks_w7 <- sum(find_peaks(x, window_size = 7), na.rm = TRUE)
+  peaks_w11 <- sum(find_peaks(x, window_size = 11), na.rm = TRUE)
+  expect_true(peaks_w3 > peaks_w7)
+  expect_true(peaks_w7 > peaks_w11)
+
+  # Test plateau handling with different window sizes
+  x <- c(1, 3, 3, 3, 2, 4, 4, 4, 2)
+  peaks_w3 <- which(find_peaks(x, window_size = 3, plateau_handling = "middle"))
+  peaks_w5 <- which(find_peaks(x, window_size = 5, plateau_handling = "middle"))
+  expect_equal(peaks_w3, c(3, 7))  # Both plateaus are peaks
+  expect_equal(peaks_w5, 7)  # Only second plateau is peak
+
+  # Test with NAs and different window sizes
+  x <- c(1, 3, NA, 4, 2, 5, NA, 3, 1)
+  result_w3 <- find_peaks(x, window_size = 3)
+  result_w5 <- find_peaks(x, window_size = 5)
+  expect_true(sum(is.na(result_w5)) > sum(is.na(result_w3)))
+})
