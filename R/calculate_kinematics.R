@@ -17,6 +17,7 @@ calculate_kinematics <- function(
     data) {
   # We first temporarily back-calculate from our xy coordinates to the distances (dx, dy) covered between each observation (which is what we got from the sensors initially)
   data <- data |>
+    dplyr::group_by(.data$individual, .data$keypoint) |>
     dplyr::mutate(
       dx = .data$x - lag(.data$x),
       dy = .data$y - lag(.data$y),
@@ -28,6 +29,7 @@ calculate_kinematics <- function(
 
   # Calculate kinematics
   data <- data |>
+    dplyr::group_by(.data$individual, .data$keypoint) |>
     dplyr::mutate(
       distance = calculate_distance(.data$dx, .data$dy),
       v_translation = calculate_derivative(.data$distance, 0, .data$time, lag(.data$time)),
