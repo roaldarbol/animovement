@@ -36,7 +36,7 @@ plot_speed_timeseries <- function(data, y_max = NULL) {
 
   # Calculate speeds for all keypoints
   data <- data |>
-    dplyr::group_by(.data$keypoint) |>
+    dplyr::group_by(.data$individual, .data$keypoint) |>
     dplyr::mutate(speed = calculate_speed(.data$x, .data$y, .data$time)) |>
     dplyr::ungroup()
 
