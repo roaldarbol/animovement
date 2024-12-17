@@ -84,15 +84,15 @@ filter_by_speed <- function(data, threshold = "auto") {
 
   d <- d |>
     dplyr::mutate(
-      x = dplyr::if_else(abs(.data$v_translation) < threshold, NA, .data$x),
-      y = dplyr::if_else(abs(.data$v_translation) < threshold, NA, .data$y)
+      x = dplyr::if_else(abs(.data$v_translation) > threshold, NA, .data$x),
+      y = dplyr::if_else(abs(.data$v_translation) > threshold, NA, .data$y)
     )
 
   # Only modify confidence if it exists
   if ("confidence" %in% names(d)) {
     d <- d |>
       dplyr::mutate(
-        confidence = dplyr::if_else(abs(.data$v_translation) < threshold,
+        confidence = dplyr::if_else(abs(.data$v_translation) > threshold,
                                     NA, .data$confidence)
       )
   }
