@@ -19,8 +19,8 @@ required columns:
 
 \item{method}{Character string specifying the smoothing method. Options:
 \itemize{
-\item \code{"rolling_median"}: Rolling median filter (default)
-\item \code{"rolling_mean"}: Rolling mean filter
+\item \code{"roll_median"}: Rolling median filter (default)
+\item \code{"roll_mean"}: Rolling mean filter
 }}
 
 \item{window_width}{Integer specifying how many observations to include in the

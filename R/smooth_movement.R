@@ -15,8 +15,8 @@
 #'   - `y`: y-coordinates
 #'   - `time`: Time values
 #' @param method Character string specifying the smoothing method. Options:
-#'   - `"rolling_median"`: Rolling median filter (default)
-#'   - `"rolling_mean"`: Rolling mean filter
+#'   - `"roll_median"`: Rolling median filter (default)
+#'   - `"roll_mean"`: Rolling mean filter
 #' @param window_width Integer specifying how many observations to include in the
 #'   rolling window (default: 5)
 #' @param min_obs Integer specifying the minimum number of non-NA values required
@@ -42,7 +42,7 @@
 #' smooth_movement(tracking_data, window_width = 5)
 #'
 #' # Use rolling mean with a larger window
-#' smooth_movement(tracking_data, method = "rolling_mean", window_width = 7)
+#' smooth_movement(tracking_data, method = "roll_mean", window_width = 7)
 #'
 #' # Smooth derivatives instead of positions
 #' smooth_movement(tracking_data, use_derivatives = TRUE)
@@ -57,7 +57,7 @@
 #' @importFrom roll roll_mean roll_median
 smooth_movement <- function(
     data,
-    method = c("rolling_median"),
+    method = c("roll_median"),
     window_width = 5,
     min_obs = 1,
     use_derivatives = FALSE) {
@@ -76,8 +76,9 @@ smooth_movement <- function(
   }
 
   # Rolling mean
-  else if (method == "rolling_mean"){
+  else if (method == "roll_mean"){
     data <- data |>
+      dplyr::group_by(.data$individual, .data$keypoint) |>
       dplyr::mutate(
         x = roll::roll_mean(.data$x, width = window_width, min_obs = min_obs),
         y = roll::roll_mean(.data$y, width = window_width, min_obs = min_obs)
@@ -85,8 +86,9 @@ smooth_movement <- function(
   }
 
   # Rolling median
-  else if (method == "rolling_median") {
+  else if (method == "roll_median") {
     data <- data |>
+      dplyr::group_by(.data$individual, .data$keypoint) |>
       dplyr::mutate(
         x = roll::roll_median(.data$x, width = window_width, min_obs = min_obs),
         y = roll::roll_median(.data$y, width = window_width, min_obs = min_obs)
@@ -111,13 +113,13 @@ smooth_derivatives <- function(data, method, window_width, min_obs){
     )
 
   # Filter the dx/dy values
-  if (method == "rolling_mean") {
+  if (method == "roll_mean") {
     data <- data |>
       dplyr::mutate(
         dx = roll::roll_mean(.data$dx, width = window_width, min_obs = min_obs),
         dy = roll::roll_mean(.data$dy, width = window_width, min_obs = min_obs)
       )
-  } else if (method == "rolling_median") {
+  } else if (method == "roll_median") {
     data <- data |>
       dplyr::mutate(
         dx = roll::roll_median(.data$dx, width = window_width, min_obs = min_obs),

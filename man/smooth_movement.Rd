@@ -6,7 +6,7 @@
 \usage{
 smooth_movement(
   data,
-  method = c("rolling_median"),
+  method = c("roll_median"),
   window_width = 5,
   min_obs = 1,
   use_derivatives = FALSE
@@ -25,8 +25,8 @@ required columns:
 
 \item{method}{Character string specifying the smoothing method. Options:
 \itemize{
-\item \code{"rolling_median"}: Rolling median filter (default)
-\item \code{"rolling_mean"}: Rolling mean filter
+\item \code{"roll_median"}: Rolling median filter (default)
+\item \code{"roll_mean"}: Rolling mean filter
 }}
 
 \item{window_width}{Integer specifying how many observations to include in the
@@ -64,7 +64,7 @@ reconstructing the smoothed trajectory.
 smooth_movement(tracking_data, window_width = 5)
 
 # Use rolling mean with a larger window
-smooth_movement(tracking_data, method = "rolling_mean", window_width = 7)
+smooth_movement(tracking_data, method = "roll_mean", window_width = 7)
 
 # Smooth derivatives instead of positions
 smooth_movement(tracking_data, use_derivatives = TRUE)
