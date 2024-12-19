@@ -278,7 +278,7 @@ classify_by_stability <- function(speed,
   if (return_type == "numeric"){
     result <- dplyr::case_when(is.na(result) ~ NA,
                         result == "high" ~ 1,
-                        result == "low", 0)
+                        result == "low" ~ 0)
   }
 
   return(result)
