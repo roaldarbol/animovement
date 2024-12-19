@@ -35,6 +35,7 @@
 #' @param search_window How far to look for movement transitions when refining (default: 90)
 #' @param stability_window Window size for checking if movement has stabilized (default: 10)
 #' @param stability_threshold Maximum variance allowed in stable state (default: 0.5)
+#' @param return_type Should the function return "factor" ("high"/"low") or "numeric" (1/0) (default: "numeric")
 #'
 #' @return
 #' Numeric vector of the same length as input:
@@ -51,12 +52,15 @@ classify_by_stability <- function(speed,
                                   min_high_state_duration = 0,
                                   search_window = 90,
                                   stability_window = 10,
-                                  stability_threshold = 0.5) {
+                                  stability_threshold = 0.5,
+                                  return_type = c("numeric", "factor")) {
 
   # Input validation for tolerance
   if(tolerance <= 0 || tolerance > 1) {
     stop("tolerance must be between 0 and 1")
   }
+
+  return_type <- match.arg(return_type)
 
   # Convert to absolute values to handle both speed and velocity inputs
   speed <- abs(speed)
@@ -271,10 +275,12 @@ classify_by_stability <- function(speed,
   }
 
   # Convert character states to numeric
-  result <- numeric(length(state))
-  result[is.na(state)] <- NA_real_
-  result[state == "high"] <- 1
-  result[state == "low"] <- 0
+  if (return_type == "numeric"){
+    result <- numeric(length(state))
+    result[is.na(state)] <- NA_real_
+    result[state == "high"] <- 1
+    result[state == "low"] <- 0
+  }
 
   return(result)
 }

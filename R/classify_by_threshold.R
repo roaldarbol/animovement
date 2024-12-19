@@ -10,6 +10,7 @@
 #' @param threshold Numeric value used as classification boundary between "high" and "low"
 #' @param min_low_frames Minimum number of consecutive frames required for a "low" sequence
 #' @param min_high_frames Minimum number of consecutive frames required for a "high" sequence
+#' @param return_type Should the function return "factor" ("high"/"low") or "numeric" (1/0) (default: "numeric")
 #'
 #' @return Character vector of same length as input, with values classified as either
 #'         "high" or "low". NA values in input remain NA in output.
@@ -39,7 +40,14 @@
 #'                                              min_high_frames = 2)
 #'
 #' @export
-classify_by_threshold <- function(values, threshold, min_low_frames, min_high_frames) {
+classify_by_threshold <- function(values,
+                                  threshold,
+                                  min_low_frames,
+                                  min_high_frames,
+                                  return_type = c("numeric", "factor")) {
+
+  return_type <- match.arg(return_type)
+
   # Initial binary sequence with NA handling
   binary_seq <- ifelse(is.na(values), NA_character_,
                        ifelse(values > threshold, "high", "low"))
@@ -85,6 +93,14 @@ classify_by_threshold <- function(values, threshold, min_low_frames, min_high_fr
 
   # Then process high sequences
   result <- process_runs(result, "high", min_high_frames)
+
+  # Convert character states to numeric
+  if (return_type == "numeric"){
+    result <- numeric(length(state))
+    result[is.na(state)] <- NA_real_
+    result[state == "high"] <- 1
+    result[state == "low"] <- 0
+  }
 
   return(result)
 }
