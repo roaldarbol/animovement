@@ -14,7 +14,8 @@ classify_by_stability(
   min_high_state_duration = 0,
   search_window = 90,
   stability_window = 10,
-  stability_threshold = 0.5
+  stability_threshold = 0.5,
+  return_type = c("numeric", "factor")
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ using majority context (default: 0, no merging)}
 \item{stability_window}{Window size for checking if movement has stabilized (default: 10)}
 
 \item{stability_threshold}{Maximum variance allowed in stable state (default: 0.5)}
+
+\item{return_type}{Should the function return "factor" ("high"/"low") or "numeric" (1/0) (default: "numeric")}
 }
 \value{
 Numeric vector of the same length as input:

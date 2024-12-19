@@ -4,7 +4,13 @@
 \alias{classify_by_threshold}
 \title{Classify Values Into Sequences with Minimum Run Length Constraints}
 \usage{
-classify_by_threshold(values, threshold, min_low_frames, min_high_frames)
+classify_by_threshold(
+  values,
+  threshold,
+  min_low_frames,
+  min_high_frames,
+  return_type = c("numeric", "factor")
+)
 }
 \arguments{
 \item{values}{Numeric vector to be classified}
@@ -14,6 +20,8 @@ classify_by_threshold(values, threshold, min_low_frames, min_high_frames)
 \item{min_low_frames}{Minimum number of consecutive frames required for a "low" sequence}
 
 \item{min_high_frames}{Minimum number of consecutive frames required for a "high" sequence}
+
+\item{return_type}{Should the function return "factor" ("high"/"low") or "numeric" (1/0) (default: "numeric")}
 }
 \value{
 Character vector of same length as input, with values classified as either
