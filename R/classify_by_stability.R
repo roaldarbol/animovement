@@ -276,9 +276,10 @@ classify_by_stability <- function(speed,
 
   # Convert character states to numeric
   if (return_type == "numeric"){
-    result <- dplyr::case_when(is.na(result) ~ NA,
-                        result == "high" ~ 1,
-                        result == "low" ~ 0)
+    result <- numeric(length(state))
+    result[is.na(state)] <- NA_real_
+    result[state == "high"] <- 1
+    result[state == "low"] <- 0
   }
 
   return(result)

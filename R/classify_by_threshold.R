@@ -96,9 +96,10 @@ classify_by_threshold <- function(values,
 
   # Convert character states to numeric
   if (return_type == "numeric"){
-    result <- dplyr::case_when(is.na(result) ~ NA,
-                               result == "high" ~ 1,
-                               result == "low" ~ 0)
+    result <- numeric(length(result))
+    result[is.na(result)] <- NA_real_
+    result[result == "high"] <- 1
+    result[result == "low"] <- 0
   }
 
   return(result)
