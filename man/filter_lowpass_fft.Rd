@@ -4,12 +4,7 @@
 \alias{filter_lowpass_fft}
 \title{Apply FFT-based Lowpass Filter to Signal}
 \usage{
-filter_lowpass_fft(
-  x,
-  cutoff_freq,
-  sampling_rate,
-  na_action = c("interpolate", "remove", "error")
-)
+filter_lowpass_fft(x, cutoff_freq, sampling_rate)
 }
 \arguments{
 \item{x}{Numeric vector containing the signal to be filtered}

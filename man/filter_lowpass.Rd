@@ -4,13 +4,7 @@
 \alias{filter_lowpass}
 \title{Apply Butterworth Lowpass Filter to Signal}
 \usage{
-filter_lowpass(
-  x,
-  cutoff_freq,
-  sampling_rate,
-  order = 4,
-  na_action = c("interpolate", "remove", "error")
-)
+filter_lowpass(x, cutoff_freq, sampling_rate, order = 4)
 }
 \arguments{
 \item{x}{Numeric vector containing the signal to be filtered}
@@ -54,6 +48,8 @@ Parameter Selection Guidelines:
 \item order=4: Standard choice, good balance (~24 dB/octave)
 \item order=6: Steeper rolloff, some ringing (~36 dB/octave)
 \item order=8: Very steep, may have significant ringing (~48 dB/octave)
+Note: For very low cutoff frequencies (<0.001 of Nyquist), order is automatically
+reduced to 2 to maintain stability.
 }
 }
 

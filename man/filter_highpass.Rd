@@ -4,13 +4,7 @@
 \alias{filter_highpass}
 \title{Apply Butterworth Highpass Filter to Signal}
 \usage{
-filter_highpass(
-  x,
-  cutoff_freq,
-  sampling_rate,
-  order = 4,
-  na_action = c("interpolate", "remove", "error")
-)
+filter_highpass(x, cutoff_freq, sampling_rate, order = 4)
 }
 \arguments{
 \item{x}{Numeric vector containing the signal to be filtered}

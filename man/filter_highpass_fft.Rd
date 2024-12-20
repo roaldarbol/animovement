@@ -4,12 +4,7 @@
 \alias{filter_highpass_fft}
 \title{Apply FFT-based Highpass Filter to Signal}
 \usage{
-filter_highpass_fft(
-  x,
-  cutoff_freq,
-  sampling_rate,
-  na_action = c("interpolate", "remove", "error")
-)
+filter_highpass_fft(x, cutoff_freq, sampling_rate)
 }
 \arguments{
 \item{x}{Numeric vector containing the signal to be filtered}

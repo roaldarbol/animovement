@@ -31,6 +31,8 @@
 #'   - order=4: Standard choice, good balance (~24 dB/octave)
 #'   - order=6: Steeper rolloff, some ringing (~36 dB/octave)
 #'   - order=8: Very steep, may have significant ringing (~48 dB/octave)
+#'   Note: For very low cutoff frequencies (<0.001 of Nyquist), order is automatically
+#'   reduced to 2 to maintain stability.
 #'
 #' Common values by field:
 #' * Biomechanics: order=2 or 4
@@ -74,51 +76,60 @@
 #' @importFrom signal butter filtfilt
 #'
 #' @export
-filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4,
-                           na_action = c("interpolate", "remove", "error")) {
-    # Input validation
-    if (!is.numeric(x)) stop("Input signal must be numeric")
-    if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
-      stop("Cutoff frequency must be between 0 and sampling_rate/2")
+filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4) {
+  # Input validation
+  if (!is.numeric(x)) stop("Input signal must be numeric")
+  if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
+    stop("Cutoff frequency must be between 0 and sampling_rate/2")
+  }
+  if (order < 1 || order > 8) {
+    stop("Filter order should be between 1 and 8")
+  }
+
+  # Handle NAs with linear interpolation
+  if (any(is.na(x))) {
+    t <- seq_along(x)
+    # Handle edge cases first
+    if (is.na(x[1])) {
+      first_valid <- which(!is.na(x))[1]
+      x[1:first_valid] <- x[first_valid]
     }
-    if (order < 1 || order > 8) {
-      stop("Filter order should be between 1 and 8")
+    if (is.na(x[length(x)])) {
+      last_valid <- max(which(!is.na(x)))
+      x[last_valid:length(x)] <- x[last_valid]
     }
+    # Now interpolate internal NAs
+    x <- as.numeric(stats::approx(t[!is.na(x)], x[!is.na(x)], t)$y)
+  }
 
-  na_action <- match.arg(na_action)
+  # Verify no NAs remain
+  if (any(is.na(x))) {
+    stop("Failed to properly interpolate NAs")
+  }
 
-    # Handle NAs
-    has_na <- any(is.na(x))
-    if (has_na) {
-      switch(na_action,
-             "error" = {
-               stop("Input signal contains NA values")
-             },
-             "interpolate" = {
-               # Use linear interpolation
-               t <- seq_along(x)
-               x <- stats::approx(t[!is.na(x)], x[!is.na(x)], t)$y
-             },
-             "remove" = {
-               # Remove NAs and adjust signal
-               x <- x[!is.na(x)]
-               # Adjust sampling rate if significant data is removed
-               if (length(x) < 0.9 * length(x)) {
-                 warning("More than 10% of data points were NA. ",
-                         "Effective sampling rate may be affected.")
-               }
-             }
-      )
-    }
+  # For very low cutoff frequencies (<0.001 normalized), reduce order
+  nyquist_freq <- sampling_rate/2
+  normalized_cutoff <- cutoff_freq/nyquist_freq
 
-    nyquist_freq <- sampling_rate/2
-    normalized_cutoff <- cutoff_freq/nyquist_freq
+  if (normalized_cutoff < 0.001 & order > 2) {
+    order <- min(order, 2)  # Limit order for very low frequencies
+    warning("Very low cutoff frequency detected. Reducing filter order to 2 for stability.")
+  }
 
-    # Create and apply Butterworth filter
-    bf <- signal::butter(order, normalized_cutoff, type = "low")
-    filtered <- signal::filtfilt(bf, x)
+  # Add reflection padding to reduce edge effects
+  n_pad <- max(round(sampling_rate/cutoff_freq), order * 10)
+  start_pad <- rev(x[1:min(n_pad, length(x))])
+  end_pad <- rev(x[(length(x) - min(n_pad, length(x)) + 1):length(x)])
+  x_padded <- c(start_pad, x, end_pad)
 
-    return(filtered)
+  # Create and apply filter
+  bf <- signal::butter(order, normalized_cutoff, type = "low")
+  filtered_padded <- signal::filtfilt(bf, x_padded)
+
+  # Remove padding and ensure original length
+  filtered <- filtered_padded[(n_pad + 1):(n_pad + length(x))]
+
+  return(filtered)
 }
 
 #' Apply Butterworth Highpass Filter to Signal
@@ -184,8 +195,7 @@ filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4,
 #' @importFrom signal butter filtfilt
 #'
 #' @export
-filter_highpass <- function(x, cutoff_freq, sampling_rate, order = 4,
-                            na_action = c("interpolate", "remove", "error")) {
+filter_highpass <- function(x, cutoff_freq, sampling_rate, order = 4) {
   # Input validation
   if (!is.numeric(x)) stop("Input signal must be numeric")
   if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
@@ -195,38 +205,48 @@ filter_highpass <- function(x, cutoff_freq, sampling_rate, order = 4,
     stop("Filter order should be between 1 and 8")
   }
 
-  na_action <- match.arg(na_action)
-
-  # Handle NAs
-  has_na <- any(is.na(x))
-  if (has_na) {
-    switch(na_action,
-           "error" = {
-             stop("Input signal contains NA values")
-           },
-           "interpolate" = {
-             # Use linear interpolation
-             t <- seq_along(x)
-             x <- stats::approx(t[!is.na(x)], x[!is.na(x)], t)$y
-           },
-           "remove" = {
-             # Remove NAs and adjust signal
-             x <- x[!is.na(x)]
-             # Adjust sampling rate if significant data is removed
-             if (length(x) < 0.9 * length(x)) {
-               warning("More than 10% of data points were NA. ",
-                       "Effective sampling rate may be affected.")
-             }
-           }
-    )
+  # Handle NAs with linear interpolation
+  if (any(is.na(x))) {
+    t <- seq_along(x)
+    # Handle edge cases first
+    if (is.na(x[1])) {
+      first_valid <- which(!is.na(x))[1]
+      x[1:first_valid] <- x[first_valid]
+    }
+    if (is.na(x[length(x)])) {
+      last_valid <- max(which(!is.na(x)))
+      x[last_valid:length(x)] <- x[last_valid]
+    }
+    # Now interpolate internal NAs
+    x <- as.numeric(stats::approx(t[!is.na(x)], x[!is.na(x)], t)$y)
   }
 
+  # Verify no NAs remain
+  if (any(is.na(x))) {
+    stop("Failed to properly interpolate NAs")
+  }
+
+  # For very low cutoff frequencies (<0.001 normalized), reduce order
   nyquist_freq <- sampling_rate/2
   normalized_cutoff <- cutoff_freq/nyquist_freq
 
-  # Create and apply Butterworth filter
+  if (normalized_cutoff < 0.001 & order > 2) {
+    order <- min(order, 2)  # Limit order for very low frequencies
+    warning("Very low cutoff frequency detected. Reducing filter order to 2 for stability.")
+  }
+
+  # Add reflection padding to reduce edge effects
+  n_pad <- max(round(sampling_rate/cutoff_freq), order * 10)
+  start_pad <- rev(x[1:min(n_pad, length(x))])
+  end_pad <- rev(x[(length(x) - min(n_pad, length(x)) + 1):length(x)])
+  x_padded <- c(start_pad, x, end_pad)
+
+  # Create and apply filter
   bf <- signal::butter(order, normalized_cutoff, type = "high")
-  filtered <- signal::filtfilt(bf, x)
+  filtered_padded <- signal::filtfilt(bf, x_padded)
+
+  # Remove padding and ensure original length
+  filtered <- filtered_padded[(n_pad + 1):(n_pad + length(x))]
 
   return(filtered)
 }
@@ -274,56 +294,61 @@ filter_highpass <- function(x, cutoff_freq, sampling_rate, order = 4,
 #' \code{\link{lowpass_filter}} for Butterworth-based filtering
 #'
 #' @export
-filter_lowpass_fft <- function(x, cutoff_freq, sampling_rate,
-                               na_action = c("interpolate", "remove", "error")) {
+filter_lowpass_fft <- function(x, cutoff_freq, sampling_rate) {
   # Input validation
   if (!is.numeric(x)) stop("Input signal must be numeric")
   if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
     stop("Cutoff frequency must be between 0 and sampling_rate/2")
   }
 
-  na.action <- match.arg(na_action)
-
-  # Handle NAs
-  has_na <- any(is.na(x))
-  if (has_na) {
-    switch(na_action,
-           "error" = {
-             stop("Input signal contains NA values")
-           },
-           "interpolate" = {
-             # Use linear interpolation
-             t <- seq_along(x)
-             x <- stats::approx(t[!is.na(x)], x[!is.na(x)], t)$y
-           },
-           "remove" = {
-             # Remove NAs and adjust signal
-             x <- x[!is.na(x)]
-             # Adjust sampling rate if significant data is removed
-             if (length(x) < 0.9 * length(x)) {
-               warning("More than 10% of data points were NA. ",
-                       "Effective sampling rate may be affected.")
-             }
-           }
-    )
+  # Handle NAs with linear interpolation
+  if (any(is.na(x))) {
+    t <- seq_along(x)
+    # Handle edge cases first
+    if (is.na(x[1])) {
+      first_valid <- which(!is.na(x))[1]
+      x[1:first_valid] <- x[first_valid]
+    }
+    if (is.na(x[length(x)])) {
+      last_valid <- max(which(!is.na(x)))
+      x[last_valid:length(x)] <- x[last_valid]
+    }
+    # Now interpolate internal NAs
+    x <- as.numeric(stats::approx(t[!is.na(x)], x[!is.na(x)], t)$y)
   }
+
+  # Verify no NAs remain
+  if (any(is.na(x))) {
+    stop("Failed to properly interpolate NAs")
+  }
+
   N <- length(x)
 
+  # Add reflection padding to reduce edge effects
+  n_pad <- ceiling(N/10)  # 10% padding
+  start_pad <- rev(x[1:n_pad])
+  end_pad <- rev(x[(length(x) - n_pad + 1):length(x)])
+  x_padded <- c(start_pad, x, end_pad)
+
   # Compute FFT
-  X <- fft(x)
+  X <- fft(x_padded)
+  N_padded <- length(x_padded)
 
   # Create frequency vector
-  freq <- seq(0, sampling_rate - sampling_rate/N, by = sampling_rate/N)
+  freq <- seq(0, sampling_rate - sampling_rate/N_padded, by = sampling_rate/N_padded)
 
   # Create filter mask
   mask <- freq <= cutoff_freq
-  mask[N:2] <- rev(mask[2:(N/2 + 1)])  # Mirror for negative frequencies
+  mask[N_padded:2] <- rev(mask[2:(N_padded/2 + 1)])  # Mirror for negative frequencies
 
   # Apply filter
   X_filtered <- X * mask
 
   # Inverse FFT
-  filtered <- Re(fft(X_filtered, inverse = TRUE)/N)
+  filtered_padded <- Re(fft(X_filtered, inverse = TRUE)/N_padded)
+
+  # Remove padding
+  filtered <- filtered_padded[(n_pad + 1):(n_pad + N)]
 
   return(filtered)
 }
@@ -360,56 +385,61 @@ filter_lowpass_fft <- function(x, cutoff_freq, sampling_rate,
 #' @return Numeric vector containing the filtered signal
 #'
 #' @export
-filter_highpass_fft <- function(x, cutoff_freq, sampling_rate,
-                                na_action = c("interpolate", "remove", "error")) {
-      # Input validation
-    if (!is.numeric(x)) stop("Input signal must be numeric")
-    if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
-        stop("Cutoff frequency must be between 0 and sampling_rate/2")
-    }
+filter_highpass_fft <- function(x, cutoff_freq, sampling_rate) {
+  # Input validation
+  if (!is.numeric(x)) stop("Input signal must be numeric")
+  if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
+    stop("Cutoff frequency must be between 0 and sampling_rate/2")
+  }
 
-  na_action <- match.arg(na_action)
-
-    # Handle NAs
-    has_na <- any(is.na(x))
-    if (has_na) {
-        switch(na_action,
-            "error" = {
-                stop("Input signal contains NA values")
-            },
-            "interpolate" = {
-                # Use linear interpolation
-                t <- seq_along(x)
-                x <- stats::approx(t[!is.na(x)], x[!is.na(x)], t)$y
-            },
-            "remove" = {
-                # Remove NAs and adjust signal
-                x <- x[!is.na(x)]
-                # Adjust sampling rate if significant data is removed
-                if (length(x) < 0.9 * length(x)) {
-                    warning("More than 10% of data points were NA. ",
-                           "Effective sampling rate may be affected.")
-                }
-            }
-        )
+  # Handle NAs with linear interpolation
+  if (any(is.na(x))) {
+    t <- seq_along(x)
+    # Handle edge cases first
+    if (is.na(x[1])) {
+      first_valid <- which(!is.na(x))[1]
+      x[1:first_valid] <- x[first_valid]
     }
+    if (is.na(x[length(x)])) {
+      last_valid <- max(which(!is.na(x)))
+      x[last_valid:length(x)] <- x[last_valid]
+    }
+    # Now interpolate internal NAs
+    x <- as.numeric(stats::approx(t[!is.na(x)], x[!is.na(x)], t)$y)
+  }
+
+  # Verify no NAs remain
+  if (any(is.na(x))) {
+    stop("Failed to properly interpolate NAs")
+  }
+
   N <- length(x)
 
+  # Add reflection padding to reduce edge effects
+  n_pad <- ceiling(N/10)  # 10% padding
+  start_pad <- rev(x[1:n_pad])
+  end_pad <- rev(x[(length(x) - n_pad + 1):length(x)])
+  x_padded <- c(start_pad, x, end_pad)
+
   # Compute FFT
-  X <- fft(x)
+  X <- fft(x_padded)
+  N_padded <- length(x_padded)
 
   # Create frequency vector
-  freq <- seq(0, sampling_rate - sampling_rate/N, by = sampling_rate/N)
+  freq <- seq(0, sampling_rate - sampling_rate/N_padded, by = sampling_rate/N_padded)
 
   # Create filter mask
   mask <- freq >= cutoff_freq
-  mask[N:2] <- rev(mask[2:(N/2 + 1)])  # Mirror for negative frequencies
+  mask[N_padded:2] <- rev(mask[2:(N_padded/2 + 1)])  # Mirror for negative frequencies
 
   # Apply filter
   X_filtered <- X * mask
 
   # Inverse FFT
-  filtered <- Re(fft(X_filtered, inverse = TRUE)/N)
+  filtered_padded <- Re(fft(X_filtered, inverse = TRUE)/N_padded)
+
+  # Remove padding
+  filtered <- filtered_padded[(n_pad + 1):(n_pad + N)]
 
   return(filtered)
 }
