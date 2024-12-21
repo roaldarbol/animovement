@@ -5,15 +5,14 @@
 #'
 #' Translates coordinates in Cartesian space. Takes either a single point
 #' (`to_x` and `to_y`), a vector with the same length as the time dimension or a
-#' keypoint (`to_keypoint`), which can be used to tranform the data into an
+#' keypoint (`to_keypoint`), which can be used to transform the data into an
 #' egocentric reference frame.
 #'
-#'
-#' @param data movement data frame
-#' @param to_x x coordinates; either a single value or a time-length vector.
-#' @param to_y y coordinates; either a single value or a time-length vector.
-#' @param to_z z coordinates (only if 3D); either a single value or a time-length vector.
-#' @param to_keypoint all other coordinates becomes relative to this keypoint.
+#' @param data movement data frame with columns: time, individual, keypoint, x, y
+#' @param to_x x coordinates; either a single value or a time-length vector
+#' @param to_y y coordinates; either a single value or a time-length vector
+#' @param to_z z coordinates (only if 3D); either a single value or a time-length vector
+#' @param to_keypoint all other coordinates becomes relative to this keypoint
 #'
 #' @return movement data frame with translated coordinates
 #' @export
@@ -86,6 +85,160 @@ translate_coords_vector <- function(data, to_x, to_y, to_z=NULL){
   }
 
   return(data)
+}
+
+#' Rotate coordinates in Cartesian space
+#'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
+#' Rotates coordinates in Cartesian space based on two alignment points.
+#' The rotation aligns these points either with the 0-degree axis (parallel)
+#' or makes them perpendicular to it. This is particularly useful for
+#' creating egocentric reference frames or standardizing orientation across
+#' multiple frames or individuals.
+#'
+#' @param data movement data frame with columns: time, individual, keypoint, x, y
+#' @param alignment_points character vector of length 2 specifying the keypoint names
+#'        to use for alignment
+#' @param align_perpendicular logical; if TRUE, alignment_points will be rotated to be
+#'        perpendicular to the 0-degree axis. If FALSE (default), alignment_points
+#'        will be rotated to align with the 0-degree axis
+#'
+#' @details
+#' The function processes each individual separately and maintains their independence.
+#' For each time point, it:
+#' 1. Calculates the vector between the alignment points
+#' 2. Determines the current angle of this vector
+#' 3. Rotates all points to achieve the desired alignment
+#'
+#' @return movement data frame with rotated coordinates
+#' @export
+rotate_coords <- function(
+    data,
+    alignment_points,     # Two keypoint names to use for alignment
+    align_perpendicular = FALSE  # If TRUE, alignment_points will be made perpendicular to 0°
+) {
+  # Input validation
+  if (length(alignment_points) != 2) {
+    stop("alignment_points must contain exactly 2 keypoint names")
+  }
+  if (!all(alignment_points %in% unique(data$keypoint))) {
+    stop("Some specified keypoints not found in data")
+  }
+
+  # Process each individual separately
+  individuals <- unique(data$individual)
+  out_data <- data.frame()
+
+  for (ind in individuals) {
+    ind_data <- data |> filter(individual == ind)
+
+    # Get all coordinates of alignment points for this individual
+    p1 <- ind_data |>
+      filter(keypoint == alignment_points[1]) |>
+      select(time, x, y) |>
+      rename(x1 = x, y1 = y)
+
+    p2 <- ind_data |>
+      filter(keypoint == alignment_points[2]) |>
+      select(time, x, y) |>
+      rename(x2 = x, y2 = y)
+
+    # Calculate rotation angles for each time point
+    angles <- p1 |>
+      left_join(p2, by = "time") |>
+      mutate(
+        # Calculate vector between alignment points
+        vec_x = x2 - x1,
+        vec_y = y2 - y1,
+        # Calculate current angle and needed rotation
+        current_angle = atan2(vec_y, vec_x),
+        target_angle = if_else(isTRUE(align_perpendicular), pi/2, 0),
+        rotation_angle = target_angle - current_angle
+      ) |>
+      select(time, rotation_angle)
+
+    # Apply rotation to all points for this individual
+    ind_rotated <- ind_data |>
+      left_join(angles, by = "time") |>
+      mutate(
+        x_new = x * cos(rotation_angle) - y * sin(rotation_angle),
+        y_new = x * sin(rotation_angle) + y * cos(rotation_angle)
+      ) |>
+      select(-rotation_angle, -x, -y) |>
+      rename(x = x_new, y = y_new)
+
+    out_data <- bind_rows(out_data, ind_rotated)
+  }
+
+  return(out_data |> arrange(time, individual, keypoint))
+}
+
+#' Transform coordinates to egocentric reference frame
+#'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
+#' Transforms Cartesian coordinates into an egocentric reference frame through
+#' a two-step process: translation followed by rotation. First translates all
+#' coordinates relative to a reference keypoint, then rotates the coordinate
+#' system based on specified alignment points.
+#'
+#' @param data movement data frame with columns: time, individual, keypoint, x, y
+#' @param to_keypoint character; keypoint to use as the new origin
+#' @param alignment_points character vector of length 2 specifying the keypoint names
+#'        to use for alignment
+#' @param align_perpendicular logical; if TRUE, alignment_points will be rotated to be
+#'        perpendicular to the 0-degree axis. If FALSE (default), alignment_points
+#'        will be rotated to align with the 0-degree axis
+#'
+#' @details
+#' This function combines translation and rotation to create an egocentric reference
+#' frame. It:
+#' 1. Translates all coordinates relative to the specified keypoint (to_keypoint)
+#' 2. Rotates the coordinate system based on the alignment points
+#'
+#' The translation makes the reference keypoint the new origin (0,0), while the
+#' rotation standardizes the orientation. This is particularly useful for:
+#' * Creating egocentric reference frames
+#' * Standardizing pose data across frames or individuals
+#' * Analyzing relative motion patterns
+#'
+#' @examples
+#' \dontrun{
+#' # Transform coordinates to make nose the origin and align body axis
+#' transformed_data <- transform_to_egocentric(
+#'   data,
+#'   to_keypoint = "nose",
+#'   alignment_points = c("nose", "tail"),
+#'   align_perpendicular = FALSE
+#' )
+#'
+#' # Transform to make nose origin and ears perpendicular to forward axis
+#' transformed_data <- transform_to_egocentric(
+#'   data,
+#'   to_keypoint = "nose",
+#'   alignment_points = c("ear_left", "ear_right"),
+#'   align_perpendicular = TRUE
+#' )
+#' }
+#'
+#' @return movement data frame in egocentric reference frame
+#' @export
+transform_to_egocentric <- function(
+    data,
+    to_keypoint,         # Reference point for translation
+    alignment_points,     # Two keypoint names to use for alignment
+    align_perpendicular = FALSE  # If TRUE, alignment_points will be made perpendicular to 0°
+) {
+  # First translate
+  translated_data <- translate_coords(data, to_keypoint = to_keypoint)
+
+  # Then rotate
+  transformed_data <- rotate_coords(translated_data, alignment_points, align_perpendicular)
+
+  return(transformed_data)
 }
 
 #' Map from Cartesian to polar coordinates

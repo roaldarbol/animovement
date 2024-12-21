@@ -7,15 +7,15 @@
 translate_coords(data, to_x = 0, to_y = 0, to_z = NULL, to_keypoint = NULL)
 }
 \arguments{
-\item{data}{movement data frame}
+\item{data}{movement data frame with columns: time, individual, keypoint, x, y}
 
-\item{to_x}{x coordinates; either a single value or a time-length vector.}
+\item{to_x}{x coordinates; either a single value or a time-length vector}
 
-\item{to_y}{y coordinates; either a single value or a time-length vector.}
+\item{to_y}{y coordinates; either a single value or a time-length vector}
 
-\item{to_z}{z coordinates (only if 3D); either a single value or a time-length vector.}
+\item{to_z}{z coordinates (only if 3D); either a single value or a time-length vector}
 
-\item{to_keypoint}{all other coordinates becomes relative to this keypoint.}
+\item{to_keypoint}{all other coordinates becomes relative to this keypoint}
 }
 \value{
 movement data frame with translated coordinates
@@ -25,6 +25,6 @@ movement data frame with translated coordinates
 
 Translates coordinates in Cartesian space. Takes either a single point
 (\code{to_x} and \code{to_y}), a vector with the same length as the time dimension or a
-keypoint (\code{to_keypoint}), which can be used to tranform the data into an
+keypoint (\code{to_keypoint}), which can be used to transform the data into an
 egocentric reference frame.
 }
