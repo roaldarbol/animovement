@@ -31,22 +31,28 @@ classify_peak_periods <- function(x, peaks, troughs) {
   # First handle adjacent peaks - keep only highest
   peak_indices <- which(peaks)
   for(i in 1:(length(peak_indices)-1)) {
-    if(!any(troughs[peak_indices[i]:peak_indices[i+1]])) {
-      if(x[peak_indices[i]] <= x[peak_indices[i+1]]) {
+    # Look at all peaks until we find a trough
+    for(j in (i+1):length(peak_indices)) {
+      if(any(troughs[peak_indices[i]:peak_indices[j]])) break
+      # Keep highest peak, remove others
+      if(x[peak_indices[i]] <= x[peak_indices[j]]) {
         peaks[peak_indices[i]] <- FALSE
+        break
       } else {
-        peaks[peak_indices[i+1]] <- FALSE
+        peaks[peak_indices[j]] <- FALSE
       }
     }
   }
 
   # Handle start sequence
-  trough_indices <- which(troughs)
-  if(length(peak_indices) > 0 && length(trough_indices) > 0) {
-    if(peak_indices[1] < trough_indices[1]) {
-      result[1:trough_indices[1]] <- TRUE
-    }
-  }
+  first_event <- min(c(peak_indices[1], trough_indices[1]))
+  result[1:first_event] <- ifelse(first_event == peak_indices[1], TRUE, FALSE)
+
+  # End sequence
+  last_event <- max(c(peak_indices[length(peak_indices)],
+                      trough_indices[length(trough_indices)]))
+  result[last_event:n] <- ifelse(last_event == peak_indices[length(peak_indices)],
+                                 TRUE, FALSE)
 
   # Find regions between troughs that have exactly one peak
   for(i in 1:(length(trough_indices)-1)) {
