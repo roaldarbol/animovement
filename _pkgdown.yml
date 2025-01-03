@@ -29,15 +29,39 @@ reference:
 - title: "Clean"
   desc: These functions ensure that your data is ready for analysis.
   contents:
-  - smooth_movement
-  - clean_kinematics
+  - check_na_timing
+  - check_na_gapsize
+  - check_confidence
+  - check_pose
+  - filter_na_confidence
+  - filter_na_speed
+  - filter_na_roi
+  - replace_na
+  - replace_na_linear
+  - replace_na_locf
+  - replace_na_spline
+  - replace_na_stine
+  - replace_na_locf
+  - replace_na_value
+  - filter_movement
+  - filter_lowpass
+  - filter_highpass
+  - filter_lowpass_fft
+  - filter_highpass_fft
+  - filter_kalman
+  - filter_kalman_irregular
+  - filter_rollmean
+  - filter_rollmedian
+  - filter_sgolay
 
 - title: "Transformations"
   desc: |
     These functions allow you to make tranformations to your coordinate system,
     such as translations, rotations or conversion to polar coordinates.
   contents:
+  - transform_to_egocentric
   - translate_coords
+  - rotate_coords
   - map_to_cartesian
   - map_to_polar
 
@@ -47,6 +71,11 @@ reference:
   - add_centroid
   - calculate_kinematics
   - calculate_statistics
+  - calculate_derivative
+  - calculate_direction
+  - calculate_distance
+  - calculate_speed
+  - calculate_straightness
 
 - title: "Metadata"
   desc: These functions allow you to interact with your metadata.
@@ -55,11 +84,24 @@ reference:
   - get_metadata
   - set_uuid
   - set_start_datetime
+  - set_framerate
+  - set_individual
 
 - title: "Helpers"
   desc: These functions help you along the way.
   contents:
+  - get_example_data
   - group_every
+  - align_timeseries
+  - find_lag
+  - find_peaks
+  - find_troughs
+  - plot_position_timeseries
+  - plot_speed_timeseries
+  - classify_by_stability
+  - classify_by_threshold
+  - classify_high_periods
+  - classify_low_periods
 
 navbar:
   components:

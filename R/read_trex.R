@@ -1,14 +1,52 @@
-#' Read TRex data
+#' Read TRex Movement Tracking Data
 #'
-#' @param path Path to a TRex data frame in CSV format.
+#' @description
+#' Reads and formats movement tracking data exported from TRex (Walter & Couzin, 2021).
+#' TRex is a software for tracking animal movement in videos, which exports
+#' coordinate data in CSV format. This function processes these files into
+#' a standardized movement data format.
 #'
-#' @import dplyr
-#' @import tidyr
+#' @param path Character string specifying the path to a TRex CSV file.
+#'   The file should contain columns for:
+#'   - time
+#'   - x and y coordinates for tracked points (e.g., x_head, y_head)
+#'   - x and y coordinates for centroid (x_number_wcentroid_cm, y_number_wcentroid_cm)
+#'
+#' @return A data frame containing movement data with the following columns:
+#'   - `time`: Time values from the tracking
+#'   - `individual`: Factor (set to NA, as TRex tracks one individual)
+#'   - `keypoint`: Factor identifying tracked points (e.g., "head", "centroid")
+#'   - `x`: x-coordinates in centimeters
+#'   - `y`: y-coordinates in centimeters
+#'   - `confidence`: Numeric confidence values (set to NA as TRex doesn't provide these)
+#'
+#' @details
+#' The function performs several processing steps:
+#' 1. Validates the input file format (must be CSV)
+#' 2. Reads the data using vroom for efficient processing
+#' 3. Cleans column names to a consistent format
+#' 4. Restructures the data from wide to long format
+#' 5. Initializes metadata fields required for movement data
+#'
+#' @references
+#' Walter, T., & Couzin, I. D. (2021). TRex, a fast multi-animal tracking
+#' system with markerless identification, and 2D estimation of posture and
+#' visual fields. eLife, 10, e64000.
+#'
+#' @examples
+#' \dontrun{
+#' # Read a TRex CSV file
+#' data <- read_trex("path/to/trex_export.csv")
+#' }
+#'
+#' @seealso
+#' - `init_metadata()` for details on metadata initialization
+#' - TRex software: https://trex.run
+#'
+#' @import dplyr tidyr tidyselect
 #' @importFrom janitor clean_names
 #' @importFrom vroom vroom
-#' @import tidyselect
 #'
-#' @return a movement dataframe
 #' @export
 read_trex <- function(path) {
   # Validators
@@ -25,7 +63,16 @@ read_trex <- function(path) {
   return(data)
 }
 
-#' Read TRex CSV file
+#' Read and Process TRex CSV File
+#'
+#' @description
+#' Internal function that handles the actual reading and processing of
+#' TRex CSV files. Called by read_trex() after file validation.
+#'
+#' @param path Character string specifying path to TRex CSV file
+#'
+#' @return A processed data frame in movement data format
+#'
 #' @keywords internal
 read_trex_csv <- function(path){
 

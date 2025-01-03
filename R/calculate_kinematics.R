@@ -1,143 +1,101 @@
-#' Calculate kinematics
+#' Calculate kinematics from position data
 #'
 #' @description
 #' `r lifecycle::badge('experimental')`
 #'
-#' Calculate kinematics.
+#' Calculates kinematic measurements including translational and rotational motion from
+#' position data. The function computes velocities, accelerations, and angular measurements
+#' from x-y coordinate time series data.
 #'
-#' @param data Data frame
+#' @param data A data frame containing at minimum:
+#'   * time (numeric): Time points of measurements
+#'   * x (numeric): X-coordinates
+#'   * y (numeric): Y-coordinates
+#' @param by Character vector specifying additional grouping variables (optional).
+#'   If the input data frame is already grouped, those groups will be preserved
+#'   and any additional groups specified in `by` will be added.
 #'
-#' @return A data frame with kinematics calculated
+#' @returns A data frame containing the original data plus calculated kinematics:
+#'   * distance: Distance traveled between consecutive points
+#'   * v_translation: Translational velocity
+#'   * a_translation: Translational acceleration
+#'   * direction: Movement direction in radians
+#'   * rotation: Angular change between consecutive points
+#'   * v_rotation: Angular velocity
+#'   * a_rotation: Angular acceleration
+#'
+#' @section Warning:
+#' Time points should be regularly sampled for accurate derivatives.
+#'
+#' @examples
+#' # Basic usage with just x-y coordinates
+#' df <- data.frame(
+#'   time = 1:10,
+#'   x = runif(10),
+#'   y = runif(10)
+#' )
+#' calculate_kinematics(df)
+#'
+#' # Using with grouping variables
+#' df_grouped <- data.frame(
+#'   time = rep(1:5, 2),
+#'   x = runif(10),
+#'   y = runif(10),
+#'   individual = rep(c("A", "B"), each = 5)
+#' )
+#' calculate_kinematics(df_grouped, by = "individual")
+#'
 #' @export
 #' @import dplyr
-#' @importFrom rlang :=
-#' @importFrom rlang .data
+#' @importFrom rlang := .data
 #'
-calculate_kinematics <- function(
-    data) {
-  # We first temporarily back-calculate from our xy coordinates to the distances (dx, dy) covered between each observation (which is what we got from the sensors initially)
+calculate_kinematics <- function(data, by = NULL) {
+  # Validate input
+  required_cols <- c("time", "x", "y")
+  missing_cols <- setdiff(required_cols, names(data))
+  if (length(missing_cols) > 0) {
+    cli::cli_abort(
+      c("Missing required columns in input data:",
+        "x" = "{.val {missing_cols}}")
+    )
+  }
+
+  # Preserve existing groups and add new ones if specified
+  if (!is.null(by)) {
+    missing_by_cols <- setdiff(by, names(data))
+    if (length(missing_by_cols) > 0) {
+      cli::cli_abort(
+        c("Grouping columns specified in 'by' not found in data:",
+          "x" = "{.val {missing_by_cols}}")
+      )
+    }
+    data <- data |>
+      group_by(across(all_of(by)), .add = TRUE)
+  }
+
+  # Calculate intermediate values
   data <- data |>
     dplyr::mutate(
       dx = .data$x - lag(.data$x),
-      dy = .data$y - lag(.data$y),
-      # dt = .data$time - lag(.data$time)
+      dy = .data$y - lag(.data$y)
     )
-
-  # Find the sampling rate
-  # sampling_rate <- round(1 / stats::median(data$dt, na.rm = TRUE))
 
   # Calculate kinematics
   data <- data |>
     dplyr::mutate(
-      distance = calculate_distance(.data$dx, .data$dy),
-      v_translation = calculate_derivative(.data$distance, 0, .data$time, lag(.data$time)),
-      a_translation = calculate_derivative(.data$v_translation, lag(.data$v_translation), .data$time, lag(.data$time)),
+      d_translation = calculate_distance(.data$dx, .data$dy),
+      v_translation = calculate_derivative(.data$d_translation, 0, .data$time, lag(.data$time)),
+      a_translation = calculate_derivative(.data$v_translation, lag(.data$v_translation),
+                                           .data$time, lag(.data$time)),
       direction = calculate_direction(.data$dx, .data$dy),
-      rotation = calculate_angular_difference(.data$direction, lag(.data$direction)),
-      v_rotation = calculate_derivative(0, .data$rotation, .data$time, lag(.data$time)),
-      a_rotation = calculate_derivative(.data$v_rotation, lag(.data$v_rotation), .data$time, lag(.data$time)),
-      # We change the directions to stay within 2pi only here, otherwise rotation becomes harder to alculate
-      direction = adjust_direction(.data$direction) # Keep direction between 0 and 2*pi
+      d_rotation = calculate_angular_difference(.data$direction, lag(.data$direction)),
+      v_rotation = calculate_derivative(0, .data$d_rotation, .data$time, lag(.data$time)),
+      a_rotation = calculate_derivative(.data$v_rotation, lag(.data$v_rotation),
+                                        .data$time, lag(.data$time)),
+      direction = constrain_angles_radians(.data$direction)
     )
 
-  # Remove leftover columns
-  data <- data |>
+  # Remove intermediate columns
+  data |>
     select(-c("dx", "dy"))
-  # select(-c("dx", "dy", "dt"))
-
-  return(data)
-}
-
-#' Calculate distance (Pythagoras)
-#' Calculate distance from an x and y distance, using Pythagoras theorem.
-#' @param dx dx
-#' @param dy dy
-#' @keywords internal
-calculate_distance <- function(dx, dy) {
-  sqrt(dx^2 + dy^2)
-}
-
-#' Calculate direction
-#' Calculate direction (angle) from x and y distance using the (two-argument) arc-tangent. Converts to `circular`.
-#' @inheritParams calculate_distance
-#' @importFrom circular circular
-#' @keywords internal
-calculate_direction <- function(dx, dy) {
-  if_else(dx == 0 & dy == 0, NA, circular::circular(atan2(dy, dx), modulo = "asis"))
-}
-
-#' Calculate angular difference
-#' @param from_angle From angle
-#' @param to_angle To angle
-#' @keywords internal
-calculate_angular_difference <- function(from_angle, to_angle) {
-  ensure_circular(from_angle)
-  ensure_circular(to_angle)
-  diff_angle <- from_angle - to_angle
-  case_when(diff_angle > pi ~ diff_angle - 2 * pi,
-    diff_angle < -pi ~ diff_angle + 2 * pi,
-    .default = diff_angle
-  )
-}
-
-#' Calculate the derivative (dx/dt)
-#' Calculate the derivative (dx/dt) with four arguments
-#' @param from_x Current x value
-#' @param to_x Lagging x value
-#' @param from_t Current timestamp
-#' @param to_t Lagging timestamp
-#' @keywords internal
-calculate_derivative <- function(from_x, to_x, from_t, to_t) {
-  (from_x - to_x) / (from_t - to_t)
-}
-
-#' Adjust direction
-#' Constrains the direction to be between 0 and 2pi
-#' @param direction Direction
-#' @importFrom circular circular
-#' @keywords internal
-adjust_direction <- function(direction) {
-  circular::circular(direction, modulo = "2pi")
-}
-
-#' Calculate the centroid
-#'
-#' @param data a movement data frame
-#' @param include_keypoints choose a subset of keypoints used for computing the centorid
-#' @param exclude_keypoints chosose a subset of keypoints that are excluded when conputing the centroid
-add_centroid <- function(data, include_keypoints=NULL, exclude_keypoints=NULL){
-  # Check that centroid isn't there
-  # Check that it's a movement data frame
-  # To be optimised with collapse later on
-  if (!is.null(include_keypoints)){
-    df_centroid <- data |>
-      dplyr::filter(.data$keypoint %in% include_keypoints)
-  } else if (!is.null(exclude_keypoints)){
-    df_centroid <- data |>
-      dplyr::filter(!.data$keypoint %in% exclude_keypoints)
-  } else {
-    df_centroid <- data
-  }
-
-  df_centroid <- df_centroid |>
-    dplyr::group_by(.data$individual, .data$time) |>
-    dplyr::summarise(x = mean(.data$x, na.rm=TRUE),
-                     y = mean(.data$y, na.rm=TRUE),
-                     confidence = NA,
-                     .groups = "keep") |>
-    dplyr::mutate(keypoint = "centroid") |>
-    convert_nan_to_na()
-
-  data <- bind_rows(data, df_centroid) |>
-    dplyr::arrange(.data$time, .data$individual, .data$keypoint)
-
-  return(data)
-}
-
-calculate_centroid_x <- function(x){
- mean(x, na.rm=TRUE)
-}
-
-calculate_centroid_y <- function(y){
-  mean(y, na.rm=TRUE)
 }

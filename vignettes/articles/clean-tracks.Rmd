@@ -124,8 +124,23 @@ Let's try smoothing our data with a `rolling_mean` filter with 0.5 second (30 ob
 
 
 ```{r}
-df_smooth <- df |>
-  smooth_movement(method = "rolling_median", window_width = 5, use_derivatives = TRUE)
+df_rollmedian <- df |>
+  filter_movement(method = "rollmedian", 
+                  window_width = 3, 
+                  use_derivatives = TRUE)
+df_kalman <- df |>
+  filter_movement(method = "kalman", 
+                  sampling_rate = 60, 
+                  use_derivatives = TRUE)
+df_sgolay <- df |>
+  filter_movement(method = "sgolay", 
+                  sampling_rate = 60, 
+                  use_derivatives = TRUE)
+df_lowpass <- df |>
+  filter_movement(method = "lowpass", 
+                  cutoff_freq = 0.1, 
+                  sampling_rate = 60, 
+                  use_derivatives = TRUE)
 ```
 
 Let's visualise how they compare. Note that although the difference may seem negligible when plotting paths, they may become important when computing derivatives such as velocity and acceleration.
@@ -134,7 +149,10 @@ Let's visualise how they compare. Note that although the difference may seem neg
 library(ggplot2)
 ggplot() +
   geom_path(data = df, aes(x, y), colour = "red") +
-  geom_path(data = df_smooth, aes(x, y), colour = "blue")
+  geom_path(data = df_rollmedian, aes(x, y), colour = "blue") +
+  geom_path(data = df_kalman, aes(x, y), colour = "orange") +
+  geom_path(data = df_sgolay, aes(x, y), colour = "purple") +
+  geom_path(data = df_lowpass, aes(x, y), colour = "green")
 ```
 
 Not that different as the sensors are doing a good job! But we can see that the smoothed track end a bit further to the left than the raw version. 

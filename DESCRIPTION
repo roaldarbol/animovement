@@ -1,7 +1,7 @@
 Package: animovement
 Type: Package
 Title: An R toolbox for analysing animal movement across space and time
-Version: 0.5.1
+Version: 0.6.0
 Authors@R: 
     person(
       "Mikkel", 
@@ -23,11 +23,18 @@ Imports:
     cli,
     collapse,
     dplyr,
+    ggplot2,
+    ggtext,
     janitor,
     lifecycle,
+    methods,
+    patchwork,
     rhdf5,
     rlang,
     roll,
+    scales,
+    signal,
+    stinepack,
     stringi,
     tidyr,
     tidyselect,
@@ -41,8 +48,6 @@ Suggests:
     stringr,
     tinyplot,
     tinytable,
-    ggplot2,
-    patchwork,
     performance,
     see,
     markdown

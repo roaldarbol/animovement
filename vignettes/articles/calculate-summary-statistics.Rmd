@@ -34,9 +34,11 @@ df <- read_trackball(
 
 # Smooth tracks
 df_kinematics_clean <- df |>
-  smooth_movement(method = "rolling_median", window_width = 5, use_derivatives = TRUE) |>
-  calculate_kinematics() |>
-  clean_kinematics()
+  animovement::filter_na_speed() |> 
+  mutate(x = animovement::replace_na(x, method = "stine"),
+         y = animovement::replace_na(y, method = "stine")) |> 
+  filter_movement(method = "rollmedian", window_width = 5, use_derivatives = TRUE) |> 
+  calculate_kinematics()
 ```
 
 Voilá! We've arrived at the final step, and all that's left is to calculate summary statistics! We can decide whether which measures of central tendency and dispersion (e.g. mean and SD). As most movement data is highly skewed, we  recommend to use median and MAD (default setting).
@@ -44,6 +46,7 @@ Voilá! We've arrived at the final step, and all that's left is to calculate sum
 ```{r}
 library(tinytable)
 df_kinematics_clean |>
+  filter(v_translation > 0) |> 
   calculate_statistics(measures = "median_mad") |> 
   mutate(across(where(is.numeric), as.numeric)) |>
   tidyr::pivot_longer(where(is.numeric),

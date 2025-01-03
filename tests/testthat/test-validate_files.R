@@ -1,13 +1,13 @@
 # Test arguments
 
-path_directory <- here::here("tests", "data", "single")
-path_correct <- here::here("tests", "data", "single", "opticalflow_sensor_1.csv")
-path_correct2 <- here::here("tests", "data", "single", "opticalflow_sensor_2.csv")
-path_wrong <- here::here("tests", "data", "single", "opticalflow_sensor_12.csv")
-path_wrong_suffix <- here::here("tests", "data", "single", "opticalflow_sensor_12.txt")
+path_directory <- testthat::test_path("data", "single")
+path_correct <- testthat::test_path("data", "single", "opticalflow_sensor_1.csv")
+path_correct2 <- testthat::test_path("data", "single", "opticalflow_sensor_2.csv")
+path_wrong <- testthat::test_path("data", "single", "opticalflow_sensor_12.csv")
+path_wrong_suffix <- testthat::test_path("data", "single", "opticalflow_sensor_12.txt")
 paths_multiple <- c(path_correct, path_correct2)
 
-path_sleap <- here::here("tests", "data", "sleap", "SLEAP_single-mouse_EPM.analysis.h5")
+path_sleap <- testthat::test_path("data", "sleap", "SLEAP_single-mouse_EPM.analysis.h5")
 
 # Directory
 test_that("Test whether file is not a directory", {
