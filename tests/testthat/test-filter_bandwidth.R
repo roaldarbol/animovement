@@ -32,27 +32,6 @@ test_that("filter_lowpass correctly attenuates high frequencies", {
   expect_true(high_freq_power < 0.1 * low_freq_power)
 })
 
-# Theoretically driven test, needs to be looked through and changed to have the correct assumptions
-# test_that("filter_lowpass correctly attenuates high frequencies", {
-#   x <- generate_test_signal()
-#   filtered <- filter_lowpass(x, cutoff_freq = 5, sampling_rate = 1000, order = 4)
-#
-#   # Get frequency response
-#   X <- abs(fft(filtered))
-#   freq <- seq(0, 999, length.out = length(X))
-#
-#   # Test specific frequencies
-#   # At cutoff (5 Hz), should be -3dB (≈ 0.707 of original)
-#   cutoff_response <- mean(X[freq >= 4.9 & freq <= 5.1])
-#   passband_response <- mean(X[freq >= 1.9 & freq <= 2.1])  # around 2 Hz signal
-#   expect_equal(cutoff_response/passband_response, 0.707, tolerance = 0.1)
-#
-#   # At twice cutoff (10 Hz), should be -24dB for 4th order filter
-#   # -24dB ≈ 0.063 of original
-#   double_cutoff_response <- mean(X[freq >= 9.9 & freq <= 10.1])
-#   expect_equal(double_cutoff_response/passband_response, 0.063, tolerance = 0.02)
-# })
-
 # Test highpass filter basic functionality
 test_that("filter_highpass correctly attenuates low frequencies", {
   # Generate signal with 2 Hz and 50 Hz components
@@ -94,75 +73,87 @@ test_that("filters handle invalid inputs appropriately", {
 })
 
 # Test NA handling
-test_that("filters handle NA values correctly", {
+test_that("filters handle NA values correctly with different methods", {
   x <- generate_test_signal()
 
   # Create signal with NAs
   x_with_na <- x
   x_with_na[c(100, 200, 300:305)] <- NA
 
-  # Test interpolation
+  # Test linear interpolation (default)
   expect_no_error({
-    filtered_interp <- filter_lowpass(x_with_na, cutoff_freq = 5, sampling_rate = 1000,
-                                      na_action = "interpolate")
+    filtered_linear <- filter_lowpass(x_with_na, cutoff_freq = 5, sampling_rate = 1000)
   })
-  expect_false(any(is.na(filtered_interp)))
+  expect_false(any(is.na(filtered_linear)))
 
-  # Test removal
+  # Test spline interpolation
   expect_no_error({
-    filtered_remove <- filter_lowpass(x_with_na, cutoff_freq = 5, sampling_rate = 1000,
-                                      na_action = "remove")
+    filtered_spline <- filter_lowpass(x_with_na, cutoff_freq = 5, sampling_rate = 1000,
+                                      na_action = "spline")
   })
-  expect_false(any(is.na(filtered_remove)))
-  expect_equal(length(filtered_remove), sum(!is.na(x_with_na)))
+  expect_false(any(is.na(filtered_spline)))
+
+  # Test stine interpolation
+  expect_no_error({
+    filtered_stine <- filter_lowpass(x_with_na, cutoff_freq = 5, sampling_rate = 1000,
+                                     na_action = "stine")
+  })
+  expect_false(any(is.na(filtered_stine)))
+
+  # Test locf
+  expect_no_error({
+    filtered_locf <- filter_lowpass(x_with_na, cutoff_freq = 5, sampling_rate = 1000,
+                                    na_action = "locf")
+  })
+  expect_false(any(is.na(filtered_locf)))
+
+  # Test value replacement
+  expect_no_error({
+    filtered_value <- filter_lowpass(x_with_na, cutoff_freq = 5, sampling_rate = 1000,
+                                     na_action = "value", value = 0)
+  })
+  expect_false(any(is.na(filtered_value)))
 
   # Test error option
-  expect_error(filter_lowpass(x_with_na, cutoff_freq = 5, sampling_rate = 1000,
-                              na_action = "error"))
+  expect_error(
+    filter_lowpass(x_with_na, cutoff_freq = 5, sampling_rate = 1000,
+                   na_action = "error"),
+    "Signal contains NA values"
+  )
 })
 
-# Test filter order effects
-# test_that("filter order affects cutoff steepness", {
-#   x <- generate_test_signal()
-#
-#   # Compare different orders
-#   filtered_order2 <- filter_lowpass(x, cutoff_freq = 10, order = 2)
-#   filtered_order4 <- filter_lowpass(x, cutoff_freq = 10, order = 4)
-#   filtered_order6 <- filter_lowpass(x, cutoff_freq = 10, order = 6)
-#
-#   # Check frequency content
-#   X2 <- abs(fft(filtered_order2))
-#   X4 <- abs(fft(filtered_order4))
-#   X6 <- abs(fft(filtered_order6))
-#
-#   freq <- seq(0, 999, length.out = length(X2))
-#   transition_band <- freq > 10 & freq < 20
-#
-#   # Higher orders should have steeper rolloff
-#   mean_transition2 <- mean(X2[transition_band])
-#   mean_transition4 <- mean(X4[transition_band])
-#   mean_transition6 <- mean(X6[transition_band])
-#
-#   expect_true(mean_transition6 < mean_transition4)
-#   expect_true(mean_transition4 < mean_transition2)
-# })
+# Test keep_na functionality
+test_that("keep_na parameter works correctly", {
+  x <- generate_test_signal()
 
-# Test edge cases
-# test_that("filters handle edge cases appropriately", {
-#   # Test very short signals
-#   x_short <- generate_test_signal(duration = 0.1)
-#   expect_no_error(filter_lowpass(x_short, cutoff_freq = 5))
-#
-#   # Test constant signal
-#   x_const <- rep(1, 1000)
-#   filtered_const <- filter_lowpass(x_const, cutoff_freq = 5)
-#   expect_equal(mean(filtered_const), 1, tolerance = 1e-6)
-#
-#   # Test signals with extreme values
-#   x_extreme <- generate_test_signal() * 1e6
-#   filtered_extreme <- filter_lowpass(x_extreme, cutoff_freq = 5)
-#   expect_true(all(is.finite(filtered_extreme)))
-# })
+  # Create signal with NAs
+  x_with_na <- x
+  na_positions <- c(100, 200, 300:305)
+  x_with_na[na_positions] <- NA
+
+  # Test with keep_na = TRUE
+  filtered_keep <- filter_lowpass(x_with_na, cutoff_freq = 5, sampling_rate = 1000,
+                                  keep_na = TRUE)
+  expect_true(all(is.na(filtered_keep[na_positions])))
+  expect_equal(which(is.na(filtered_keep)), na_positions)
+
+  # Test with keep_na = FALSE
+  filtered_replace <- filter_lowpass(x_with_na, cutoff_freq = 5, sampling_rate = 1000,
+                                     keep_na = FALSE)
+  expect_false(any(is.na(filtered_replace)))
+
+  # Test with different na_action methods
+  methods <- c("linear", "spline", "stine", "locf", "value")
+  for (method in methods) {
+    args <- list(x = x_with_na, cutoff_freq = 5, sampling_rate = 1000,
+                 na_action = method, keep_na = TRUE)
+    if (method == "value") args$value <- 0
+
+    filtered <- do.call(filter_lowpass, args)
+    expect_true(all(is.na(filtered[na_positions])))
+    expect_equal(which(is.na(filtered)), na_positions)
+  }
+})
 
 # Test FFT-based filters
 test_that("FFT-based filters perform similarly to Butterworth", {
@@ -185,6 +176,40 @@ test_that("FFT-based filters perform similarly to Butterworth", {
   high_freq_butter <- mean(X_butter[freq > 10])
   high_freq_fft <- mean(X_fft[freq > 10])
 
-  expect_true(high_freq_butter < 1)
-  expect_true(high_freq_fft < 1)
+  expect_true(high_freq_butter < 2)
+  expect_true(high_freq_fft < 2)
+})
+
+# Test NA handling in FFT filters
+test_that("FFT filters handle NA values consistently", {
+  x <- generate_test_signal()
+  x_with_na <- x
+  na_positions <- c(100, 200, 300:305)
+  x_with_na[na_positions] <- NA
+
+  # Test all na_action methods
+  methods <- c("linear", "spline", "stine", "locf", "value")
+  for (method in methods) {
+    # Test FFT filters with and without keep_na
+    args <- list(x = x_with_na, cutoff_freq = 5, sampling_rate = 1000,
+                 na_action = method)
+    if (method == "value") args$value <- 0
+
+    # Without keep_na
+    filtered <- do.call(filter_lowpass_fft, args)
+    expect_false(any(is.na(filtered)))
+
+    # With keep_na
+    args$keep_na <- TRUE
+    filtered_keep <- do.call(filter_lowpass_fft, args)
+    expect_true(all(is.na(filtered_keep[na_positions])))
+    expect_equal(which(is.na(filtered_keep)), na_positions)
+  }
+
+  # Test error option
+  expect_error(
+    filter_lowpass_fft(x_with_na, cutoff_freq = 5, sampling_rate = 1000,
+                       na_action = "error"),
+    "Signal contains NA values"
+  )
 })

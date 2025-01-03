@@ -14,10 +14,19 @@
 #'        - Lower orders give smoother transitions but less steep rolloff
 #'        - Common values in practice are 2-8
 #'        - Values above 8 are rarely used due to numerical instability
-#' @param na_action How to handle NA values:
-#'        - "interpolate": Linear interpolation of NAs (default)
-#'        - "remove": Remove NAs and adjust time indices
+#' @param na_action Method to handle NA values before filtering. One of:
+#'        - "linear": Linear interpolation (default)
+#'        - "spline": Spline interpolation for smoother curves
+#'        - "stine": Stineman interpolation preserving data shape
+#'        - "locf": Last observation carried forward
+#'        - "value": Replace with a constant value
 #'        - "error": Raise an error if NAs are present
+#' @param keep_na Logical indicating whether to restore NAs to their original positions
+#'        after filtering (default = FALSE)
+#' @param ... Additional arguments passed to replace_na(). Common options include:
+#'        - value: Numeric value for replacement when na_action = "value"
+#'        - min_gap: Minimum gap size to interpolate/fill
+#'        - max_gap: Maximum gap size to interpolate/fill
 #'
 #' @details
 #' The Butterworth filter response falls off at -6*order dB/octave. The cutoff frequency
@@ -41,13 +50,9 @@
 #' * Mechanical vibrations: order=2 to 4
 #'
 #' Missing Value Handling:
-#' The function offers three approaches for handling NA values:
-#' * interpolate: Uses linear interpolation to fill gaps. Best for sporadic missing values.
-#'   Not recommended for large gaps as it may introduce artificial frequencies.
-#' * remove: Removes NA values and adjusts the time series accordingly. This changes the
-#'   effective sampling rate and may affect frequency content. Use with caution.
-#' * error: Stops execution if NAs are present. Use when missing values indicate a problem
-#'   that should be addressed before filtering.
+#' The function uses replace_na() internally for handling missing values. See ?replace_na
+#' for detailed information about each method and its parameters. NAs can optionally be
+#' restored to their original positions after filtering using keep_na = TRUE.
 #'
 #' @return Numeric vector containing the filtered signal
 #'
@@ -56,16 +61,27 @@
 #' t <- seq(0, 1, by = 0.001)
 #' x <- sin(2*pi*2*t) + 0.5*sin(2*pi*50*t)
 #'
-#' # Apply lowpass filter to remove 50 Hz noise
-#' filtered <- filter_lowpass(x, cutoff_freq = 5, sampling_rate = 1000, order = 4)
+#' # Add some NAs
+#' x[sample(length(x), 10)] <- NA
 #'
-#' # Compare original and filtered signals
-#' par(mfrow = c(2,1))
-#' plot(t[1:100], x[1:100], type = "l", main = "Original Signal")
-#' plot(t[1:100], filtered[1:100], type = "l", main = "Filtered Signal")
+#' # Basic filtering with linear interpolation for NAs
+#' filtered <- filter_lowpass(x, cutoff_freq = 5, sampling_rate = 1000)
+#'
+#' # Using spline interpolation with max gap constraint
+#' filtered <- filter_lowpass(x, cutoff_freq = 5, sampling_rate = 1000,
+#'                           na_action = "spline", max_gap = 3)
+#'
+#' # Replace NAs with zeros before filtering
+#' filtered <- filter_lowpass(x, cutoff_freq = 5, sampling_rate = 1000,
+#'                           na_action = "value", value = 0)
+#'
+#' # Filter but keep NAs in their original positions
+#' filtered <- filter_lowpass(x, cutoff_freq = 5, sampling_rate = 1000,
+#'                           na_action = "linear", keep_na = TRUE)
 #'
 #' @seealso
-#' \code{\link{highpass_filter}} for high-pass filtering
+#' \code{\link{replace_na}} for details on NA handling methods
+#' \code{\link{filter_highpass}} for high-pass filtering
 #' \code{\link{butter}} for Butterworth filter design
 #' \code{\link{filtfilt}} for zero-phase digital filtering
 #'
@@ -76,35 +92,33 @@
 #' @importFrom signal butter filtfilt
 #'
 #' @export
-filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4) {
+filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4,
+                           na_action = c("linear", "spline", "stine", "locf", "value", "error"),
+                           keep_na = FALSE,
+                           ...) {
   # Input validation
-  if (!is.numeric(x)) stop("Input signal must be numeric")
+  if (!is.numeric(x)) {
+    cli::cli_abort("Input signal must be numeric")
+  }
   if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
-    stop("Cutoff frequency must be between 0 and sampling_rate/2")
+    cli::cli_abort("Cutoff frequency must be between 0 and sampling_rate/2")
   }
   if (order < 1 || order > 8) {
-    stop("Filter order should be between 1 and 8")
+    cli::cli_abort("Filter order should be between 1 and 8")
   }
 
-  # Handle NAs with linear interpolation
-  if (any(is.na(x))) {
-    t <- seq_along(x)
-    # Handle edge cases first
-    if (is.na(x[1])) {
-      first_valid <- which(!is.na(x))[1]
-      x[1:first_valid] <- x[first_valid]
-    }
-    if (is.na(x[length(x)])) {
-      last_valid <- max(which(!is.na(x)))
-      x[last_valid:length(x)] <- x[last_valid]
-    }
-    # Now interpolate internal NAs
-    x <- as.numeric(stats::approx(t[!is.na(x)], x[!is.na(x)], t)$y)
-  }
+  na_action <- match.arg(na_action)
 
-  # Verify no NAs remain
+  # Store original NA positions if needed
+  na_positions <- if (keep_na) which(is.na(x))
+
+  # Handle NAs
   if (any(is.na(x))) {
-    stop("Failed to properly interpolate NAs")
+    if (na_action == "error") {
+      cli::cli_abort("Signal contains NA values")
+    } else {
+      x <- replace_na(x, method = na_action, ...)
+    }
   }
 
   # For very low cutoff frequencies (<0.001 normalized), reduce order
@@ -113,7 +127,7 @@ filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4) {
 
   if (normalized_cutoff < 0.001 & order > 2) {
     order <- min(order, 2)  # Limit order for very low frequencies
-    warning("Very low cutoff frequency detected. Reducing filter order to 2 for stability.")
+    cli::cli_warn("Very low cutoff frequency detected. Reducing filter order to 2 for stability.")
   }
 
   # Add reflection padding to reduce edge effects
@@ -128,6 +142,11 @@ filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4) {
 
   # Remove padding and ensure original length
   filtered <- filtered_padded[(n_pad + 1):(n_pad + length(x))]
+
+  # Restore NAs if requested
+  if (keep_na && length(na_positions) > 0) {
+    filtered[na_positions] <- NA
+  }
 
   return(filtered)
 }
@@ -148,10 +167,19 @@ filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4) {
 #'        - Lower orders give smoother transitions but less steep rolloff
 #'        - Common values in practice are 2-8
 #'        - Values above 8 are rarely used due to numerical instability
-#' @param na_action How to handle NA values:
-#'        - "interpolate": Linear interpolation of NAs (default)
-#'        - "remove": Remove NAs and adjust time indices
+#' @param na_action Method to handle NA values before filtering. One of:
+#'        - "linear": Linear interpolation (default)
+#'        - "spline": Spline interpolation for smoother curves
+#'        - "stine": Stineman interpolation preserving data shape
+#'        - "locf": Last observation carried forward
+#'        - "value": Replace with a constant value
 #'        - "error": Raise an error if NAs are present
+#' @param keep_na Logical indicating whether to restore NAs to their original positions
+#'        after filtering (default = FALSE)
+#' @param ... Additional arguments passed to replace_na(). Common options include:
+#'        - value: Numeric value for replacement when na_action = "value"
+#'        - min_gap: Minimum gap size to interpolate/fill
+#'        - max_gap: Maximum gap size to interpolate/fill
 #'
 #' @details
 #' The Butterworth filter response falls off at -6*order dB/octave. The cutoff frequency
@@ -172,8 +200,9 @@ filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4) {
 #' * Mechanical vibrations: order=2, cutoff application-specific
 #'
 #' Missing Value Handling:
-#' See lowpass_filter documentation for details on NA handling approaches.
-#'
+#' The function uses replace_na() internally for handling missing values. See ?replace_na
+#' for detailed information about each method and its parameters. NAs can optionally be
+#' restored to their original positions after filtering using keep_na = TRUE.
 #'
 #' @return Numeric vector containing the filtered signal
 #'
@@ -184,46 +213,64 @@ filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4) {
 #' signal <- sin(2*pi*10*t)  # 10 Hz signal
 #' x <- signal + drift
 #'
-#' # Remove drift with highpass filter
-#' filtered <- filter_highpass(x, cutoff_freq = 2, sampling_rate = 1000, order = 4)
+#' # Add some NAs
+#' x[sample(length(x), 10)] <- NA
+#'
+#' # Basic filtering with linear interpolation for NAs
+#' filtered <- filter_highpass(x, cutoff_freq = 2, sampling_rate = 1000)
+#'
+#' # Using spline interpolation with max gap constraint
+#' filtered <- filter_highpass(x, cutoff_freq = 2, sampling_rate = 1000,
+#'                            na_action = "spline", max_gap = 3)
+#'
+#' # Replace NAs with zeros before filtering
+#' filtered <- filter_highpass(x, cutoff_freq = 2, sampling_rate = 1000,
+#'                            na_action = "value", value = 0)
+#'
+#' # Filter but keep NAs in their original positions
+#' filtered <- filter_highpass(x, cutoff_freq = 2, sampling_rate = 1000,
+#'                            na_action = "linear", keep_na = TRUE)
 #'
 #' @seealso
-#' \code{\link{lowpass_filter}} for low-pass filtering
+#' \code{\link{replace_na}} for details on NA handling methods
+#' \code{\link{filter_lowpass}} for low-pass filtering
 #' \code{\link{butter}} for Butterworth filter design
 #' \code{\link{filtfilt}} for zero-phase digital filtering
+#'
+#' @references
+#' Butterworth, S. (1930). On the Theory of Filter Amplifiers.
+#' Wireless Engineer, 7, 536-541.
 #'
 #' @importFrom signal butter filtfilt
 #'
 #' @export
-filter_highpass <- function(x, cutoff_freq, sampling_rate, order = 4) {
+filter_highpass <- function(x, cutoff_freq, sampling_rate, order = 4,
+                            na_action = c("linear", "spline", "stine", "locf", "value", "error"),
+                            keep_na = FALSE,
+                            ...) {
   # Input validation
-  if (!is.numeric(x)) stop("Input signal must be numeric")
+  if (!is.numeric(x)) {
+    cli::cli_abort("Input signal must be numeric")
+  }
   if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
-    stop("Cutoff frequency must be between 0 and sampling_rate/2")
+    cli::cli_abort("Cutoff frequency must be between 0 and sampling_rate/2")
   }
   if (order < 1 || order > 8) {
-    stop("Filter order should be between 1 and 8")
+    cli::cli_abort("Filter order should be between 1 and 8")
   }
 
-  # Handle NAs with linear interpolation
-  if (any(is.na(x))) {
-    t <- seq_along(x)
-    # Handle edge cases first
-    if (is.na(x[1])) {
-      first_valid <- which(!is.na(x))[1]
-      x[1:first_valid] <- x[first_valid]
-    }
-    if (is.na(x[length(x)])) {
-      last_valid <- max(which(!is.na(x)))
-      x[last_valid:length(x)] <- x[last_valid]
-    }
-    # Now interpolate internal NAs
-    x <- as.numeric(stats::approx(t[!is.na(x)], x[!is.na(x)], t)$y)
-  }
+  na_action <- match.arg(na_action)
 
-  # Verify no NAs remain
+  # Store original NA positions if needed
+  na_positions <- if (keep_na) which(is.na(x))
+
+  # Handle NAs
   if (any(is.na(x))) {
-    stop("Failed to properly interpolate NAs")
+    if (na_action == "error") {
+      cli::cli_abort("Signal contains NA values")
+    } else {
+      x <- replace_na(x, method = na_action, ...)
+    }
   }
 
   # For very low cutoff frequencies (<0.001 normalized), reduce order
@@ -232,7 +279,7 @@ filter_highpass <- function(x, cutoff_freq, sampling_rate, order = 4) {
 
   if (normalized_cutoff < 0.001 & order > 2) {
     order <- min(order, 2)  # Limit order for very low frequencies
-    warning("Very low cutoff frequency detected. Reducing filter order to 2 for stability.")
+    cli::cli_warn("Very low cutoff frequency detected. Reducing filter order to 2 for stability.")
   }
 
   # Add reflection padding to reduce edge effects
@@ -248,198 +295,10 @@ filter_highpass <- function(x, cutoff_freq, sampling_rate, order = 4) {
   # Remove padding and ensure original length
   filtered <- filtered_padded[(n_pad + 1):(n_pad + length(x))]
 
-  return(filtered)
-}
-
-#' Apply FFT-based Lowpass Filter to Signal
-#'
-#' This function implements a lowpass filter using the Fast Fourier Transform (FFT).
-#' It provides a sharp frequency cutoff but may introduce ringing artifacts (Gibbs phenomenon).
-#'
-#' @param x Numeric vector containing the signal to be filtered
-#' @param cutoff_freq Cutoff frequency in Hz
-#' @param sampling_rate Sampling rate of the signal in Hz
-#' @param na_action How to handle NA values:
-#'        - "interpolate": Linear interpolation of NAs (default)
-#'        - "remove": Remove NAs and adjust time indices
-#'        - "error": Raise an error if NAs are present
-#'
-#' @details
-#' FFT-based filtering applies a hard cutoff in the frequency domain. This can be
-#' advantageous for:
-#' * Precise frequency selection
-#' * Batch processing of long signals
-#' * Cases where sharp frequency cutoffs are desired
-#'
-#' Limitations:
-#' * May introduce ringing artifacts
-#' * Assumes periodic signal (can cause edge effects)
-#' * Less suitable for real-time processing
-#'
-#' Missing Value Handling:
-#' See lowpass_filter documentation for details on NA handling approaches.
-#'
-#'
-#' @return Numeric vector containing the filtered signal
-#'
-#' @examples
-#' # Compare Butterworth and FFT filtering
-#' t <- seq(0, 1, by = 0.001)
-#' x <- sin(2*pi*2*t) + sin(2*pi*50*t)
-#' butter_filtered <- filter_lowpass(x, 5, 1000)
-#' fft_filtered <- filter_lowpass_fft(x, 5, 1000)
-#'
-#' @seealso
-#' \code{\link{highpass_filter_fft}} for FFT-based high-pass filtering
-#' \code{\link{lowpass_filter}} for Butterworth-based filtering
-#'
-#' @export
-filter_lowpass_fft <- function(x, cutoff_freq, sampling_rate) {
-  # Input validation
-  if (!is.numeric(x)) stop("Input signal must be numeric")
-  if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
-    stop("Cutoff frequency must be between 0 and sampling_rate/2")
+  # Restore NAs if requested
+  if (keep_na && length(na_positions) > 0) {
+    filtered[na_positions] <- NA
   }
-
-  # Handle NAs with linear interpolation
-  if (any(is.na(x))) {
-    t <- seq_along(x)
-    # Handle edge cases first
-    if (is.na(x[1])) {
-      first_valid <- which(!is.na(x))[1]
-      x[1:first_valid] <- x[first_valid]
-    }
-    if (is.na(x[length(x)])) {
-      last_valid <- max(which(!is.na(x)))
-      x[last_valid:length(x)] <- x[last_valid]
-    }
-    # Now interpolate internal NAs
-    x <- as.numeric(stats::approx(t[!is.na(x)], x[!is.na(x)], t)$y)
-  }
-
-  # Verify no NAs remain
-  if (any(is.na(x))) {
-    stop("Failed to properly interpolate NAs")
-  }
-
-  N <- length(x)
-
-  # Add reflection padding to reduce edge effects
-  n_pad <- ceiling(N/10)  # 10% padding
-  start_pad <- rev(x[1:n_pad])
-  end_pad <- rev(x[(length(x) - n_pad + 1):length(x)])
-  x_padded <- c(start_pad, x, end_pad)
-
-  # Compute FFT
-  X <- fft(x_padded)
-  N_padded <- length(x_padded)
-
-  # Create frequency vector
-  freq <- seq(0, sampling_rate - sampling_rate/N_padded, by = sampling_rate/N_padded)
-
-  # Create filter mask
-  mask <- freq <= cutoff_freq
-  mask[N_padded:2] <- rev(mask[2:(N_padded/2 + 1)])  # Mirror for negative frequencies
-
-  # Apply filter
-  X_filtered <- X * mask
-
-  # Inverse FFT
-  filtered_padded <- Re(fft(X_filtered, inverse = TRUE)/N_padded)
-
-  # Remove padding
-  filtered <- filtered_padded[(n_pad + 1):(n_pad + N)]
-
-  return(filtered)
-}
-
-#' Apply FFT-based Highpass Filter to Signal
-#'
-#' This function implements a highpass filter using the Fast Fourier Transform (FFT).
-#' It provides a sharp frequency cutoff but may introduce ringing artifacts (Gibbs phenomenon).
-#'
-#' @param x Numeric vector containing the signal to be filtered
-#' @param cutoff_freq Cutoff frequency in Hz
-#' @param sampling_rate Sampling rate of the signal in Hz
-#' @param na_action How to handle NA values:
-#'        - "interpolate": Linear interpolation of NAs (default)
-#'        - "remove": Remove NAs and adjust time indices
-#'        - "error": Raise an error if NAs are present
-#'
-#' @details
-#' FFT-based filtering applies a hard cutoff in the frequency domain. This can be
-#' advantageous for:
-#' * Precise frequency selection
-#' * Batch processing of long signals
-#' * Cases where sharp frequency cutoffs are desired
-#'
-#' Limitations:
-#' * May introduce ringing artifacts
-#' * Assumes periodic signal (can cause edge effects)
-#' * Less suitable for real-time processing
-#'
-#' Missing Value Handling:
-#' See lowpass_filter documentation for details on NA handling approaches.
-#'
-#'
-#' @return Numeric vector containing the filtered signal
-#'
-#' @export
-filter_highpass_fft <- function(x, cutoff_freq, sampling_rate) {
-  # Input validation
-  if (!is.numeric(x)) stop("Input signal must be numeric")
-  if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
-    stop("Cutoff frequency must be between 0 and sampling_rate/2")
-  }
-
-  # Handle NAs with linear interpolation
-  if (any(is.na(x))) {
-    t <- seq_along(x)
-    # Handle edge cases first
-    if (is.na(x[1])) {
-      first_valid <- which(!is.na(x))[1]
-      x[1:first_valid] <- x[first_valid]
-    }
-    if (is.na(x[length(x)])) {
-      last_valid <- max(which(!is.na(x)))
-      x[last_valid:length(x)] <- x[last_valid]
-    }
-    # Now interpolate internal NAs
-    x <- as.numeric(stats::approx(t[!is.na(x)], x[!is.na(x)], t)$y)
-  }
-
-  # Verify no NAs remain
-  if (any(is.na(x))) {
-    stop("Failed to properly interpolate NAs")
-  }
-
-  N <- length(x)
-
-  # Add reflection padding to reduce edge effects
-  n_pad <- ceiling(N/10)  # 10% padding
-  start_pad <- rev(x[1:n_pad])
-  end_pad <- rev(x[(length(x) - n_pad + 1):length(x)])
-  x_padded <- c(start_pad, x, end_pad)
-
-  # Compute FFT
-  X <- fft(x_padded)
-  N_padded <- length(x_padded)
-
-  # Create frequency vector
-  freq <- seq(0, sampling_rate - sampling_rate/N_padded, by = sampling_rate/N_padded)
-
-  # Create filter mask
-  mask <- freq >= cutoff_freq
-  mask[N_padded:2] <- rev(mask[2:(N_padded/2 + 1)])  # Mirror for negative frequencies
-
-  # Apply filter
-  X_filtered <- X * mask
-
-  # Inverse FFT
-  filtered_padded <- Re(fft(X_filtered, inverse = TRUE)/N_padded)
-
-  # Remove padding
-  filtered <- filtered_padded[(n_pad + 1):(n_pad + N)]
 
   return(filtered)
 }

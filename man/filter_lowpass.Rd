@@ -4,7 +4,15 @@
 \alias{filter_lowpass}
 \title{Apply Butterworth Lowpass Filter to Signal}
 \usage{
-filter_lowpass(x, cutoff_freq, sampling_rate, order = 4)
+filter_lowpass(
+  x,
+  cutoff_freq,
+  sampling_rate,
+  order = 4,
+  na_action = c("linear", "spline", "stine", "locf", "value", "error"),
+  keep_na = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{Numeric vector containing the signal to be filtered}
@@ -21,10 +29,21 @@ least twice the highest frequency component in the signal (Nyquist criterion).}
 - Common values in practice are 2-8
 - Values above 8 are rarely used due to numerical instability}
 
-\item{na_action}{How to handle NA values:
-- "interpolate": Linear interpolation of NAs (default)
-- "remove": Remove NAs and adjust time indices
+\item{na_action}{Method to handle NA values before filtering. One of:
+- "linear": Linear interpolation (default)
+- "spline": Spline interpolation for smoother curves
+- "stine": Stineman interpolation preserving data shape
+- "locf": Last observation carried forward
+- "value": Replace with a constant value
 - "error": Raise an error if NAs are present}
+
+\item{keep_na}{Logical indicating whether to restore NAs to their original positions
+after filtering (default = FALSE)}
+
+\item{...}{Additional arguments passed to replace_na(). Common options include:
+- value: Numeric value for replacement when na_action = "value"
+- min_gap: Minimum gap size to interpolate/fill
+- max_gap: Maximum gap size to interpolate/fill}
 }
 \value{
 Numeric vector containing the filtered signal
@@ -62,28 +81,32 @@ Common values by field:
 }
 
 Missing Value Handling:
-The function offers three approaches for handling NA values:
-\itemize{
-\item interpolate: Uses linear interpolation to fill gaps. Best for sporadic missing values.
-Not recommended for large gaps as it may introduce artificial frequencies.
-\item remove: Removes NA values and adjusts the time series accordingly. This changes the
-effective sampling rate and may affect frequency content. Use with caution.
-\item error: Stops execution if NAs are present. Use when missing values indicate a problem
-that should be addressed before filtering.
-}
+The function uses replace_na() internally for handling missing values. See ?replace_na
+for detailed information about each method and its parameters. NAs can optionally be
+restored to their original positions after filtering using keep_na = TRUE.
 }
 \examples{
 # Generate example signal: 2 Hz fundamental + 50 Hz noise
 t <- seq(0, 1, by = 0.001)
 x <- sin(2*pi*2*t) + 0.5*sin(2*pi*50*t)
 
-# Apply lowpass filter to remove 50 Hz noise
-filtered <- filter_lowpass(x, cutoff_freq = 5, sampling_rate = 1000, order = 4)
+# Add some NAs
+x[sample(length(x), 10)] <- NA
 
-# Compare original and filtered signals
-par(mfrow = c(2,1))
-plot(t[1:100], x[1:100], type = "l", main = "Original Signal")
-plot(t[1:100], filtered[1:100], type = "l", main = "Filtered Signal")
+# Basic filtering with linear interpolation for NAs
+filtered <- filter_lowpass(x, cutoff_freq = 5, sampling_rate = 1000)
+
+# Using spline interpolation with max gap constraint
+filtered <- filter_lowpass(x, cutoff_freq = 5, sampling_rate = 1000,
+                          na_action = "spline", max_gap = 3)
+
+# Replace NAs with zeros before filtering
+filtered <- filter_lowpass(x, cutoff_freq = 5, sampling_rate = 1000,
+                          na_action = "value", value = 0)
+
+# Filter but keep NAs in their original positions
+filtered <- filter_lowpass(x, cutoff_freq = 5, sampling_rate = 1000,
+                          na_action = "linear", keep_na = TRUE)
 
 }
 \references{
@@ -91,7 +114,8 @@ Butterworth, S. (1930). On the Theory of Filter Amplifiers.
 Wireless Engineer, 7, 536-541.
 }
 \seealso{
-\code{\link{highpass_filter}} for high-pass filtering
+\code{\link{replace_na}} for details on NA handling methods
+\code{\link{filter_highpass}} for high-pass filtering
 \code{\link{butter}} for Butterworth filter design
 \code{\link{filtfilt}} for zero-phase digital filtering
 }
