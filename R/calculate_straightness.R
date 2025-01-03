@@ -13,20 +13,20 @@ calculate_straightness <- function(data, straightness = c("A", "B", "C", "D")) {
       straightness_A = calculate_straightness_A(
         .data$last_x,
         .data$last_y,
-        .data$total_distance
+        .data$total_d_translation
       ),
       straightness_B = calculate_straightness_B(
         .data$last_x,
         .data$last_y,
-        .data$total_distance
+        .data$total_d_translation
       ),
       straightness_C = calculate_straightness_C(
-        .data$total_distance,
-        .data$total_rotation
+        .data$total_d_translation,
+        .data$total_d_rotation
       ),
       straightness_D = calculate_straightness_D(
-        .data$total_distance,
-        .data$total_rotation
+        .data$total_d_translation,
+        .data$total_d_rotation
       )
     )
 

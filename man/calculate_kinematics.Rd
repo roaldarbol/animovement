@@ -2,18 +2,62 @@
 % Please edit documentation in R/calculate_kinematics.R
 \name{calculate_kinematics}
 \alias{calculate_kinematics}
-\title{Calculate kinematics}
+\title{Calculate kinematics from position data}
 \usage{
-calculate_kinematics(data)
+calculate_kinematics(data, by = NULL)
 }
 \arguments{
-\item{data}{Data frame}
+\item{data}{A data frame containing at minimum:
+\itemize{
+\item time (numeric): Time points of measurements
+\item x (numeric): X-coordinates
+\item y (numeric): Y-coordinates
+}}
+
+\item{by}{Character vector specifying additional grouping variables (optional).
+If the input data frame is already grouped, those groups will be preserved
+and any additional groups specified in \code{by} will be added.}
 }
 \value{
-A data frame with kinematics calculated
+A data frame containing the original data plus calculated kinematics:
+\itemize{
+\item distance: Distance traveled between consecutive points
+\item v_translation: Translational velocity
+\item a_translation: Translational acceleration
+\item direction: Movement direction in radians
+\item rotation: Angular change between consecutive points
+\item v_rotation: Angular velocity
+\item a_rotation: Angular acceleration
+}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Calculate kinematics.
+Calculates kinematic measurements including translational and rotational motion from
+position data. The function computes velocities, accelerations, and angular measurements
+from x-y coordinate time series data.
+}
+\section{Warning}{
+
+Time points should be regularly sampled for accurate derivatives.
+}
+
+\examples{
+# Basic usage with just x-y coordinates
+df <- data.frame(
+  time = 1:10,
+  x = runif(10),
+  y = runif(10)
+)
+calculate_kinematics(df)
+
+# Using with grouping variables
+df_grouped <- data.frame(
+  time = rep(1:5, 2),
+  x = runif(10),
+  y = runif(10),
+  individual = rep(c("A", "B"), each = 5)
+)
+calculate_kinematics(df_grouped, by = "individual")
+
 }
