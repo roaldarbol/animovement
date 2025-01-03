@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">animovement</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,7 +121,7 @@
           <code><a href="read_trex.html">read_trex()</a></code>
 
         </dt>
-        <dd>Read TRex data</dd>
+        <dd>Read TRex Movement Tracking Data</dd>
       </dl></div><div class="section level2">
       <h2 id="clean">Clean<a class="anchor" aria-label="anchor" href="#clean"></a></h2>
 
@@ -135,16 +135,142 @@
 
       <dl><dt>
 
-          <code><a href="smooth_movement.html">smooth_movement()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+          <code><a href="check_na_timing.html">check_na_timing()</a></code>
+
         </dt>
-        <dd>Smooth movement</dd>
+        <dd>Visualize the timing of missing values in the data</dd>
       </dl><dl><dt>
 
-          <code><a href="clean_kinematics.html">clean_kinematics()</a></code>
+          <code><a href="check_na_gapsize.html">check_na_gapsize()</a></code>
+
+        </dt>
+        <dd>Visualize the occurrence of gap sizes in the data</dd>
+      </dl><dl><dt>
+
+          <code><a href="check_confidence.html">check_confidence()</a></code>
+
+        </dt>
+        <dd>Visualize the distribution of confidence values for each keypoint</dd>
+      </dl><dl><dt>
+
+          <code><a href="check_pose.html">check_pose()</a></code>
+
+        </dt>
+        <dd>Analyze the distribution of distances from keypoints to the centroid</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_na_confidence.html">filter_na_confidence()</a></code>
+
+        </dt>
+        <dd>Filter low-confidence values in a dataset</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_na_speed.html">filter_na_speed()</a></code>
+
+        </dt>
+        <dd>Filter values by speed threshold</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_na_roi.html">filter_na_roi()</a></code>
+
+        </dt>
+        <dd>Filter coordinates outside a region of interest (ROI)</dd>
+      </dl><dl><dt>
+
+          <code><a href="replace_na.html">replace_na()</a></code>
+
+        </dt>
+        <dd>Replace Missing Values Using Various Methods</dd>
+      </dl><dl><dt>
+
+          <code><a href="replace_na_linear.html">replace_na_linear()</a></code>
+
+        </dt>
+        <dd>Replace Missing Values Using Linear Interpolation</dd>
+      </dl><dl><dt>
+
+          <code><a href="replace_na_locf.html">replace_na_locf()</a></code>
+
+        </dt>
+        <dd>Replace Missing Values Using Last Observation Carried Forward</dd>
+      </dl><dl><dt>
+
+          <code><a href="replace_na_spline.html">replace_na_spline()</a></code>
+
+        </dt>
+        <dd>Replace Missing Values Using Spline Interpolation</dd>
+      </dl><dl><dt>
+
+          <code><a href="replace_na_stine.html">replace_na_stine()</a></code>
+
+        </dt>
+        <dd>Replace Missing Values Using Stineman Interpolation</dd>
+      </dl><dl><dt>
+
+          <code><a href="replace_na_value.html">replace_na_value()</a></code>
+
+        </dt>
+        <dd>Replace Missing Values with a Constant Value</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_movement.html">filter_movement()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
-        <dd>Clean kinematics</dd>
+        <dd>Smooth Movement Data</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_lowpass.html">filter_lowpass()</a></code>
+
+        </dt>
+        <dd>Apply Butterworth Lowpass Filter to Signal</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_highpass.html">filter_highpass()</a></code>
+
+        </dt>
+        <dd>Apply Butterworth Highpass Filter to Signal</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_lowpass_fft.html">filter_lowpass_fft()</a></code>
+
+        </dt>
+        <dd>Apply FFT-based Lowpass Filter to Signal</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_highpass_fft.html">filter_highpass_fft()</a></code>
+
+        </dt>
+        <dd>Apply FFT-based Highpass Filter to Signal</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_kalman.html">filter_kalman()</a></code>
+
+        </dt>
+        <dd>Kalman Filter for Regular Time Series</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_kalman_irregular.html">filter_kalman_irregular()</a></code>
+
+        </dt>
+        <dd>Kalman Filter for Irregular Time Series with Optional Resampling</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_rollmean.html">filter_rollmean()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Apply Rolling Mean Filter</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_rollmedian.html">filter_rollmedian()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Apply Rolling Median Filter</dd>
+      </dl><dl><dt>
+
+          <code><a href="filter_sgolay.html">filter_sgolay()</a></code>
+
+        </dt>
+        <dd>Apply Savitzky-Golay Filter to Movement Data</dd>
       </dl></div><div class="section level2">
       <h2 id="transformations">Transformations<a class="anchor" aria-label="anchor" href="#transformations"></a></h2>
 
@@ -158,10 +284,22 @@
 
       <dl><dt>
 
+          <code><a href="transform_to_egocentric.html">transform_to_egocentric()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Transform coordinates to egocentric reference frame</dd>
+      </dl><dl><dt>
+
           <code><a href="translate_coords.html">translate_coords()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
         <dd>Translate coordinates (Cartesian)</dd>
+      </dl><dl><dt>
+
+          <code><a href="rotate_coords.html">rotate_coords()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Rotate coordinates in Cartesian space</dd>
       </dl><dl><dt>
 
           <code><a href="map_to_cartesian.html">map_to_cartesian()</a></code>
@@ -190,19 +328,49 @@
           <code><a href="add_centroid.html">add_centroid()</a></code>
 
         </dt>
-        <dd>Calculate the centroid</dd>
+        <dd>Add Centroid to Movement Data</dd>
       </dl><dl><dt>
 
           <code><a href="calculate_kinematics.html">calculate_kinematics()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
-        <dd>Calculate kinematics</dd>
+        <dd>Calculate kinematics from position data</dd>
       </dl><dl><dt>
 
           <code><a href="calculate_statistics.html">calculate_statistics()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
         <dd>Calculate summary statistics</dd>
+      </dl><dl><dt>
+
+          <code><a href="calculate_derivative.html">calculate_derivative()</a></code>
+
+        </dt>
+        <dd>Calculate the derivative (dx/dt) Calculate the derivative (dx/dt) with four arguments</dd>
+      </dl><dl><dt>
+
+          <code><a href="calculate_direction.html">calculate_direction()</a></code>
+
+        </dt>
+        <dd>Calculate direction Calculate direction (angle) from x and y distance using the (two-argument) arc-tangent. Converts to <code>circular</code>.</dd>
+      </dl><dl><dt>
+
+          <code><a href="calculate_distance.html">calculate_distance()</a></code>
+
+        </dt>
+        <dd>Calculate distance (Pythagoras) Calculate distance from an x and y distance, using Pythagoras theorem.</dd>
+      </dl><dl><dt>
+
+          <code><a href="calculate_speed.html">calculate_speed()</a></code>
+
+        </dt>
+        <dd>Calculate Speed from Position Data</dd>
+      </dl><dl><dt>
+
+          <code><a href="calculate_straightness.html">calculate_straightness()</a></code>
+
+        </dt>
+        <dd>Calculate straightness measures</dd>
       </dl></div><div class="section level2">
       <h2 id="metadata">Metadata<a class="anchor" aria-label="anchor" href="#metadata"></a></h2>
 
@@ -238,6 +406,18 @@
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
         <dd>Set starting datetime</dd>
+      </dl><dl><dt>
+
+          <code><a href="set_framerate.html">set_framerate()</a></code>
+
+        </dt>
+        <dd>Adjust time values to reflect a new framerate</dd>
+      </dl><dl><dt>
+
+          <code><a href="set_individual.html">set_individual()</a></code>
+
+        </dt>
+        <dd>Assign a new individual identifier to all rows in a dataset</dd>
       </dl></div><div class="section level2">
       <h2 id="helpers">Helpers<a class="anchor" aria-label="anchor" href="#helpers"></a></h2>
 
@@ -251,10 +431,76 @@
 
       <dl><dt>
 
+          <code><a href="get_example_data.html">get_example_data()</a></code>
+
+        </dt>
+        <dd>Download example tracking data</dd>
+      </dl><dl><dt>
+
           <code><a href="group_every.html">group_every()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
         <dd>Group every N observations together</dd>
+      </dl><dl><dt>
+
+          <code><a href="align_timeseries.html">align_timeseries()</a></code>
+
+        </dt>
+        <dd>Align a time series with a reference series using cross-correlation</dd>
+      </dl><dl><dt>
+
+          <code><a href="find_lag.html">find_lag()</a></code>
+
+        </dt>
+        <dd>Find optimal time lag between two time series using cross-correlation</dd>
+      </dl><dl><dt>
+
+          <code><a href="find_peaks.html">find_peaks()</a></code>
+
+        </dt>
+        <dd>Find Peaks in Time Series Data</dd>
+      </dl><dl><dt>
+
+          <code><a href="find_troughs.html">find_troughs()</a></code>
+
+        </dt>
+        <dd>Find Troughs in Time Series Data</dd>
+      </dl><dl><dt>
+
+          <code><a href="plot_position_timeseries.html">plot_position_timeseries()</a></code>
+
+        </dt>
+        <dd>Plot Time Series of Keypoint Position</dd>
+      </dl><dl><dt>
+
+          <code><a href="plot_speed_timeseries.html">plot_speed_timeseries()</a></code>
+
+        </dt>
+        <dd>Plot Time Series of Keypoint Speed</dd>
+      </dl><dl><dt>
+
+          <code><a href="classify_by_stability.html">classify_by_stability()</a></code>
+
+        </dt>
+        <dd>Classify Movement States Based on Stability Analysis</dd>
+      </dl><dl><dt>
+
+          <code><a href="classify_by_threshold.html">classify_by_threshold()</a></code>
+
+        </dt>
+        <dd>Classify Values Into Sequences with Minimum Run Length Constraints</dd>
+      </dl><dl><dt>
+
+          <code><a href="classify_high_periods.html">classify_high_periods()</a></code>
+
+        </dt>
+        <dd>Classifies Periods of High Activity in Time Series Using Peaks and Troughs</dd>
+      </dl><dl><dt>
+
+          <code><a href="classify_low_periods.html">classify_low_periods()</a></code>
+
+        </dt>
+        <dd>Classifies Periods of Low Activity in Time Series Using Peaks and Troughs</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
