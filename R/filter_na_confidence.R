@@ -20,10 +20,10 @@
 #'   y = 6:10,
 #'   confidence = c(0.5, 0.7, 0.4, 0.8, 0.9)
 #' )
-#' filter_by_confidence(data, threshold = 0.6)
+#' filter_na_confidence(data, threshold = 0.6)
 #'
 #' @export
-filter_by_confidence <- function(data, threshold=0.6){
+filter_na_confidence <- function(data, threshold=0.6){
   d <- data |>
     dplyr::mutate(x = dplyr::if_else(.data$confidence < threshold, NA, .data$x),
                   y = dplyr::if_else(.data$confidence < threshold, NA, .data$y),

@@ -46,7 +46,7 @@
 #' }
 #'
 #' @export
-filter_by_speed <- function(data, threshold = "auto") {
+filter_na_speed <- function(data, threshold = "auto") {
   # Check required columns
   required_cols <- c("x", "y", "time")
   missing_cols <- setdiff(required_cols, names(data))
@@ -97,7 +97,7 @@ filter_by_speed <- function(data, threshold = "auto") {
       )
   }
 
-  d <- d |> dplyr::select(1:n_cols)
+  d <- d |> dplyr::select(all_of(1:n_cols))
 
   return(d)
 }
