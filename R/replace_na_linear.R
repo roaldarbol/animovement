@@ -63,7 +63,7 @@ replace_na_linear <- function(x, min_gap = 1, max_gap = Inf, ...) {
   indx <- allindx[!missindx]
 
   # Perform interpolation
-  if (methods::hasArg(rule)) {
+  if (methods::hasArg("rule")) {
     interp <- stats::approx(indx, x[indx], allindx, ...)$y
   } else {
     interp <- stats::approx(indx, x[indx], allindx, rule = 2, ...)$y

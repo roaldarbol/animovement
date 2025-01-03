@@ -42,6 +42,9 @@
 #'   - 1: High activity state
 #'   - 0: Low activity state
 #'   - NA: Unable to classify (usually due to missing data)
+#'
+#' @importFrom stats quantile qnorm median mad
+#'
 #' @export
 classify_by_stability <- function(speed,
                                   window_size = 30,
@@ -78,7 +81,7 @@ classify_by_stability <- function(speed,
   ))
 
   # Find baseline statistics using stable periods
-  var_threshold <- quantile(roll_var, 0.75, na.rm = TRUE)
+  var_threshold <- stats::quantile(roll_var, 0.75, na.rm = TRUE)
   stable_periods <- !is.na(roll_var) & roll_var < var_threshold
 
   rle_obj <- rle(stable_periods)
@@ -109,7 +112,7 @@ classify_by_stability <- function(speed,
   baseline_sd <- sd(speed[baseline_start:baseline_end], na.rm = TRUE)
 
   # Convert tolerance to threshold using inverse normal CDF
-  threshold_multiplier <- qnorm(1 - tolerance)
+  threshold_multiplier <- stats::qnorm(1 - tolerance)
   threshold <- baseline_mean + threshold_multiplier * baseline_sd
 
   # Initial classification
@@ -154,8 +157,8 @@ classify_by_stability <- function(speed,
 
         stable_means <- roll_mean[stable_mask]
         list(
-          level = median(stable_means, na.rm = TRUE),
-          spread = mad(stable_means, na.rm = TRUE)
+          level = stats::median(stable_means, na.rm = TRUE),
+          spread = stats::mad(stable_means, na.rm = TRUE)
         )
       }
 

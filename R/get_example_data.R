@@ -19,6 +19,7 @@
 #' The data sources are hosted at: https://github.com/roaldarbol/movement-data
 #'
 #' @importFrom cli cli_abort cli_warn cli_inform
+#' @importFrom utils download.file
 #'
 #' @examples
 #' \dontrun{
@@ -28,6 +29,7 @@
 #' # Read the data using preferred method
 #' data <- read_deeplabcut(path)
 #' }
+#' @export
 get_example_data <- function(source,
                              cache_dir = tempdir()) {
 
@@ -70,7 +72,7 @@ get_example_data <- function(source,
 
     # Try to download the file
     download_success <- try({
-      download.file(file_url, destfile = data_path, quiet = TRUE)
+      utils::download.file(file_url, destfile = data_path, quiet = TRUE)
     }, silent = TRUE)
 
     # Check if download failed

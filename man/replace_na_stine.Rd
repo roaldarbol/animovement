@@ -2,7 +2,7 @@
 % Please edit documentation in R/replace_na_stine.R
 \name{replace_na_stine}
 \alias{replace_na_stine}
-\title{Replace Missing Values Using Linear Interpolation}
+\title{Replace Missing Values Using Stineman Interpolation}
 \usage{
 replace_na_stine(x, min_gap = 1, max_gap = Inf, ...)
 }
@@ -20,14 +20,8 @@ than this will be left as NA. Default is Inf (no upper limit).}
 \value{
 A numeric vector with NA values replaced by interpolated values where
 gap length criteria are met.
-
-A numeric vector with NA values replaced by interpolated values where
-gap length criteria are met.
 }
 \description{
-Replaces missing values using linear interpolation, with control over both
-minimum and maximum gap sizes to interpolate.
-
 Replaces missing values using Stineman interpolation, with control over both
 minimum and maximum gap sizes to interpolate.
 }
@@ -40,27 +34,10 @@ The function applies both minimum and maximum gap criteria:
 If both parameters are specified, min_gap must be less than or equal to max_gap.
 }
 
-The function applies both minimum and maximum gap criteria:
-\itemize{
-\item Gaps shorter than min_gap are left as NA
-\item Gaps longer than max_gap are left as NA
-\item Only gaps that meet both criteria are interpolated
-If both parameters are specified, min_gap must be less than or equal to max_gap.
-}
-
 Stineman interpolation is particularly good at preserving the shape of the data
 and avoiding overshooting.
 }
 \examples{
-\dontrun{
-x <- c(1, NA, NA, 4, 5, NA, NA, NA, 9)
-replace_na_linear(x)  # interpolates all gaps
-replace_na_linear(x, min_gap = 2)  # only gaps >= 2
-replace_na_linear(x, max_gap = 2)  # only gaps <= 2
-replace_na_linear(x, min_gap = 2, max_gap = 3)  # gaps between 2 and 3
-}
-Replace Missing Values Using Stineman Interpolation
-
 \dontrun{
 x <- c(1, NA, NA, 4, 5, NA, NA, NA, 9)
 replace_na_stine(x)  # interpolates all gaps

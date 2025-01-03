@@ -25,7 +25,7 @@ end depending on the direction of the shift.
 \description{
 This function aligns two time series by shifting one series relative to the
 reference based on their cross-correlation. It first finds the optimal lag
-using \code{find_time_lag}, then applies the shift by padding with NA values
+using \code{find_lag}, then applies the shift by padding with NA values
 as needed.
 }
 \examples{

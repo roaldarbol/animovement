@@ -21,14 +21,16 @@
 #' t <- seq(0, 10, 0.1)
 #' reference <- sin(t)
 #' signal <- sin(t - 0.5)  # Signal delayed by 0.5 units
-#' lag <- find_time_lag(signal, reference)
+#' lag <- find_lag(signal, reference)
 #' print(lag)  # Should be approximately 5 samples (0.5 units)
 #'
-#' @seealso \code{\link{align_time_series}} for applying the computed lag
+#' @seealso \code{\link{align_timeseries}} for applying the computed lag
+#'
+#' @importFrom stats complete.cases ccf
 #'
 #' @export
-find_time_lag <- function(signal, reference, max_lag = 5000, normalize = TRUE) {
-  complete_cases <- complete.cases(signal, reference)
+find_lag <- function(signal, reference, max_lag = 5000, normalize = TRUE) {
+  complete_cases <- stats::complete.cases(signal, reference)
   signal <- signal[complete_cases]
   reference <- reference[complete_cases]
 
@@ -42,7 +44,7 @@ find_time_lag <- function(signal, reference, max_lag = 5000, normalize = TRUE) {
     max_lag = length(signal) - 1
   }
 
-  ccf_result <- ccf(signal, reference, plot = FALSE, lag.max = max_lag)
+  ccf_result <- stats::ccf(signal, reference, plot = FALSE, lag.max = max_lag)
   best_lag <- ccf_result$lag[which.max(abs(ccf_result$acf))]
 
   # Subtract one observation, which seems to be needed in tests
@@ -55,10 +57,10 @@ find_time_lag <- function(signal, reference, max_lag = 5000, normalize = TRUE) {
 #'
 #' This function aligns two time series by shifting one series relative to the
 #' reference based on their cross-correlation. It first finds the optimal lag
-#' using \code{find_time_lag}, then applies the shift by padding with NA values
+#' using \code{find_lag}, then applies the shift by padding with NA values
 #' as needed.
 #'
-#' @inheritParams find_time_lag
+#' @inheritParams find_lag
 #' @param signal Time series to align (numeric vector)
 #' @param reference Reference time series to align against (numeric vector)
 #'
@@ -81,7 +83,7 @@ find_time_lag <- function(signal, reference, max_lag = 5000, normalize = TRUE) {
 #'
 #' @export
 align_timeseries <- function(signal, reference, max_lag = 5000, normalize = TRUE) {
-  lag <- find_time_lag(signal, reference, max_lag, normalize)
+  lag <- find_lag(signal, reference, max_lag, normalize)
 
   if (lag > 0) {
     aligned <- c(rep(NA, lag), signal[1:(length(signal)-lag)])

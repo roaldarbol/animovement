@@ -113,3 +113,4 @@ ggplot_na_gapsize(movement_data) +
 }
 
 }
+\keyword{internal}

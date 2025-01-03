@@ -47,16 +47,16 @@ requirements.
 \examples{
 # Basic usage
 values <- c(1, 1.5, 2.8, 3.2, 3.0, 2.9, 1.2, 1.1)
-result <- classify_by_threshold_with_min_runs(values,
-                                             threshold = 2.5,
-                                             min_low_frames = 2,
-                                             min_high_frames = 3)
+result <- classify_by_threshold(values,
+                                threshold = 2.5,
+                                min_low_frames = 2,
+                                min_high_frames = 3)
 
 # Handling NAs
 values_with_na <- c(1, NA, 3, 3.2, NA, 1.2)
-result <- classify_by_threshold_with_min_runs(values_with_na,
-                                             threshold = 2.5,
-                                             min_low_frames = 2,
-                                             min_high_frames = 2)
+result <- classify_by_threshold(values_with_na,
+                                threshold = 2.5,
+                                min_low_frames = 2,
+                                min_high_frames = 2)
 
 }

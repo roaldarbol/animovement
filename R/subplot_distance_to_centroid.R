@@ -12,13 +12,14 @@ subplot_dist_to_centroid_hist <- function(data, keypoint){
 subplot_dist_to_centroid_confidence <- function(data, keypoint){
   if (nrow(data) < 1000){
     p <- data |>
-      ggplot2::ggplot(aes(.data$dist_to_centroid, .data$confidence)) +
+      ggplot2::ggplot(ggplot2::aes(.data$dist_to_centroid, .data$confidence)) +
       ggplot2::geom_point(alpha = 0.5) +
       ggplot2::ggtitle("", subtitle = keypoint)
   } else {
     p <- data |>
-      ggplot2::ggplot(aes(.data$dist_to_centroid, .data$confidence)) +
-      ggplot2::stat_density_2d(aes(fill = after_stat(level)), geom = "polygon") +
+      ggplot2::ggplot(ggplot2::aes(.data$dist_to_centroid, .data$confidence)) +
+      ggplot2::stat_density_2d(ggplot2::aes(fill = ggplot2::after_stat(level)),
+                               geom = "polygon") +
       ggplot2::scale_fill_continuous(type = "viridis") +
       ggplot2::ggtitle("", subtitle = keypoint)
   }

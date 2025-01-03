@@ -68,6 +68,8 @@
 #' This function is adapted from the imputeTS package (version 3.3) by
 #' Steffen Moritz and Sebastian Gatscha, available under GPL-3 license.
 #'
+#' @keywords internal
+#'
 #' @export
 ggplot_na_gapsize <- function(data,
                               limit = 10,
