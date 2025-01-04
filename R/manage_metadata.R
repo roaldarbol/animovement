@@ -73,6 +73,77 @@ set_start_datetime <- function(data, start_datetime){
   return(data)
 }
 
+#' Assign a new individual identifier to all rows in a dataset
+#'
+#' This function replaces any existing individual identifiers with a new specified
+#' identifier across all rows in the dataset. The data is first ungrouped to ensure
+#' consistent application of the new identifier.
+#'
+#' @param data A data frame or tibble containing the data to be modified
+#' @param individual The new identifier value to be assigned to all rows
+#'
+#' @return A modified data frame with the new individual identifier applied as a factor
+#'
+#' @export
+#'
+#' @importFrom dplyr ungroup mutate
+#'
+#' @examples
+#' data <- data.frame(time = 1:5, value = rnorm(5))
+#' result <- set_individual(data, "subject_A")
+set_individual <- function(data, individual){
+  new_id <- individual
+  data <- data |>
+    dplyr::ungroup() |>
+    dplyr::mutate(individual = factor(new_id))
+  return(data)
+}
+
+#' Adjust time values to reflect a new framerate
+#'
+#' This function modifies time values in a dataset to match a new framerate and
+#' updates the corresponding metadata. It handles both integer and non-integer
+#' time values, ensuring time series start from zero when appropriate.
+#'
+#' @param data A data frame or tibble containing the time series data
+#' @param framerate The new target framerate to convert to
+#' @param old_framerate The original framerate of the data (defaults to 1)
+#'
+#' @return A modified data frame with adjusted time values and updated metadata
+#'
+#' @export
+#'
+#' @importFrom dplyr mutate
+#'
+#' @details The function calculates a scaling factor based on the ratio of old to
+#' new framerates. For integer time values, it ensures they start from zero. All
+#' time values are then scaled proportionally to maintain relative temporal
+#' relationships.
+#'
+#' @examples
+#' data <- data.frame(time = 0:10, value = rnorm(11))
+#' result <- set_framerate(data, framerate = 60, old_framerate = 30)
+set_framerate <- function(data, framerate, old_framerate=1){
+  has_framerate <- !is.null(attributes(data)$metadata$framerate)
+  if (isTRUE(has_framerate)){
+    old_framerate <- attributes(data)$metadata$framerate
+  }
+
+  scaling_factor <- old_framerate / framerate
+
+  # Ensure frame numbers start at zero
+  if (is.integer(data$time)){
+    data <- data |>
+      dplyr::mutate(time = .data$time - min(.data$time, na.rm = TRUE))
+  }
+  data <- data |>
+    dplyr::mutate(time = .data$time * scaling_factor)
+
+  attributes(data)$metadata$framerate <- framerate
+
+  return(data)
+}
+
 #' @keywords internal
 check_class <- function(x, class){
   class %in% class(x)

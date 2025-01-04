@@ -1,21 +1,21 @@
 # Test arguments
 
 # Paths to test data
-path_animalta_raw <- here::here("tests", "data", "animalta", "single_individual_multi_arena.csv")
-path_animalta_detailed <- here::here("tests", "data", "animalta", "variable_individuals_single_arena.csv")
-path_bonsai <- here::here("tests", "data", "bonsai", "LI850.csv")
-path_dlc_single <- here::here("tests", "data", "deeplabcut", "mouse_single.csv")
-path_dlc_multi <- here::here("tests", "data", "deeplabcut", "mouse_multi.csv")
-path_idtracker_h5 <- here::here("tests", "data", "idtrackerai", "trajectories.h5")
-path_idtracker_csv <- here::here("tests", "data", "idtrackerai", "trajectories_csv", "trajectories.csv")
-path_idtracker_csv_probabilities <- here::here("tests", "data", "idtrackerai", "trajectories_csv", "id_probabilities.csv")
-path_lightningpose_single <- here::here("tests", "data", "lightningpose", "mouse_single.csv")
-path_lightningpose_twoview <- here::here("tests", "data", "lightningpose", "mouse_twoview.csv")
-path_sleap_single <- here::here("tests", "data", "sleap", "SLEAP_single-mouse_EPM.analysis.h5")
-path_sleap_multi <- here::here("tests", "data", "sleap", "SLEAP_three-mice_Aeon_mixed-labels.analysis.h5")
-path_trex <- here::here("tests", "data", "trex", "beetle.csv")
-path_trackball_1 <- here::here("tests", "data", "single", "opticalflow_sensor_1.csv")
-path_trackball_2 <- here::here("tests", "data", "single", "opticalflow_sensor_2.csv")
+path_animalta_raw <- testthat::test_path("data", "animalta", "single_individual_multi_arena.csv")
+path_animalta_detailed <- testthat::test_path("data", "animalta", "variable_individuals_single_arena.csv")
+path_bonsai <- testthat::test_path("data", "bonsai", "LI850.csv")
+path_dlc_single <- testthat::test_path("data", "deeplabcut", "mouse_single.csv")
+path_dlc_multi <- testthat::test_path("data", "deeplabcut", "mouse_multi.csv")
+path_idtracker_h5 <- testthat::test_path("data", "idtrackerai", "trajectories.h5")
+path_idtracker_csv <- testthat::test_path("data", "idtrackerai", "trajectories_csv", "trajectories.csv")
+path_idtracker_csv_probabilities <- testthat::test_path("data", "idtrackerai", "trajectories_csv", "id_probabilities.csv")
+path_lightningpose_single <- testthat::test_path("data", "lightningpose", "mouse_single.csv")
+path_lightningpose_twoview <- testthat::test_path("data", "lightningpose", "mouse_twoview.csv")
+path_sleap_single <- testthat::test_path("data", "sleap", "SLEAP_single-mouse_EPM.analysis.h5")
+path_sleap_multi <- testthat::test_path("data", "sleap", "SLEAP_three-mice_Aeon_mixed-labels.analysis.h5")
+path_trex <- testthat::test_path("data", "trex", "beetle.csv")
+path_trackball_1 <- testthat::test_path("data", "single", "opticalflow_sensor_1.csv")
+path_trackball_2 <- testthat::test_path("data", "single", "opticalflow_sensor_2.csv")
 
 # Read file
 test_that("Read file", {

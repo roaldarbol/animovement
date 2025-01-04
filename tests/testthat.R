@@ -8,6 +8,5 @@
 
 library(testthat)
 library(animovement)
-library(here)
-here::i_am("tests/testthat.R")
+
 test_check("animovement")

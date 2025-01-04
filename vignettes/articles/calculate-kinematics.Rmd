@@ -35,7 +35,7 @@ df <- read_trackball(
 
 # Smooth tracks
 df_smooth <- df |>
-  smooth_movement(method = "rolling_median", window_width = 5, use_derivatives = TRUE)
+  filter_movement(method = "rollmedian", window_width = 5, use_derivatives = TRUE)
 ```
 
 ## Calculate kinematics
@@ -60,7 +60,7 @@ glimpse(df_kinematics)
 
 ```{r}
 df_kinematics_clean <- df_kinematics |>
-  clean_kinematics()
+  filter_na_speed(threshold = 100)
 ```
 
 Alternatively, you can perform your own data cleaning methods.
@@ -103,8 +103,8 @@ f <- df_kinematics_clean |>
 
 library(performance)
 df_kinematics_clean |>
-  tidyr::drop_na(rotation) |>
-  select(rotation) |>
+  tidyr::drop_na(d_rotation) |>
+  select(d_rotation) |>
   performance::check_outliers()
 ```
 

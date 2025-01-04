@@ -28,7 +28,7 @@ calculate_statistics <- function(
 
   # Calculate translational and rotational separately (maybe?) and gather at the end
   totals <- data |>
-    dplyr::summarise(across(c("distance", "rotation"), ~ collapse::fsum(abs(.x)), .names = "total_{.col}"),
+    dplyr::summarise(across(c("d_translation", "d_rotation"), ~ collapse::fsum(abs(.x)), .names = "total_{.col}"),
       across(c("x", "y"), ~ dplyr::last(.x, na_rm = TRUE), .names = "last_{.col}"),
       .by = c("individual", "keypoint")
     )

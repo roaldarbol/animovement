@@ -1,3 +1,5 @@
+# animovement 0.6.0
+
 # animovement 0.5.1
 Previously, `smooth_track` was only built to smoothen trackball data. In this fix, we fixed it by doing the following:
 - Changed the name to `smooth_movement`
