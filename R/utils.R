@@ -34,3 +34,13 @@ convert_nan_to_na <- function(data){
 get_individual_from_path <- function(path){
   strsplit(tools::file_path_sans_ext(basename(path)), "_(?!.*_)", perl=TRUE)[[1]]
 }
+
+
+.update_version <- function(type){
+  usethis::use_version(which = type)
+  cff_write(keys = list("date-released" = Sys.Date(),
+                        "doi" = desc::desc_get("DOI"),
+                        "preferred-citation" = NULL),
+            r_citation = TRUE,
+            dependencies = FALSE)
+}
