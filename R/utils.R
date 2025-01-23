@@ -36,7 +36,7 @@ get_individual_from_path <- function(path){
 }
 
 
-.update_version <- function(which){
+update_version <- function(which){
   usethis::use_version(which = which)
   cffr::cff_write(keys = list("date-released" = Sys.Date(),
                         "doi" = desc::desc_get("DOI"),
