@@ -8,7 +8,8 @@ Authors@R:
       "Roald-Arbøl", 
       role = c("aut", "cre"), 
       email = "trackballr.htmc8@passmail.net",
-      comment = c(ORCID = "0000-0002-9998-0058")
+      comment = c(ORCID = "0000-0002-9998-0058",
+                  ROR = "00ayhx656")
       )
 Description: An R toolbox for analysing animal movement across space and time.
 License: MIT + file LICENSE
