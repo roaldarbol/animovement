@@ -18,7 +18,6 @@
 #' @importFrom vroom vroom
 #' @importFrom cli cli_abort
 #' @keywords internal
-#' @export
 validate_files <- function(
   path,
   expected_permission = "r",
@@ -102,7 +101,6 @@ ensure_file_has_expected_suffix <- function(path, expected_suffix) {
 #' Ensure file has headers
 #' @inheritParams validate_files
 #' @keywords internal
-#' @export
 ensure_file_has_headers <- function(path) {
   df <- vroom::vroom(
     path,
@@ -122,7 +120,6 @@ ensure_file_has_headers <- function(path) {
 #' Ensure file has expected headers
 #' @inheritParams validate_files
 #' @keywords internal
-#' @export
 ensure_file_has_expected_headers <- function(
   path,
   expected_headers = c("x", "y", "time")
@@ -146,7 +143,6 @@ ensure_file_has_expected_headers <- function(
 #' Check whether file has expected headers
 #' @inheritParams validate_files
 #' @keywords internal
-#' @export
 does_file_have_expected_headers <- function(
   path,
   expected_headers = c("x", "y", "time")
