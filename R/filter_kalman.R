@@ -223,6 +223,8 @@ filter_kalman <- function(
 #' @seealso
 #' filter_kalman for regularly sampled data
 #'
+#' @importFrom stats median
+#'
 #' @export
 filter_kalman_irregular <- function(
   measurements,
