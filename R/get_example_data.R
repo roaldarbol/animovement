@@ -30,9 +30,7 @@
 #' data <- read_deeplabcut(path)
 #' }
 #' @export
-get_example_data <- function(source,
-                             cache_dir = tempdir()) {
-
+get_example_data <- function(source, cache_dir = tempdir()) {
   # Check if source is provided
   if (missing(source)) {
     cli::cli_abort(
@@ -71,9 +69,12 @@ get_example_data <- function(source,
     }
 
     # Try to download the file
-    download_success <- try({
-      utils::download.file(file_url, destfile = data_path, quiet = TRUE)
-    }, silent = TRUE)
+    download_success <- try(
+      {
+        utils::download.file(file_url, destfile = data_path, quiet = TRUE)
+      },
+      silent = TRUE
+    )
 
     # Check if download failed
     if (inherits(download_success, "try-error")) {

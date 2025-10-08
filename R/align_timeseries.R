@@ -82,13 +82,18 @@ find_lag <- function(signal, reference, max_lag = 5000, normalize = TRUE) {
 #' lines(t, aligned, col = "red", lty = 2)
 #'
 #' @export
-align_timeseries <- function(signal, reference, max_lag = 5000, normalize = TRUE) {
+align_timeseries <- function(
+  signal,
+  reference,
+  max_lag = 5000,
+  normalize = TRUE
+) {
   lag <- find_lag(signal, reference, max_lag, normalize)
 
   if (lag > 0) {
-    aligned <- c(rep(NA, lag), signal[1:(length(signal)-lag)])
+    aligned <- c(rep(NA, lag), signal[1:(length(signal) - lag)])
   } else if (lag < 0) {
-    aligned <- c(signal[(-lag+1):length(signal)], rep(NA, -lag))
+    aligned <- c(signal[(-lag + 1):length(signal)], rep(NA, -lag))
   } else {
     aligned <- signal
   }

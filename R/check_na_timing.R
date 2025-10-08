@@ -35,9 +35,7 @@
 #' check_na_timing(data, by_keypoint = TRUE)
 #'
 #' @export
-check_na_timing <- function(data,
-                            by_keypoint = TRUE){
-
+check_na_timing <- function(data, by_keypoint = TRUE) {
   individuals <- unique(data$individual)
   n_individuals <- length(individuals)
   n_keypoints <- nlevels(data$keypoint)
@@ -45,17 +43,24 @@ check_na_timing <- function(data,
   color_existing = "steelblue"
   keypoints <- levels(data$keypoint)
   na_plots <- list()
-  if (by_keypoint == TRUE){
-    for (j in 1:length(keypoints)){
+  if (by_keypoint == TRUE) {
+    for (j in 1:length(keypoints)) {
       df <- data |>
         dplyr::ungroup() |>
         dplyr::filter(.data$keypoint == keypoints[j]) |>
         dplyr::select("x")
 
-      if (!all(is.na(df$x))){
-        na_plots[[j]] <- ggplot_na_timing(df, keypoint = keypoints[j], title = NULL, subtitle = NULL)
+      if (!all(is.na(df$x))) {
+        na_plots[[j]] <- ggplot_na_timing(
+          df,
+          keypoint = keypoints[j],
+          title = NULL,
+          subtitle = NULL
+        )
       } else {
-        cli::cli_inform("All values for {keypoints[j]} were NA. Returning a blank plot.")
+        cli::cli_inform(
+          "All values for {keypoints[j]} were NA. Returning a blank plot."
+        )
         na_plots[[j]] <- ggplot()
       }
     }
@@ -63,23 +68,31 @@ check_na_timing <- function(data,
     df <- data |>
       dplyr::select("x")
 
-    if (!all(is.na(df$x))){
+    if (!all(is.na(df$x))) {
       na_plots[[1]] <- ggplot_na_timing(df, title = NULL, subtitle = NULL)
     } else {
-      cli::cli_inform("All values for {keypoints[j]} were NA. Returning a blank plot.")
+      cli::cli_inform(
+        "All values for {keypoints[j]} were NA. Returning a blank plot."
+      )
       na_plots[[j]] <- ggplot()
     }
   }
 
   output_plot <- patchwork::wrap_plots(na_plots) +
-    patchwork::plot_annotation(title = "Missing Values by Time",
-                               subtitle = paste0("Amount of <b style='color:", color_missing, ";' >NA</b>
-                    and  <b style='color:", color_existing, "' >non-NA</b>
-                    over time"),
-                               theme = theme(plot.subtitle = ggtext::element_markdown(lineheight = 1.1))
+    patchwork::plot_annotation(
+      title = "Missing Values by Time",
+      subtitle = paste0(
+        "Amount of <b style='color:",
+        color_missing,
+        ";' >NA</b>
+                    and  <b style='color:",
+        color_existing,
+        "' >non-NA</b>
+                    over time"
+      ),
+      theme = theme(plot.subtitle = ggtext::element_markdown(lineheight = 1.1))
     ) +
-    patchwork::plot_layout(axes = "collect",
-                           axis_titles = "collect")
+    patchwork::plot_layout(axes = "collect", axis_titles = "collect")
 
   return(output_plot)
 }

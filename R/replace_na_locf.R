@@ -69,12 +69,11 @@ replace_na_locf <- function(x, min_gap = 1, max_gap = Inf) {
     filled <- collapse::na_locf(temp)
 
     # Re-fill invalid gaps with NA
-    filled[gaps] <- NA  # Only fill valid gaps
+    filled[gaps] <- NA # Only fill valid gaps
   } else {
     # If no gap filtering, perform LOCF on all NAs
     filled <- collapse::na_locf(x)
   }
-
 
   return(filled)
 }

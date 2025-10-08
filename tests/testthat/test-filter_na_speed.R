@@ -31,8 +31,8 @@ test_that("filter_na_speed handles basic numeric threshold correctly", {
 test_that("filter_na_speed handles 'auto' threshold correctly", {
   test_data <- tibble(
     time = 1:5,
-    x = c(1, 2, 4, 7, 200),  # Last value is an outlier
-    y = c(1, 1, 2, 3, 30),  # Last value is an outlier
+    x = c(1, 2, 4, 7, 200), # Last value is an outlier
+    y = c(1, 1, 2, 3, 30), # Last value is an outlier
     confidence = c(0.8, 0.9, 0.7, 0.85, 0.6)
   )
 
@@ -92,7 +92,7 @@ test_that("filter_na_speed errors on missing required columns", {
 test_that("filter_na_speed errors on non-numeric columns", {
   test_data <- tibble(
     time = 1:5,
-    x = as.character(c(1, 2, 4, 7, 11)),  # Character instead of numeric
+    x = as.character(c(1, 2, 4, 7, 11)), # Character instead of numeric
     y = c(1, 1, 2, 3, 5)
   )
 
@@ -147,7 +147,6 @@ test_that("filter_na_speed handles NA values correctly", {
   expect_true(is.na(result$x[2]))
   expect_true(is.na(result$y[1]))
   expect_true(is.na(result$confidence[3]))
-
 
   # Test consecutive NAs
   test_data_consecutive <- tibble(

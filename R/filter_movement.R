@@ -63,12 +63,20 @@
 #' @export
 #' @import dplyr
 filter_movement <- function(
-    data,
-    method = c("rollmedian", "rollmean", "kalman", "sgolay", "lowpass",
-               "highpass", "lowpass_fft", "highpass_fft"),
-    use_derivatives = FALSE,
-    ...) {
-
+  data,
+  method = c(
+    "rollmedian",
+    "rollmean",
+    "kalman",
+    "sgolay",
+    "lowpass",
+    "highpass",
+    "lowpass_fft",
+    "highpass_fft"
+  ),
+  use_derivatives = FALSE,
+  ...
+) {
   method <- match.arg(method)
 
   # Input validation
@@ -76,19 +84,20 @@ filter_movement <- function(
   ensure_output_header_class(data)
 
   # Select appropriate filter function
-  filter_fn <- switch(method,
-                      rollmean = filter_rollmean,
-                      rollmedian = filter_rollmedian,
-                      kalman = filter_kalman,
-                      sgolay = filter_sgolay,
-                      lowpass = filter_lowpass,
-                      highpass = filter_highpass,
-                      lowpass_fft = filter_lowpass_fft,
-                      highpass_fft = filter_highpass_fft,
-                      cli::cli_abort("Invalid method: {method}")
+  filter_fn <- switch(
+    method,
+    rollmean = filter_rollmean,
+    rollmedian = filter_rollmedian,
+    kalman = filter_kalman,
+    sgolay = filter_sgolay,
+    lowpass = filter_lowpass,
+    highpass = filter_highpass,
+    lowpass_fft = filter_lowpass_fft,
+    highpass_fft = filter_highpass_fft,
+    cli::cli_abort("Invalid method: {method}")
   )
 
-  if (isFALSE(use_derivatives)){
+  if (isFALSE(use_derivatives)) {
     # Apply filter to coordinates
     data <- data |>
       dplyr::group_by(.data$individual, .data$keypoint) |>

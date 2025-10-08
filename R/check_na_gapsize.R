@@ -37,10 +37,12 @@
 #' check_na_gapsize(data, limit = 5, include_total = TRUE, by_keypoint = TRUE)
 #'
 #' @export
-check_na_gapsize <- function(data,
-                             limit = 10,
-                             include_total = TRUE,
-                             by_keypoint = TRUE){
+check_na_gapsize <- function(
+  data,
+  limit = 10,
+  include_total = TRUE,
+  by_keypoint = TRUE
+) {
   n_keypoints <- nlevels(data$keypoint)
   color_occurrence = "indianred"
   color_total = "steelblue"
@@ -48,19 +50,21 @@ check_na_gapsize <- function(data,
   keypoints <- levels(data$keypoint)
   na_plots <- list()
 
-  if (by_keypoint == TRUE){
-    for (j in 1:length(keypoints)){
+  if (by_keypoint == TRUE) {
+    for (j in 1:length(keypoints)) {
       df <- data |>
         dplyr::ungroup() |>
         dplyr::filter(.data$keypoint == keypoints[j]) |>
         dplyr::select("x")
 
-      na_plots[[j]] <- ggplot_na_gapsize(df,
-                                         limit = limit,
-                                         include_total = include_total,
-                                         keypoint = keypoints[j],
-                                         title = NULL,
-                                         subtitle = NULL)
+      na_plots[[j]] <- ggplot_na_gapsize(
+        df,
+        limit = limit,
+        include_total = include_total,
+        keypoint = keypoints[j],
+        title = NULL,
+        subtitle = NULL
+      )
     }
   } else {
     df <- data |>
@@ -70,14 +74,19 @@ check_na_gapsize <- function(data,
   }
 
   output_plot <- patchwork::wrap_plots(na_plots) +
-    patchwork::plot_annotation(title = "Occurrence of gap sizes",
-                               subtitle = "Gap sizes (NAs in a row) ordered by most common",
-                               theme = theme(plot.subtitle = ggtext::element_markdown(lineheight = 1.1),
-                                             legend.position="bottom")
+    patchwork::plot_annotation(
+      title = "Occurrence of gap sizes",
+      subtitle = "Gap sizes (NAs in a row) ordered by most common",
+      theme = theme(
+        plot.subtitle = ggtext::element_markdown(lineheight = 1.1),
+        legend.position = "bottom"
+      )
     ) +
-    patchwork::plot_layout(axes = "collect",
-                           axis_titles = "collect",
-                           guides = "collect")
+    patchwork::plot_layout(
+      axes = "collect",
+      axis_titles = "collect",
+      guides = "collect"
+    )
 
   return(output_plot)
 }

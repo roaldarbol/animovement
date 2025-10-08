@@ -4,5 +4,9 @@
 #' @importFrom circular circular
 #' @keywords internal
 calculate_direction <- function(dx, dy) {
-  if_else(dx == 0 & dy == 0, NA, circular::circular(atan2(dy, dx), modulo = "asis"))
+  if_else(
+    dx == 0 & dy == 0,
+    NA,
+    circular::circular(atan2(dy, dx), modulo = "asis")
+  )
 }

@@ -16,22 +16,22 @@ read_deeplabcut <- function(path, multianimal = NULL) {
   validate_files(path, expected_suffix = "csv")
 
   # Check whether it's a multi-animal data set
-  if (is.null(multianimal)){
+  if (is.null(multianimal)) {
     multianimal <- vroom::vroom(
-        path,
-        delim = ",",
-        show_col_types = FALSE,
-        skip = 3,
-        n_max = 1,
-        col_names = FALSE
-      ) |>
+      path,
+      delim = ",",
+      show_col_types = FALSE,
+      skip = 3,
+      n_max = 1,
+      col_names = FALSE
+    ) |>
       t() |>
       is.character()
   }
 
-  if (multianimal == FALSE){
+  if (multianimal == FALSE) {
     data <- read_deeplabcut_single(path)
-  } else if (multianimal == TRUE){
+  } else if (multianimal == TRUE) {
     data <- read_deeplabcut_multi(path)
   }
 
@@ -44,8 +44,7 @@ read_deeplabcut <- function(path, multianimal = NULL) {
 
 #' Read single-animal DLC files
 #' @keywords internal
-read_deeplabcut_single <- function(path){
-
+read_deeplabcut_single <- function(path) {
   # Get metadata
   header_2 <- vroom::vroom(
     path,
@@ -86,16 +85,19 @@ read_deeplabcut_single <- function(path){
   # Wrangle
   data <- data |>
     dplyr::rename(time = 1) |>
-    tidyr::pivot_longer(cols = !"time",
-                 names_to = c("keypoint", "pos"),
-                 names_pattern = "(.*)_(\\w+)",
-                 values_to = "val") |>
-    tidyr::pivot_wider(id_cols = c("time", "keypoint"),
-                names_from = "pos",
-                values_from = "val") |>
+    tidyr::pivot_longer(
+      cols = !"time",
+      names_to = c("keypoint", "pos"),
+      names_pattern = "(.*)_(\\w+)",
+      values_to = "val"
+    ) |>
+    tidyr::pivot_wider(
+      id_cols = c("time", "keypoint"),
+      names_from = "pos",
+      values_from = "val"
+    ) |>
     dplyr::rename(confidence = "likelihood") |>
-    dplyr::mutate(individual = factor(NA),
-                  keypoint = factor(.data$keypoint)) |>
+    dplyr::mutate(individual = factor(NA), keypoint = factor(.data$keypoint)) |>
     dplyr::relocate("individual", .after = "time")
 
   return(data)
@@ -103,8 +105,7 @@ read_deeplabcut_single <- function(path){
 
 #' Read multi-animal DLC files
 #' @keywords internal
-read_deeplabcut_multi <- function(path){
-
+read_deeplabcut_multi <- function(path) {
   # Get metadata
   header_2 <- vroom::vroom(
     path,
@@ -154,15 +155,21 @@ read_deeplabcut_multi <- function(path){
   # Wrangle
   data <- data |>
     dplyr::rename(time = 1) |>
-    tidyr::pivot_longer(cols = !"time",
-                        names_to = c("individual", "keypoint", "pos"),
-                        names_sep = "_",
-                        values_to = "val") |>
-    tidyr::pivot_wider(id_cols = c("time", "individual", "keypoint"),
-                       names_from = "pos",
-                       values_from = "val") |>
+    tidyr::pivot_longer(
+      cols = !"time",
+      names_to = c("individual", "keypoint", "pos"),
+      names_sep = "_",
+      values_to = "val"
+    ) |>
+    tidyr::pivot_wider(
+      id_cols = c("time", "individual", "keypoint"),
+      names_from = "pos",
+      values_from = "val"
+    ) |>
     dplyr::rename(confidence = "likelihood") |>
-    dplyr::mutate(individual = factor(.data$individual),
-                  keypoint = factor(.data$keypoint))
+    dplyr::mutate(
+      individual = factor(.data$individual),
+      keypoint = factor(.data$keypoint)
+    )
   return(data)
 }

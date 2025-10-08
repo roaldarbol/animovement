@@ -93,14 +93,16 @@
 #' @importFrom cli cli_abort cli_warn
 #'
 #' @export
-filter_sgolay <- function(x, sampling_rate,
-                          window_size = ceiling(sampling_rate/10) * 2 + 1,
-                          order = 3,
-                          preserve_edges = FALSE,
-                          na_action = "linear",
-                          keep_na = FALSE,
-                          ...) {
-
+filter_sgolay <- function(
+  x,
+  sampling_rate,
+  window_size = ceiling(sampling_rate / 10) * 2 + 1,
+  order = 3,
+  preserve_edges = FALSE,
+  na_action = "linear",
+  keep_na = FALSE,
+  ...
+) {
   # Input validation
   if (!is.numeric(x)) {
     cli::cli_abort("Data must be numeric")
@@ -134,7 +136,9 @@ filter_sgolay <- function(x, sampling_rate,
 
     # Center portion
     result[(half_window + 1):(length(x) - half_window)] <-
-      signal::sgolayfilt(x, p = order, n = window_size)[(half_window + 1):(length(x) - half_window)]
+      signal::sgolayfilt(x, p = order, n = window_size)[
+        (half_window + 1):(length(x) - half_window)
+      ]
 
     # Edges
     for (i in 1:half_window) {
@@ -142,7 +146,8 @@ filter_sgolay <- function(x, sampling_rate,
       edge_order <- min(order, max(2, i - 1))
 
       # Left edge
-      if (i >= 3) {  # Need at least 5 points for meaningful smoothing
+      if (i >= 3) {
+        # Need at least 5 points for meaningful smoothing
         result[i] <- signal::sgolayfilt(
           x[1:(2 * i + 1)],
           p = edge_order,
@@ -160,7 +165,6 @@ filter_sgolay <- function(x, sampling_rate,
         )[i + 1]
       }
     }
-
   } else {
     # Standard Savitzky-Golay filter
     result <- signal::sgolayfilt(x, p = order, n = window_size)

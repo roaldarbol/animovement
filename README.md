@@ -31,9 +31,9 @@ your data in Python, we highly recommend using
 
 You can install the development version of *animovement* with:
 
-| Type | Source | Command |
-|----|----|----|
-| Development | R-universe | `install.packages("animovement", repos = "https://roaldarbol.r-universe.dev")` |
+```{r, ecal=FALSE}
+install.packages('animovement', repos = c('https://roaldarbol.r-universe.dev', 'https://cloud.r-project.org'))
+```
 
 Once you have installed the package, you can load it with:
 

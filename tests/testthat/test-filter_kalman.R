@@ -2,7 +2,7 @@ library(testthat)
 
 # Helper functions for tests
 generate_sine_data <- function(n = 100, freq = 0.1, noise_sd = 0.1) {
-  t <- seq(0, n-1)
+  t <- seq(0, n - 1)
   true_signal <- sin(2 * pi * freq * t)
   measurements <- true_signal + rnorm(n, 0, noise_sd)
   return(list(time = t, measurements = measurements, true_signal = true_signal))
@@ -84,13 +84,13 @@ test_that("Edge cases - irregular sampling", {
   expect_error(filter_kalman_irregular(numeric(0), numeric(0)))
 
   # Mismatched lengths
-  expect_error(filter_kalman_irregular(c(1,2), c(0)))
+  expect_error(filter_kalman_irregular(c(1, 2), c(0)))
 
   # Non-monotonic times
-  expect_error(filter_kalman_irregular(c(1,2), c(1,0)))
+  expect_error(filter_kalman_irregular(c(1, 2), c(1, 0)))
 
   # Duplicate times
-  expect_warning(filter_kalman_irregular(c(1,2), c(0,0)))
+  expect_warning(filter_kalman_irregular(c(1, 2), c(0, 0)))
 
   # All NAs
   expect_error(filter_kalman_irregular(c(NA, NA), c(0, 1)))
@@ -101,13 +101,21 @@ test_that("Resampling functionality", {
   times <- c(0, 0.1, 0.3, 0.35, 0.5, 0.8)
 
   # Basic resampling
-  result <- filter_kalman_irregular(data, times, resample = TRUE, resample_freq = 10)
+  result <- filter_kalman_irregular(
+    data,
+    times,
+    resample = TRUE,
+    resample_freq = 10
+  )
   expect_true(is.list(result))
-  expect_equal(names(result), c("time", "values", "original_time", "original_values"))
+  expect_equal(
+    names(result),
+    c("time", "values", "original_time", "original_values")
+  )
 
   # Check regular spacing
   time_diffs <- diff(result$time)
-  expect_true(all(abs(time_diffs - 1/10) < 1e-10))
+  expect_true(all(abs(time_diffs - 1 / 10) < 1e-10))
 
   # Warning for high resampling frequency
   expect_warning(
@@ -155,7 +163,7 @@ test_that("Performance benchmarks", {
   time_reg <- system.time({
     filtered_reg <- filter_kalman(data$measurements, sampling_rate = 1)
   })
-  expect_true(time_reg["elapsed"] < 1)  # Should complete in under 1 second
+  expect_true(time_reg["elapsed"] < 1) # Should complete in under 1 second
 
   # Irregular sampling
   time_irreg <- system.time({
@@ -196,7 +204,7 @@ test_that("Parameter sensitivity", {
 
   # Verify that larger Q leads to more responsive filtering
   var_q <- sapply(filtered_q, var)
-  expect_true(all(diff(var_q) >= 0))  # Variance should increase with Q
+  expect_true(all(diff(var_q) >= 0)) # Variance should increase with Q
 
   # Test different R values
   r_values <- 10^seq(-6, 0, by = 2)
@@ -206,6 +214,5 @@ test_that("Parameter sensitivity", {
 
   # Verify that larger R leads to more smoothing
   var_r <- sapply(filtered_r, var)
-  expect_true(all(diff(var_r) <= 0))  # Variance should decrease with R
+  expect_true(all(diff(var_r) <= 0)) # Variance should decrease with R
 })
-

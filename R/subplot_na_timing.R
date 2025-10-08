@@ -70,22 +70,23 @@
 #' Steffen Moritz and Sebastian Gatscha, available under GPL-3 license.
 #'
 #' @keywords internal
-ggplot_na_timing <- function(data,
-                             number_intervals = NULL,
-                             interval_size = NULL,
-                             measure = "percent",
-                             color_missing = "indianred2",
-                             color_existing = "steelblue",
-                             alpha_missing = 0.8,
-                             alpha_existing = 0.3,
-                             title = "Missing Values per Interval",
-                             subtitle = "Amount of NA and non-NA for successive intervals",
-                             xlab = "Time Lapse (Interval Size: XX)",
-                             ylab = NULL,
-                             color_border = "white",
-                             theme = ggplot2::theme_linedraw(),
-                             keypoint = NULL) {
-
+ggplot_na_timing <- function(
+  data,
+  number_intervals = NULL,
+  interval_size = NULL,
+  measure = "percent",
+  color_missing = "indianred2",
+  color_existing = "steelblue",
+  alpha_missing = 0.8,
+  alpha_existing = 0.3,
+  title = "Missing Values per Interval",
+  subtitle = "Amount of NA and non-NA for successive intervals",
+  xlab = "Time Lapse (Interval Size: XX)",
+  ylab = NULL,
+  color_border = "white",
+  theme = ggplot2::theme_linedraw(),
+  keypoint = NULL
+) {
   ##
   ## 1. Input Check and Transformation
   ##
@@ -93,18 +94,18 @@ ggplot_na_timing <- function(data,
   # 1.1 special handling data types
   if (any(class(data) == "tbl_ts")) {
     data <- as.vector(as.data.frame(data)[, 2])
-  }
-  else if (any(class(data) == "tbl")) {
+  } else if (any(class(data) == "tbl")) {
     data <- as.vector(as.data.frame(data)[, 1])
   }
 
   # 1.2 Check if the input is multivariate
   if (!is.null(dim(data)[2]) && dim(data)[2] > 1) {
-    stop("x is not univariate. The function only works with univariate
+    stop(
+      "x is not univariate. The function only works with univariate
     input for x. For data types with multiple variables/columns only input
-    the column you want to plot as parameter x.")
+    the column you want to plot as parameter x."
+    )
   }
-
 
   # 1.3 Checks and corrections for wrong data dimension
 
@@ -114,32 +115,28 @@ ggplot_na_timing <- function(data,
     data <- data[, 1]
   }
 
-
   # 1.4 Input as vector
   data <- as.vector(data)
-
 
   # 1.5 Check if input is numeric
   if (!is.numeric(data)) {
     stop("Input x is not numeric")
   }
 
-
   # 1.6 Check preconditions about amount of NAs
 
   # exclude NA only inputs
   missindx <- is.na(data)
   if (all(missindx)) {
-    stop("Input data consists only of NAs. At least one non-NA numeric value is needed
-    for creating a meaningful ggplot_na_distribution plot)")
+    stop(
+      "Input data consists only of NAs. At least one non-NA numeric value is needed
+    for creating a meaningful ggplot_na_distribution plot)"
+    )
   }
-
 
   ##
   ## End Input Check and Transformation
   ##
-
-
 
   ##
   ## 2. Preparations
@@ -150,19 +147,20 @@ ggplot_na_timing <- function(data,
     number_intervals <- grDevices::nclass.Sturges(data)
   }
 
-
   # 2.2 Calculation break points
 
   if (!is.null(interval_size)) {
     breaks <- seq(from = 0, to = length(data) - 1, by = interval_size)
     breaks <- c(breaks, length(data))
-  }
-  else {
-    breaks <- seq(from = 0, to = length(data) - 1, by = floor(length(data) / number_intervals))
+  } else {
+    breaks <- seq(
+      from = 0,
+      to = length(data) - 1,
+      by = floor(length(data) / number_intervals)
+    )
     breaks <- c(breaks, length(data))
   }
   binwidth <- breaks[2]
-
 
   # 2.3 Process parameter settings
 
@@ -172,11 +170,22 @@ ggplot_na_timing <- function(data,
 
   # Set subtitle to default
   # (needed because .Rd usage section gives error when using defaults > 90 chars )
-  if ( (!is.null(subtitle)) && (subtitle == "Amount of NA and non-NA for successive intervals" && !is.null(keypoint))) {
-    subtitle <- paste0("Amount of <b style='color:", color_missing, ";' >NA</b>
-                and  <b style='color:", color_existing, "' >non-NA</b>
-                for successive intervals for keypoint=", keypoint)
-  } else if ((is.null(subtitle) && !is.null(keypoint))){
+  if (
+    (!is.null(subtitle)) &&
+      (subtitle == "Amount of NA and non-NA for successive intervals" &&
+        !is.null(keypoint))
+  ) {
+    subtitle <- paste0(
+      "Amount of <b style='color:",
+      color_missing,
+      ";' >NA</b>
+                and  <b style='color:",
+      color_existing,
+      "' >non-NA</b>
+                for successive intervals for keypoint=",
+      keypoint
+    )
+  } else if ((is.null(subtitle) && !is.null(keypoint))) {
     subtitle <- paste0(keypoint)
   }
 
@@ -190,7 +199,6 @@ ggplot_na_timing <- function(data,
     xlab <- paste0("Frame Number (Interval Size: ", binwidth, ")")
   }
 
-
   # 2.4 Create dataframe for ggplot2
 
   index <- seq_along(data)
@@ -200,7 +208,6 @@ ggplot_na_timing <- function(data,
   ##
   ## End Preparations
   ##
-
 
   ##
   ## 3. Create the ggplot2 plot
@@ -227,15 +234,24 @@ ggplot_na_timing <- function(data,
 
   count <- NULL
   if (measure == "percent") {
-    gg <- gg + ggplot2::stat_bin(ggplot2::aes(y = ggplot2::after_stat(count / binwidth)),
-                                 col = color_border, breaks = breaks, closed = "right"
-    ) +
-      ggplot2::scale_y_continuous(expand = c(0, 0), labels = function(x) paste0(x*100, "%"))
-  }
-  else {
-    gg <- gg + ggplot2::stat_bin(ggplot2::aes(y = ggplot2::after_stat(count)),
-                                 col = color_border, breaks = breaks, closed = "right"
-    ) +
+    gg <- gg +
+      ggplot2::stat_bin(
+        ggplot2::aes(y = ggplot2::after_stat(count / binwidth)),
+        col = color_border,
+        breaks = breaks,
+        closed = "right"
+      ) +
+      ggplot2::scale_y_continuous(expand = c(0, 0), labels = function(x) {
+        paste0(x * 100, "%")
+      })
+  } else {
+    gg <- gg +
+      ggplot2::stat_bin(
+        ggplot2::aes(y = ggplot2::after_stat(count)),
+        col = color_border,
+        breaks = breaks,
+        closed = "right"
+      ) +
       ggplot2::scale_y_continuous(expand = c(0, 0))
   }
 

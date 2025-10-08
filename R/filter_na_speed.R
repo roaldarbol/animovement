@@ -59,7 +59,9 @@ filter_na_speed <- function(data, threshold = "auto") {
   }
 
   # Check that x, y, time are numeric
-  non_numeric_cols <- sapply(data[required_cols], function(col) !is.numeric(col))
+  non_numeric_cols <- sapply(data[required_cols], function(col) {
+    !is.numeric(col)
+  })
   if (any(non_numeric_cols)) {
     bad_cols <- names(non_numeric_cols)[non_numeric_cols]
     cli::cli_abort(c(
@@ -92,8 +94,11 @@ filter_na_speed <- function(data, threshold = "auto") {
   if ("confidence" %in% names(d)) {
     d <- d |>
       dplyr::mutate(
-        confidence = dplyr::if_else(abs(.data$v_translation) > threshold,
-                                    NA, .data$confidence)
+        confidence = dplyr::if_else(
+          abs(.data$v_translation) > threshold,
+          NA,
+          .data$confidence
+        )
       )
   }
 

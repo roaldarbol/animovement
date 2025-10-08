@@ -6,11 +6,11 @@ test_that("find_lag handles basic time shifts correctly", {
   reference <- sin(t)
 
   # Test positive lag (signal is delayed)
-  delayed_signal <- sin(t - 0.5)  # 5 samples delay at 0.1 spacing
+  delayed_signal <- sin(t - 0.5) # 5 samples delay at 0.1 spacing
   expect_equal(find_lag(delayed_signal, reference, max_lag = 10), -5)
 
   # Test negative lag (signal is advanced)
-  advanced_signal <- sin(t + 0.5)  # 5 samples advance
+  advanced_signal <- sin(t + 0.5) # 5 samples advance
   expect_equal(find_lag(advanced_signal, reference, max_lag = 10), 4)
 
   # Test zero lag
@@ -20,7 +20,7 @@ test_that("find_lag handles basic time shifts correctly", {
 test_that("find_lag handles normalization correctly", {
   t <- seq(0, 10, 0.1)
   reference <- sin(t)
-  signal <- 5 * sin(t - 0.5) + 10  # Scaled and shifted in amplitude
+  signal <- 5 * sin(t - 0.5) + 10 # Scaled and shifted in amplitude
 
   # Should find same lag regardless of scaling when normalize = TRUE
   expect_equal(find_lag(signal, reference, normalize = TRUE), -5)
@@ -38,7 +38,7 @@ test_that("find_lag handles normalization correctly", {
 test_that("find_lag respects max_lag parameter", {
   t <- seq(0, 10, 0.1)
   reference <- sin(t)
-  signal <- sin(t - 1)  # 10 samples delay
+  signal <- sin(t - 1) # 10 samples delay
 
   # Should find lag when max_lag is sufficient
   expect_equal(find_lag(signal, reference, max_lag = 15), -10)
@@ -119,4 +119,3 @@ test_that("Non-numeric inputs throws errors", {
   expect_error(find_lag(factor(1:10), factor(1:10)))
   expect_error(align_timeseries(factor(1:10), factor(1:10)))
 })
-

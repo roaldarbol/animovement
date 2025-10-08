@@ -98,10 +98,6 @@ reference:
   - find_troughs
   - plot_position_timeseries
   - plot_speed_timeseries
-  - classify_by_stability
-  - classify_by_threshold
-  - classify_high_periods
-  - classify_low_periods
 
 navbar:
   components:

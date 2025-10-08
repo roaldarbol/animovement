@@ -75,15 +75,19 @@
 #' @importFrom stats fft
 #'
 #' @export
-filter_lowpass_fft <- function(x, cutoff_freq, sampling_rate,
-                               na_action = c("linear", "spline", "stine", "locf", "value", "error"),
-                               keep_na = FALSE,
-                               ...) {
+filter_lowpass_fft <- function(
+  x,
+  cutoff_freq,
+  sampling_rate,
+  na_action = c("linear", "spline", "stine", "locf", "value", "error"),
+  keep_na = FALSE,
+  ...
+) {
   # Input validation
   if (!is.numeric(x)) {
     cli::cli_abort("Input signal must be numeric")
   }
-  if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
+  if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate / 2) {
     cli::cli_abort("Cutoff frequency must be between 0 and sampling_rate/2")
   }
 
@@ -104,7 +108,7 @@ filter_lowpass_fft <- function(x, cutoff_freq, sampling_rate,
   N <- length(x)
 
   # Add reflection padding to reduce edge effects
-  n_pad <- ceiling(N/10)  # 10% padding
+  n_pad <- ceiling(N / 10) # 10% padding
   start_pad <- rev(x[1:n_pad])
   end_pad <- rev(x[(length(x) - n_pad + 1):length(x)])
   x_padded <- c(start_pad, x, end_pad)
@@ -114,17 +118,21 @@ filter_lowpass_fft <- function(x, cutoff_freq, sampling_rate,
   N_padded <- length(x_padded)
 
   # Create frequency vector
-  freq <- seq(0, sampling_rate - sampling_rate/N_padded, by = sampling_rate/N_padded)
+  freq <- seq(
+    0,
+    sampling_rate - sampling_rate / N_padded,
+    by = sampling_rate / N_padded
+  )
 
   # Create filter mask
   mask <- freq <= cutoff_freq
-  mask[N_padded:2] <- rev(mask[2:(N_padded/2 + 1)])  # Mirror for negative frequencies
+  mask[N_padded:2] <- rev(mask[2:(N_padded / 2 + 1)]) # Mirror for negative frequencies
 
   # Apply filter
   X_filtered <- X * mask
 
   # Inverse FFT
-  filtered_padded <- Re(stats::fft(X_filtered, inverse = TRUE)/N_padded)
+  filtered_padded <- Re(stats::fft(X_filtered, inverse = TRUE) / N_padded)
 
   # Remove padding
   filtered <- filtered_padded[(n_pad + 1):(n_pad + N)]
@@ -221,15 +229,19 @@ filter_lowpass_fft <- function(x, cutoff_freq, sampling_rate,
 #' @importFrom stats fft
 #'
 #' @export
-filter_highpass_fft <- function(x, cutoff_freq, sampling_rate,
-                                na_action = c("linear", "spline", "stine", "locf", "value", "error"),
-                                keep_na = FALSE,
-                                ...) {
+filter_highpass_fft <- function(
+  x,
+  cutoff_freq,
+  sampling_rate,
+  na_action = c("linear", "spline", "stine", "locf", "value", "error"),
+  keep_na = FALSE,
+  ...
+) {
   # Input validation
   if (!is.numeric(x)) {
     cli::cli_abort("Input signal must be numeric")
   }
-  if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
+  if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate / 2) {
     cli::cli_abort("Cutoff frequency must be between 0 and sampling_rate/2")
   }
 
@@ -250,7 +262,7 @@ filter_highpass_fft <- function(x, cutoff_freq, sampling_rate,
   N <- length(x)
 
   # Add reflection padding to reduce edge effects
-  n_pad <- ceiling(N/10)  # 10% padding
+  n_pad <- ceiling(N / 10) # 10% padding
   start_pad <- rev(x[1:n_pad])
   end_pad <- rev(x[(length(x) - n_pad + 1):length(x)])
   x_padded <- c(start_pad, x, end_pad)
@@ -260,17 +272,21 @@ filter_highpass_fft <- function(x, cutoff_freq, sampling_rate,
   N_padded <- length(x_padded)
 
   # Create frequency vector
-  freq <- seq(0, sampling_rate - sampling_rate/N_padded, by = sampling_rate/N_padded)
+  freq <- seq(
+    0,
+    sampling_rate - sampling_rate / N_padded,
+    by = sampling_rate / N_padded
+  )
 
   # Create filter mask
   mask <- freq >= cutoff_freq
-  mask[N_padded:2] <- rev(mask[2:(N_padded/2 + 1)])  # Mirror for negative frequencies
+  mask[N_padded:2] <- rev(mask[2:(N_padded / 2 + 1)]) # Mirror for negative frequencies
 
   # Apply filter
   X_filtered <- X * mask
 
   # Inverse FFT
-  filtered_padded <- Re(stats::fft(X_filtered, inverse = TRUE)/N_padded)
+  filtered_padded <- Re(stats::fft(X_filtered, inverse = TRUE) / N_padded)
 
   # Remove padding
   filtered <- filtered_padded[(n_pad + 1):(n_pad + N)]

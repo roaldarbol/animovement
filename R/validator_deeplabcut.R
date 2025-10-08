@@ -24,6 +24,8 @@ ensure_dlc_expected_header_levels <- function(path) {
   # Read the first 4 lines of the file
   f <- vroom::vroom(path, nrows = 4)
   if (!expected_levels %in% names(f)) {
-    cli::cli_abort(".csv header rows do not match the known format for DeepLabCut pose estimation output files.")
+    cli::cli_abort(
+      ".csv header rows do not match the known format for DeepLabCut pose estimation output files."
+    )
   }
 }

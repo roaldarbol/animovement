@@ -15,7 +15,6 @@ library(tibble)
 library(ggplot2)
 library(tidyr)
 library(dplyr, warn.conflicts = FALSE)
-library(readxl)
 library(here)
 here::i_am("vignettes/articles/calculate-kinematics.Rmd")
 ```
@@ -101,11 +100,9 @@ f <- df_kinematics_clean |>
   geom_histogram()
 (a + b) / (c + d) / (e + f)
 
-library(performance)
 df_kinematics_clean |>
   tidyr::drop_na(d_rotation) |>
-  select(d_rotation) |>
-  performance::check_outliers()
+  select(d_rotation)
 ```
 
 ```{r}

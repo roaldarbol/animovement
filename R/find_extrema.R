@@ -101,11 +101,22 @@
 #' * Larger window_size values result in more stringent peak detection
 #'
 #' @export
-find_peaks <- function(x, min_height = -Inf, min_prominence = 0,
-                       plateau_handling = c("strict", "middle", "first", "last", "all"),
-                       window_size = 3) {
+find_peaks <- function(
+  x,
+  min_height = -Inf,
+  min_prominence = 0,
+  plateau_handling = c("strict", "middle", "first", "last", "all"),
+  window_size = 3
+) {
   plateau_handling <- match.arg(plateau_handling)
-  find_extrema(x, min_height, min_prominence, plateau_handling, "peak", window_size)
+  find_extrema(
+    x,
+    min_height,
+    min_prominence,
+    plateau_handling,
+    "peak",
+    window_size
+  )
 }
 
 #' Find Troughs in Time Series Data
@@ -211,18 +222,38 @@ find_peaks <- function(x, min_height = -Inf, min_prominence = 0,
 #' * Larger window_size values result in more stringent trough detection
 #'
 #' @export
-find_troughs <- function(x, max_height = Inf, min_prominence = 0,
-                         plateau_handling = c("strict", "middle", "first", "last", "all"),
-                         window_size = 3) {
+find_troughs <- function(
+  x,
+  max_height = Inf,
+  min_prominence = 0,
+  plateau_handling = c("strict", "middle", "first", "last", "all"),
+  window_size = 3
+) {
   plateau_handling <- match.arg(plateau_handling)
-  find_extrema(x, max_height, min_prominence, plateau_handling, "trough", window_size)
+  find_extrema(
+    x,
+    max_height,
+    min_prominence,
+    plateau_handling,
+    "trough",
+    window_size
+  )
 }
 
 #' Internal function for finding extrema
 #' @noRd
-find_extrema <- function(x, height_threshold, min_prominence, plateau_handling, type, window_size) {
+find_extrema <- function(
+  x,
+  height_threshold,
+  min_prominence,
+  plateau_handling,
+  type,
+  window_size
+) {
   # Input validation
-  if (!is.numeric(x) && !all(is.na(x))) stop("Input must be numeric or NA")
+  if (!is.numeric(x) && !all(is.na(x))) {
+    stop("Input must be numeric or NA")
+  }
   if (!is.numeric(window_size) || window_size < 3 || window_size %% 2 == 0) {
     stop("window_size must be an odd integer >= 3")
   }
@@ -232,12 +263,14 @@ find_extrema <- function(x, height_threshold, min_prominence, plateau_handling, 
   is_extremum <- rep(FALSE, n)
 
   # Handle special cases
-  if (n < window_size) return(rep(NA, n))
+  if (n < window_size) {
+    return(rep(NA, n))
+  }
 
   # Edge points can't be extrema
-  half_window <- floor(window_size/2)
+  half_window <- floor(window_size / 2)
   is_extremum[1:half_window] <- NA
-  is_extremum[(n-half_window+1):n] <- NA
+  is_extremum[(n - half_window + 1):n] <- NA
 
   # Function to check if value meets height threshold
   meets_height_threshold <- if (type == "peak") {
@@ -248,16 +281,22 @@ find_extrema <- function(x, height_threshold, min_prominence, plateau_handling, 
 
   # Function to check if point is extremum within window
   is_window_extremum <- function(idx) {
-    if (is.na(x[idx])) return(NA)
+    if (is.na(x[idx])) {
+      return(NA)
+    }
 
     # First check height threshold
-    if (!meets_height_threshold(x[idx])) return(FALSE)
+    if (!meets_height_threshold(x[idx])) {
+      return(FALSE)
+    }
 
     window_start <- max(1, idx - half_window)
     window_end <- min(n, idx + half_window)
     window_values <- x[window_start:window_end]
 
-    if (any(is.na(window_values))) return(NA)
+    if (any(is.na(window_values))) {
+      return(NA)
+    }
 
     if (type == "peak") {
       all(window_values <= x[idx]) && any(window_values < x[idx])
@@ -295,16 +334,17 @@ find_extrema <- function(x, height_threshold, min_prominence, plateau_handling, 
 
     # Return indices based on plateau handling method
     plateau_length <- end_idx - start_idx + 1
-    indices <- switch(plateau_handling,
-                      "strict" = NULL,
-                      "middle" = if (plateau_length %% 2 == 0) {
-                        c(start_idx + plateau_length/2 - 1, start_idx + plateau_length/2)
-                      } else {
-                        start_idx + floor(plateau_length/2)
-                      },
-                      "first" = start_idx,
-                      "last" = end_idx,
-                      "all" = start_idx:end_idx
+    indices <- switch(
+      plateau_handling,
+      "strict" = NULL,
+      "middle" = if (plateau_length %% 2 == 0) {
+        c(start_idx + plateau_length / 2 - 1, start_idx + plateau_length / 2)
+      } else {
+        start_idx + floor(plateau_length / 2)
+      },
+      "first" = start_idx,
+      "last" = end_idx,
+      "all" = start_idx:end_idx
     )
 
     return(list(indices = indices, is_na = FALSE))
@@ -322,7 +362,11 @@ find_extrema <- function(x, height_threshold, min_prominence, plateau_handling, 
 
     # Check for plateau
     plateau_end <- i
-    while (plateau_end < n && !is.na(x[plateau_end + 1]) && x[plateau_end + 1] == x[i]) {
+    while (
+      plateau_end < n &&
+        !is.na(x[plateau_end + 1]) &&
+        x[plateau_end + 1] == x[i]
+    ) {
       plateau_end <- plateau_end + 1
     }
 
@@ -345,21 +389,31 @@ find_extrema <- function(x, height_threshold, min_prominence, plateau_handling, 
   # Apply prominence filter if specified
   if (min_prominence > 0) {
     for (i in which(is_extremum)) {
-      if (is.na(is_extremum[i])) next
+      if (is.na(is_extremum[i])) {
+        next
+      }
 
       # Calculate prominence using window_size for initial search
       left_idx <- max(1, i - half_window)
       right_idx <- min(n, i + half_window)
 
-      while(left_idx > 1 && !is.na(x[left_idx]) &&
-            (type == "peak" && x[left_idx] <= x[i] ||
-             type == "trough" && x[left_idx] >= x[i])) {
+      while (
+        left_idx > 1 &&
+          !is.na(x[left_idx]) &&
+          (type == "peak" &&
+            x[left_idx] <= x[i] ||
+            type == "trough" && x[left_idx] >= x[i])
+      ) {
         left_idx <- left_idx - 1
       }
 
-      while(right_idx < n && !is.na(x[right_idx]) &&
-            (type == "peak" && x[right_idx] <= x[i] ||
-             type == "trough" && x[right_idx] >= x[i])) {
+      while (
+        right_idx < n &&
+          !is.na(x[right_idx]) &&
+          (type == "peak" &&
+            x[right_idx] <= x[i] ||
+            type == "trough" && x[right_idx] >= x[i])
+      ) {
         right_idx <- right_idx + 1
       }
 

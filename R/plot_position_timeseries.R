@@ -45,54 +45,84 @@
 #' @importFrom ggtext element_markdown
 #'
 #' @export
-plot_position_timeseries <- function(data, reference_keypoint=NULL, dimension = "xy"){
+plot_position_timeseries <- function(
+  data,
+  reference_keypoint = NULL,
+  dimension = "xy"
+) {
   n_keypoints <- nlevels(data$keypoint)
   keypoints <- levels(data$keypoint)
   plot_ts <- list()
   orange <- "#FFA500"
   blue <- "#1f77b4"
 
-  if (!is.null(reference_keypoint) && reference_keypoint %in% keypoints){
+  if (!is.null(reference_keypoint) && reference_keypoint %in% keypoints) {
     data <- data |>
       translate_coords(to_keypoint = reference_keypoint)
   }
 
-  for (j in 1:length(keypoints)){
+  for (j in 1:length(keypoints)) {
     df <- data |>
       dplyr::ungroup() |>
       dplyr::filter(.data$keypoint == keypoints[j])
 
-    if (!all(is.na(df$x))){
+    if (!all(is.na(df$x))) {
       plot_ts[[j]] <- df |>
-        subplot_position_timeseries(keypoint = keypoints[j], dimension = dimension)
+        subplot_position_timeseries(
+          keypoint = keypoints[j],
+          dimension = dimension
+        )
     } else {
-      cli::cli_inform("All values for {keypoints[j]} were NA. Returning a blank plot.")
+      cli::cli_inform(
+        "All values for {keypoints[j]} were NA. Returning a blank plot."
+      )
       plot_ts[[j]] <- ggplot2::ggplot() +
         ggplot2::ggtitle("", subtitle = keypoints[j])
     }
   }
 
   output_plot <- patchwork::wrap_plots(plot_ts, ncol = 1) +
-    patchwork::plot_annotation(title = "Time Series of Keypoint Position",
-                               theme = theme(plot.subtitle = ggtext::element_markdown(lineheight = 1.1))) +
-    patchwork::plot_layout(axes = "collect",
-                           axis_titles = "collect",
-                           guides = "collect")
-  if (dimension == "xy"){
+    patchwork::plot_annotation(
+      title = "Time Series of Keypoint Position",
+      theme = theme(plot.subtitle = ggtext::element_markdown(lineheight = 1.1))
+    ) +
+    patchwork::plot_layout(
+      axes = "collect",
+      axis_titles = "collect",
+      guides = "collect"
+    )
+  if (dimension == "xy") {
     output_plot <- output_plot +
-      patchwork::plot_annotation(subtitle = paste0(
-        "Timeseries for <b style='color:", orange, ";' >X</b> and <b style='color:", blue, "' >Y</b> coordinates
-                    over time"))
-  } else if (dimension == "x"){
+      patchwork::plot_annotation(
+        subtitle = paste0(
+          "Timeseries for <b style='color:",
+          orange,
+          ";' >X</b> and <b style='color:",
+          blue,
+          "' >Y</b> coordinates
+                    over time"
+        )
+      )
+  } else if (dimension == "x") {
     output_plot <- output_plot +
-      patchwork::plot_annotation(subtitle = paste0(
-        "Timeseries for <b style='color:", orange, ";' >X</b> coordinates
-                    over time"))
-  } else if (dimension == "y"){
+      patchwork::plot_annotation(
+        subtitle = paste0(
+          "Timeseries for <b style='color:",
+          orange,
+          ";' >X</b> coordinates
+                    over time"
+        )
+      )
+  } else if (dimension == "y") {
     output_plot <- output_plot +
-      patchwork::plot_annotation(subtitle = paste0(
-        "Timeseries for <b style='color:", blue, "' >Y</b> coordinates
-                    over time"))
+      patchwork::plot_annotation(
+        subtitle = paste0(
+          "Timeseries for <b style='color:",
+          blue,
+          "' >Y</b> coordinates
+                    over time"
+        )
+      )
   }
 
   return(output_plot)
@@ -126,8 +156,10 @@ subplot_position_timeseries <- function(data, keypoint, dimension = "xy") {
       # X coordinate on primary y-axis
       ggplot2::geom_line(aes(y = .data$x), colour = "#FFA500") +
       # Y coordinate on secondary y-axis (scaled)
-      ggplot2::geom_line(aes(y = scales::rescale(.data$y, to = x_range, from = y_range)),
-                         colour = "#1f77b4") +
+      ggplot2::geom_line(
+        aes(y = scales::rescale(.data$y, to = x_range, from = y_range)),
+        colour = "#1f77b4"
+      ) +
       # Primary axis label (X coordinate)
       ggplot2::scale_y_continuous(
         name = "X coordinate",

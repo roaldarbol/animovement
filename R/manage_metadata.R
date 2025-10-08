@@ -7,8 +7,8 @@
 #'
 #' @return data frame with metadata
 #' @export
-init_metadata <- function(data){
-  if (!check_metadata_exists(data)){
+init_metadata <- function(data) {
+  if (!check_metadata_exists(data)) {
     attributes(data)$metadata <- list(
       uuid = generate_uuid(),
       source = NA,
@@ -25,7 +25,7 @@ init_metadata <- function(data){
   return(data)
 }
 
-generate_uuid <- function(length = 20){
+generate_uuid <- function(length = 20) {
   stringi::stri_rand_strings(1, length, pattern = "[A-Z0-9]")
 }
 
@@ -41,7 +41,7 @@ generate_uuid <- function(length = 20){
 #'
 #' @return data frame with the "uuid" metadata field filled out
 #' @export
-set_uuid <- function(data, length = 20){
+set_uuid <- function(data, length = 20) {
   ensure_metadata_exists(data)
   attributes(data)$metadata$uuid <- generate_uuid(length)
   return(data)
@@ -60,13 +60,15 @@ set_uuid <- function(data, length = 20){
 #'
 #' @return movement data frame with starting datetime in metadata
 #' @export
-set_start_datetime <- function(data, start_datetime){
+set_start_datetime <- function(data, start_datetime) {
   ensure_metadata_exists(data)
-  if (!check_class(start_datetime, "POSIXt")){
+  if (!check_class(start_datetime, "POSIXt")) {
     start_datetime <- anytime::anytime(start_datetime) |>
       suppressWarnings()
-    if (is.na(start_datetime)){
-      cli::cli_warn("Unable to parse the supplied datetime. Please provide datetime in POSIXt format, or see the \"anytime\" package documentation for other allowed input types.")
+    if (is.na(start_datetime)) {
+      cli::cli_warn(
+        "Unable to parse the supplied datetime. Please provide datetime in POSIXt format, or see the \"anytime\" package documentation for other allowed input types."
+      )
     }
   }
   attributes(data)$metadata$start_datetime <- start_datetime
@@ -91,7 +93,7 @@ set_start_datetime <- function(data, start_datetime){
 #' @examples
 #' data <- data.frame(time = 1:5, value = rnorm(5))
 #' result <- set_individual(data, "subject_A")
-set_individual <- function(data, individual){
+set_individual <- function(data, individual) {
   new_id <- individual
   data <- data |>
     dplyr::ungroup() |>
@@ -123,16 +125,16 @@ set_individual <- function(data, individual){
 #' @examples
 #' data <- data.frame(time = 0:10, value = rnorm(11))
 #' result <- set_framerate(data, framerate = 60, old_framerate = 30)
-set_framerate <- function(data, framerate, old_framerate=1){
+set_framerate <- function(data, framerate, old_framerate = 1) {
   has_framerate <- !is.null(attributes(data)$metadata$framerate)
-  if (isTRUE(has_framerate)){
+  if (isTRUE(has_framerate)) {
     old_framerate <- attributes(data)$metadata$framerate
   }
 
   scaling_factor <- old_framerate / framerate
 
   # Ensure frame numbers start at zero
-  if (is.integer(data$time)){
+  if (is.integer(data$time)) {
     data <- data |>
       dplyr::mutate(time = .data$time - min(.data$time, na.rm = TRUE))
   }
@@ -145,13 +147,13 @@ set_framerate <- function(data, framerate, old_framerate=1){
 }
 
 #' @keywords internal
-check_class <- function(x, class){
+check_class <- function(x, class) {
   class %in% class(x)
 }
 
 #' @keywords internal
-ensure_class <- function(x, class){
-  if (!class %in% class(x)){
+ensure_class <- function(x, class) {
+  if (!class %in% class(x)) {
     cli::cli_abort("Expected an object of class {class}, but got {class(x)}.")
   }
 }
@@ -165,7 +167,7 @@ ensure_class <- function(x, class){
 #'
 #' @return the metadata associated with the movement data frame
 #' @export
-get_metadata <- function(data){
+get_metadata <- function(data) {
   ensure_metadata_exists(data)
   return(attributes(data)$metadata)
 }

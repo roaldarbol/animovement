@@ -8,6 +8,4 @@
 #'
 #' @keywords internal
 #' @export
-validate_animalta <- function(path) {
-
-}
+validate_animalta <- function(path) {}

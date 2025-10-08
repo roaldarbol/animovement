@@ -23,10 +23,16 @@
 #' filter_na_confidence(data, threshold = 0.6)
 #'
 #' @export
-filter_na_confidence <- function(data, threshold=0.6){
+filter_na_confidence <- function(data, threshold = 0.6) {
   d <- data |>
-    dplyr::mutate(x = dplyr::if_else(.data$confidence < threshold, NA, .data$x),
-                  y = dplyr::if_else(.data$confidence < threshold, NA, .data$y),
-                  confidence = dplyr::if_else(.data$confidence < threshold, NA, .data$confidence))
+    dplyr::mutate(
+      x = dplyr::if_else(.data$confidence < threshold, NA, .data$x),
+      y = dplyr::if_else(.data$confidence < threshold, NA, .data$y),
+      confidence = dplyr::if_else(
+        .data$confidence < threshold,
+        NA,
+        .data$confidence
+      )
+    )
   return(d)
 }

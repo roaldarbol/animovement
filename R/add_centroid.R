@@ -53,17 +53,19 @@
 #' @importFrom dplyr filter group_by summarise mutate arrange bind_rows
 #'
 #' @export
-add_centroid <- function(data,
-                         include_keypoints=NULL,
-                         exclude_keypoints=NULL,
-                         centroid_name="centroid"){
+add_centroid <- function(
+  data,
+  include_keypoints = NULL,
+  exclude_keypoints = NULL,
+  centroid_name = "centroid"
+) {
   # Check that centroid isn't there
   # Check that it's a movement data frame
   # To be optimised with collapse later on
-  if (!is.null(include_keypoints)){
+  if (!is.null(include_keypoints)) {
     df_centroid <- data |>
       dplyr::filter(.data$keypoint %in% include_keypoints)
-  } else if (!is.null(exclude_keypoints)){
+  } else if (!is.null(exclude_keypoints)) {
     df_centroid <- data |>
       dplyr::filter(!.data$keypoint %in% exclude_keypoints)
   } else {
@@ -72,10 +74,12 @@ add_centroid <- function(data,
 
   df_centroid <- df_centroid |>
     dplyr::group_by(.data$individual, .data$time) |>
-    dplyr::summarise(x = mean(.data$x, na.rm=TRUE),
-                     y = mean(.data$y, na.rm=TRUE),
-                     confidence = NA,
-                     .groups = "keep") |>
+    dplyr::summarise(
+      x = mean(.data$x, na.rm = TRUE),
+      y = mean(.data$y, na.rm = TRUE),
+      confidence = NA,
+      .groups = "keep"
+    ) |>
     dplyr::mutate(keypoint = factor(as.character(centroid_name))) |>
     convert_nan_to_na()
 
