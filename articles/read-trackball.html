@@ -86,9 +86,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.roald-arboel.com/animovement/">animovement</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
-<span><span class="co">#&gt;   object 'type_sum.accel' not found</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.roald-arboel.com/animovement/">animovement</a></span><span class="op">)</span></span></code></pre></div>
 <p>Trackball experiments, in which animals are tethered/restrained atop
 a (most commonly) styrofoam ball are common experiments within animal
 behaviour and neuroscience.</p>
@@ -116,13 +114,13 @@ manage your files (see their documentation to learn more about it).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://here.r-lib.org/" class="external-link">here</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; here() starts at /home/runner/work/animovement/animovement</span></span>
-<span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/i_am.html" class="external-link">i_am</a></span><span class="op">(</span><span class="st">"vignettes/articles/read-trackball.Rmd"</span><span class="op">)</span></span>
+<span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/i_am.html" class="external-link">i_am</a></span><span class="op">(</span><span class="st">"vignettes/articles/read-trackball.Rmd"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; here() starts at /home/runner/work/animovement/animovement</span></span></code></pre></div>
 <p>Our data lives in a funky place (because of the constraints of being
 in an R package), but giving file paths is easy.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">filepath_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"tests"</span>, <span class="st">"testthat"</span>, <span class="st">"data"</span>, <span class="st">"single"</span>, <span class="st">"opticalflow_sensor_1.csv"</span><span class="op">)</span></span>
-<span><span class="va">filepath_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"tests"</span>, <span class="st">"testthat"</span>, <span class="st">"data"</span>, <span class="st">"single"</span>, <span class="st">"opticalflow_sensor_2.csv"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">filepath_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"tests"</span>, <span class="st">"testthat"</span>, <span class="st">"data"</span>, <span class="st">"single"</span>, <span class="st">"opticalflow_sensor_1.csv"</span><span class="op">)</span></span>
+<span><span class="va">filepath_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"tests"</span>, <span class="st">"testthat"</span>, <span class="st">"data"</span>, <span class="st">"single"</span>, <span class="st">"opticalflow_sensor_2.csv"</span><span class="op">)</span></span>
 <span><span class="va">filepaths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">filepath_1</span>, <span class="va">filepath_2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># These might be something like: here("data", "trackball", "sensor_1", "trackballdata_100.csv") for you!</span></span></code></pre></div>
@@ -206,7 +204,7 @@ together. We have an <code>.xlsx</code> file that contains the correct
 pairs of file names. Let’s begin by reading and inspecting the file.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org" class="external-link">readxl</a></span><span class="op">)</span></span>
-<span><span class="va">metadata_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"inst"</span>, <span class="st">"extdata"</span>, <span class="st">"multi"</span>, <span class="st">"trackball_filenames.xlsx"</span><span class="op">)</span></span>
+<span><span class="va">metadata_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"inst"</span>, <span class="st">"extdata"</span>, <span class="st">"multi"</span>, <span class="st">"trackball_filenames.xlsx"</span><span class="op">)</span></span>
 <span><span class="va">metadata_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="va">metadata_path</span><span class="op">)</span></span>
 <span><span class="va">metadata_file</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 4</span></span></span>
@@ -226,8 +224,8 @@ we use the <em>here</em> package to make file management easier.</p>
 <span><span class="co"># Then we loop through the rows in the metadata file</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">metadata_file</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Like before, change the path to match your local file structure</span></span>
-<span>  <span class="va">file_primary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"inst"</span>, <span class="st">"extdata"</span>, <span class="st">"multi"</span>, <span class="va">metadata_file</span><span class="op">$</span><span class="va">filename_a</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
-<span>  <span class="va">file_secondary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"inst"</span>, <span class="st">"extdata"</span>, <span class="st">"multi"</span>, <span class="va">metadata_file</span><span class="op">$</span><span class="va">filename_b</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">file_primary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"inst"</span>, <span class="st">"extdata"</span>, <span class="st">"multi"</span>, <span class="va">metadata_file</span><span class="op">$</span><span class="va">filename_a</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">file_secondary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"inst"</span>, <span class="st">"extdata"</span>, <span class="st">"multi"</span>, <span class="va">metadata_file</span><span class="op">$</span><span class="va">filename_b</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Then we'll read all the file</span></span>
 <span>  <span class="va">df_temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_trackball.html">read_trackball</a></span><span class="op">(</span></span>
@@ -276,7 +274,7 @@ information that can be used to distinguish between experiments.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
