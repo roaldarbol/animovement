@@ -13,7 +13,6 @@ knitr::opts_chunk$set(
 library(animovement)
 library(tibble)
 library(dplyr, warn.conflicts = FALSE)
-library(readxl)
 library(here)
 here::i_am("vignettes/articles/clean-tracks.Rmd")
 ```
@@ -86,7 +85,6 @@ Now we can see that there might be a few observations with extreme observations.
 we may want to filter out all the `0` readings At first sight, it all looks fine. We could stop here and say we're confident there are no *spurious* outliers. We could also apply a variety of automated outlier detection techniques. There are several ways of achieving this, but luckily the [*performance*]() package has got us covered with their [`check_outliers()`]() function. Since most of these methods rely on histograms/probability density functions, 
 
 ```{r}
-library(performance)
 library(tidyr)
 df |>
   mutate(
@@ -96,9 +94,7 @@ df |>
   tidyr::drop_na(ax, ay) |> 
   filter(time < 200) |>
   filter(dx != 0) |>
-  select(ax, ay) |> 
-  check_outliers() |>
-  plot()
+  select(ax, ay)
 ```
 
 
