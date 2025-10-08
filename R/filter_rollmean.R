@@ -14,9 +14,6 @@
 #' @importFrom roll roll_mean
 #'
 #' @export
-filter_rollmean <- function(x,
-                            window_width = 5,
-                            min_obs = 1,
-                            ...) {
+filter_rollmean <- function(x, window_width = 5, min_obs = 1, ...) {
   roll::roll_mean(x, width = window_width, min_obs = min_obs, ...)
 }

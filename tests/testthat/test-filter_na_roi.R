@@ -76,11 +76,7 @@ test_that("rectangular ROI filtering works", {
   )
 
   # Test combined bounds
-  result <- filter_na_roi(test_data,
-                          x_min = 2,
-                          x_max = 4,
-                          y_min = 2,
-                          y_max = 4)
+  result <- filter_na_roi(test_data, x_min = 2, x_max = 4, y_min = 2, y_max = 4)
   expect_equal(
     result,
     tibble(
@@ -92,15 +88,11 @@ test_that("rectangular ROI filtering works", {
 
 test_that("circular ROI filtering works", {
   # Create a square grid of points
-  grid <- expand.grid(x = seq(-5, 5, by = 1),
-                      y = seq(-5, 5, by = 1)) |>
+  grid <- expand.grid(x = seq(-5, 5, by = 1), y = seq(-5, 5, by = 1)) |>
     as_tibble()
 
   # Test circle centered at origin with radius 3
-  result <- filter_na_roi(grid,
-                          x_center = 0,
-                          y_center = 0,
-                          radius = 3)
+  result <- filter_na_roi(grid, x_center = 0, y_center = 0, radius = 3)
 
   # Check if points inside circle are preserved
   inside_circle <- function(x, y, x_center, y_center, radius) {
@@ -111,36 +103,45 @@ test_that("circular ROI filtering works", {
     if (!is.na(result$x[i])) {
       expect_true(
         inside_circle(result$x[i], result$y[i], 0, 0, 3),
-        label = sprintf("Point (%f, %f) should be inside circle",
-                        result$x[i], result$y[i])
+        label = sprintf(
+          "Point (%f, %f) should be inside circle",
+          result$x[i],
+          result$y[i]
+        )
       )
     } else {
       expect_false(
         inside_circle(grid$x[i], grid$y[i], 0, 0, 3),
-        label = sprintf("Point (%f, %f) should be outside circle",
-                        grid$x[i], grid$y[i])
+        label = sprintf(
+          "Point (%f, %f) should be outside circle",
+          grid$x[i],
+          grid$y[i]
+        )
       )
     }
   }
 
   # Test offset circle
-  result_offset <- filter_na_roi(grid,
-                                 x_center = 2,
-                                 y_center = -1,
-                                 radius = 2)
+  result_offset <- filter_na_roi(grid, x_center = 2, y_center = -1, radius = 2)
 
   for (i in seq_len(nrow(result_offset))) {
     if (!is.na(result_offset$x[i])) {
       expect_true(
         inside_circle(result_offset$x[i], result_offset$y[i], 2, -1, 2),
-        label = sprintf("Point (%f, %f) should be inside offset circle",
-                        result_offset$x[i], result_offset$y[i])
+        label = sprintf(
+          "Point (%f, %f) should be inside offset circle",
+          result_offset$x[i],
+          result_offset$y[i]
+        )
       )
     } else {
       expect_false(
         inside_circle(grid$x[i], grid$y[i], 2, -1, 2),
-        label = sprintf("Point (%f, %f) should be outside offset circle",
-                        grid$x[i], grid$y[i])
+        label = sprintf(
+          "Point (%f, %f) should be outside offset circle",
+          grid$x[i],
+          grid$y[i]
+        )
       )
     }
   }
@@ -164,10 +165,12 @@ test_that("edge cases are handled correctly", {
   expect_equal(result$y, 1)
 
   # Test point exactly on circle boundary
-  result <- filter_na_roi(single_point,
-                          x_center = 0,
-                          y_center = 0,
-                          radius = sqrt(2))
+  result <- filter_na_roi(
+    single_point,
+    x_center = 0,
+    y_center = 0,
+    radius = sqrt(2)
+  )
   expect_equal(result$x, 1)
   expect_equal(result$y, 1)
 

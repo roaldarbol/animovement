@@ -21,12 +21,12 @@
 #' @export
 read_animalta <- function(path, detailed = FALSE) {
   # Inspect headers
-  if (detailed == TRUE){
+  if (detailed == TRUE) {
     validate_files(
       path,
       expected_suffix = "csv",
       expected_headers = c("X", "Y", "Time")
-      )
+    )
     data <- read_animalta_detailed(path)
   } else {
     validate_files(
@@ -39,9 +39,11 @@ read_animalta <- function(path, detailed = FALSE) {
   data <- data |>
     dplyr::mutate(keypoint = factor("centroid")) |>
     dplyr::relocate("keypoint", .after = "individual") |>
-    dplyr::mutate(confidence = as.numeric(NA),
-                  keypoint = factor(.data$keypoint),
-                  individual = factor(.data$individual))
+    dplyr::mutate(
+      confidence = as.numeric(NA),
+      keypoint = factor(.data$keypoint),
+      individual = factor(.data$individual)
+    )
 
   # Init metadata
   data <- data |>
@@ -52,15 +54,17 @@ read_animalta <- function(path, detailed = FALSE) {
 
 #' @inheritParams read_animalta
 #' @keywords internal
-read_animalta_detailed <- function(path){
+read_animalta_detailed <- function(path) {
   data <- vroom::vroom(
     path,
     delim = ";",
     show_col_types = FALSE
   ) |>
-  janitor::clean_names() |>
-    dplyr::mutate(frame = as.numeric(.data$frame),
-                  time = as.numeric(.data$time)) |>
+    janitor::clean_names() |>
+    dplyr::mutate(
+      frame = as.numeric(.data$frame),
+      time = as.numeric(.data$time)
+    ) |>
     dplyr::rename(individual = "ind") |>
     dplyr::mutate(individual = factor(.data$individual)) |>
     dplyr::select(-c("frame", "arena"))
@@ -72,7 +76,7 @@ read_animalta_detailed <- function(path){
 #' @inheritParams read_animalta
 #' @import tidyr
 #' @keywords internal
-read_animalta_raw <- function(path){
+read_animalta_raw <- function(path) {
   data <- vroom::vroom(
     path,
     delim = ";",
@@ -81,13 +85,17 @@ read_animalta_raw <- function(path){
     janitor::clean_names()
 
   data <- data |>
-    tidyr::pivot_longer(cols = 3:ncol(data),
-                        names_to = c("coordinate", "individual", "arena"),
-                        names_sep = "_",
-                        values_to = "val") |>
-    tidyr::pivot_wider(id_cols = c("time", "individual", "arena"),
-                       names_from = "coordinate",
-                       values_from = "val") |>
+    tidyr::pivot_longer(
+      cols = 3:ncol(data),
+      names_to = c("coordinate", "individual", "arena"),
+      names_sep = "_",
+      values_to = "val"
+    ) |>
+    tidyr::pivot_wider(
+      id_cols = c("time", "individual", "arena"),
+      names_from = "coordinate",
+      values_from = "val"
+    ) |>
     tidyr::unite("individual", c("individual", "arena")) |>
     dplyr::mutate(individual = factor(.data$individual))
   return(data)

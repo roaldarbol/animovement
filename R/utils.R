@@ -17,20 +17,24 @@
   }
 }
 
-.has_attributes <- function(data, attributes){
+.has_attributes <- function(data, attributes) {
   attributes %in% names(attributes(data))
 }
 
-.has_all_attributes <- function(data, attributes){
-  attributes %in% names(attributes(data)) |>
-    all()
+.has_all_attributes <- function(data, attributes) {
+  attributes %in% names(attributes(data)) |> all()
 }
 
-convert_nan_to_na <- function(data){
-  dplyr::mutate(data, across(where(is.numeric), function(x) ifelse(is.nan(x), NA, x)))
+convert_nan_to_na <- function(data) {
+  dplyr::mutate(
+    data,
+    across(where(is.numeric), function(x) ifelse(is.nan(x), NA, x))
+  )
 }
 
 # For TRex files
-get_individual_from_path <- function(path){
-  strsplit(tools::file_path_sans_ext(basename(path)), "_(?!.*_)", perl=TRUE)[[1]]
+get_individual_from_path <- function(path) {
+  strsplit(tools::file_path_sans_ext(basename(path)), "_(?!.*_)", perl = TRUE)[[
+    1
+  ]]
 }

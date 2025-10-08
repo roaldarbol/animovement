@@ -23,17 +23,18 @@
 #' @return a movement dataframe
 #' @export
 read_trackball <- function(
-    paths,
-    setup = c("of_free", "of_fixed", "fictrac"),
-    sampling_rate,
-    col_time = "time",
-    col_dx = "x",
-    col_dy = "y",
-    ball_calibration = NULL,
-    ball_diameter = NULL,
-    distance_scale = NULL,
-    distance_unit = NULL,
-    verbose = FALSE) {
+  paths,
+  setup = c("of_free", "of_fixed", "fictrac"),
+  sampling_rate,
+  col_time = "time",
+  col_dx = "x",
+  col_dy = "y",
+  ball_calibration = NULL,
+  ball_diameter = NULL,
+  distance_scale = NULL,
+  distance_unit = NULL,
+  verbose = FALSE
+) {
   validate_files(paths, expected_suffix = "csv") #expected_headers = c("x", "y", "time")
   validate_trackball(paths, setup, col_time)
   n_sensors <- length(paths)
@@ -56,18 +57,34 @@ read_trackball <- function(
       compute_xy_coordinates_free()
   } else if (setup == "of_fixed") {
     data <- data |>
-      compute_xy_coordinates_fixed(n_sensors, ball_diameter, ball_calibration, distance_scale)
+      compute_xy_coordinates_fixed(
+        n_sensors,
+        ball_diameter,
+        ball_calibration,
+        distance_scale
+      )
   }
 
   # Scale distance and time and select output columns
   data <- data |>
     dplyr::mutate(keypoint = factor("centroid")) |>
     .scale_values(c("x", "y", "dx", "dy"), distance_scale) |>
-    dplyr::mutate(time = .data$time / sampling_rate,
-                  individual = factor(NA),
-                  confidence = as.numeric(NA)) |>
+    dplyr::mutate(
+      time = .data$time / sampling_rate,
+      individual = factor(NA),
+      confidence = as.numeric(NA)
+    ) |>
     # dplyr::mutate(uid = stringi::stri_rand_strings(1, 20, pattern = "[A-Z0-9]")) |>
-    dplyr::select("time", "individual", "keypoint", "x", "y", "confidence", "dx", "dy")
+    dplyr::select(
+      "time",
+      "individual",
+      "keypoint",
+      "x",
+      "y",
+      "confidence",
+      "dx",
+      "dy"
+    )
 
   # Init metadata
   data <- data |>
@@ -128,8 +145,14 @@ join_trackball_files <- function(data_list, sampling_rate) {
   ## Find shared time frame between both sensors
   highest_min_time <- max(c(min(data_list[[1]]$time), min(data_list[[2]]$time)))
   lowest_max_time <- min(c(max(data_list[[1]]$time), max(data_list[[2]]$time)))
-  data_list[[1]] <- filter(data_list[[1]], .data$time > highest_min_time & .data$time < lowest_max_time)
-  data_list[[2]] <- filter(data_list[[2]], .data$time > highest_min_time & .data$time < lowest_max_time)
+  data_list[[1]] <- filter(
+    data_list[[1]],
+    .data$time > highest_min_time & .data$time < lowest_max_time
+  )
+  data_list[[2]] <- filter(
+    data_list[[2]],
+    .data$time > highest_min_time & .data$time < lowest_max_time
+  )
 
   # We use the provided sampling rate to create shared a shared time frame
   data_list[[1]] <- data_list[[1]] |>
@@ -153,7 +176,8 @@ join_trackball_files <- function(data_list, sampling_rate) {
 
   # We then merge the two data frames
   data <- full_join(
-    data_list[[1]], data_list[[2]],
+    data_list[[1]],
+    data_list[[2]],
     by = "time_group",
     suffix = c("_1", "_2")
   ) |>
@@ -203,7 +227,13 @@ compute_xy_coordinates_free <- function(data) {
 
 #' @inheritParams read_trackball
 #' @keywords internal
-compute_xy_coordinates_fixed <- function(data, n_sensors, ball_diameter, ball_calibration, distance_scale) {
+compute_xy_coordinates_fixed <- function(
+  data,
+  n_sensors,
+  ball_diameter,
+  ball_calibration,
+  distance_scale
+) {
   if (n_sensors == 2) {
     data <- data |>
       dplyr::rename(time = "time_group") |>
@@ -226,7 +256,11 @@ compute_xy_coordinates_fixed <- function(data, n_sensors, ball_diameter, ball_ca
       dplyr::mutate(d_angle = (.data$sensor_dx / ball_calibration) * 2 * pi) # in radians
   } else if (!is.null(distance_scale)) {
     data <- data |>
-      dplyr::mutate(d_angle = (.data$sensor_dx / (ball_diameter * pi * distance_scale)) * 2 * pi) # in radians
+      dplyr::mutate(
+        d_angle = (.data$sensor_dx / (ball_diameter * pi * distance_scale)) *
+          2 *
+          pi
+      ) # in radians
   }
   data <- data |>
     dplyr::mutate(

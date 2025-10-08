@@ -144,7 +144,7 @@ test_that("multiple plateaus are handled correctly", {
 
   # Test middle mode with multiple plateaus
   middle_peaks <- which(find_peaks(x, plateau_handling = "middle"))
-  expect_equal(middle_peaks, c(2, 3, 7, 8))  # Both points for even-length plateau
+  expect_equal(middle_peaks, c(2, 3, 7, 8)) # Both points for even-length plateau
 
   # Test multiple plateaus with different lengths
   x <- c(1, 3, 3, 3, 2, 4, 4, 1)
@@ -161,7 +161,7 @@ test_that("prominence works with plateaus", {
 
   # Test lower prominence
   peaks <- which(find_peaks(x, min_prominence = 1, plateau_handling = "all"))
-  expect_equal(peaks, c(2:4, 6:7))  # Both plateaus qualify
+  expect_equal(peaks, c(2:4, 6:7)) # Both plateaus qualify
 })
 
 test_that("window size parameter works correctly", {
@@ -172,9 +172,9 @@ test_that("window size parameter works correctly", {
   expect_true(length(peaks_w3) > length(peaks_w5))
 
   # Test window size validation
-  expect_error(find_peaks(1:10, window_size = 2))  # Too small
-  expect_error(find_peaks(1:10, window_size = 4))  # Even number
-  expect_error(find_peaks(1:10, window_size = "3"))  # Not numeric
+  expect_error(find_peaks(1:10, window_size = 2)) # Too small
+  expect_error(find_peaks(1:10, window_size = 4)) # Even number
+  expect_error(find_peaks(1:10, window_size = "3")) # Not numeric
 
   # Test behavior with window size larger than data
   x_short <- 1:5
@@ -184,12 +184,12 @@ test_that("window size parameter works correctly", {
   x <- c(1, 3, 2, 4, 2, 3, 1)
   result_w3 <- find_peaks(x, window_size = 3)
   result_w5 <- find_peaks(x, window_size = 5)
-  expect_equal(sum(is.na(result_w3)), 2)  # First and last points
-  expect_equal(sum(is.na(result_w5)), 4)  # Two points on each end
+  expect_equal(sum(is.na(result_w3)), 2) # First and last points
+  expect_equal(sum(is.na(result_w5)), 4) # Two points on each end
 
   # Test with noisy data
   set.seed(123)
-  x <- sin(seq(0, 4*pi, length.out = 100)) + rnorm(100, 0, 0.1)
+  x <- sin(seq(0, 4 * pi, length.out = 100)) + rnorm(100, 0, 0.1)
   peaks_w3 <- sum(find_peaks(x, window_size = 3), na.rm = TRUE)
   peaks_w7 <- sum(find_peaks(x, window_size = 7), na.rm = TRUE)
   peaks_w11 <- sum(find_peaks(x, window_size = 11), na.rm = TRUE)
@@ -200,8 +200,8 @@ test_that("window size parameter works correctly", {
   x <- c(1, 3, 3, 3, 2, 4, 4, 4, 2)
   peaks_w3 <- which(find_peaks(x, window_size = 3, plateau_handling = "middle"))
   peaks_w5 <- which(find_peaks(x, window_size = 5, plateau_handling = "middle"))
-  expect_equal(peaks_w3, c(3, 7))  # Both plateaus are peaks
-  expect_equal(peaks_w5, 7)  # Only second plateau is peak
+  expect_equal(peaks_w3, c(3, 7)) # Both plateaus are peaks
+  expect_equal(peaks_w5, 7) # Only second plateau is peak
 
   # Test with NAs and different window sizes
   x <- c(1, 3, NA, 4, 2, 5, NA, 3, 1)

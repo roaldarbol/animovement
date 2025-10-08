@@ -12,9 +12,6 @@
 #' @importFrom roll roll_median
 #'
 #' @export
-filter_rollmedian <- function(x,
-                              window_width = 5,
-                              min_obs = 1,
-                              ...) {
+filter_rollmedian <- function(x, window_width = 5, min_obs = 1, ...) {
   roll::roll_median(x, width = window_width, min_obs = min_obs, ...)
 }

@@ -42,7 +42,7 @@
 #' }
 #'
 #' @export
-check_pose <- function(data, reference_keypoint, type = "histogram"){
+check_pose <- function(data, reference_keypoint, type = "histogram") {
   # Parameters
   keypoints <- unique(data$keypoint)
   n_keypoints <- length(keypoints)
@@ -55,8 +55,10 @@ check_pose <- function(data, reference_keypoint, type = "histogram"){
     dplyr::mutate(keypoint = "reference_keypoint")
   data <- dplyr::bind_rows(data, d_ref)
 
-  if (n_keypoints <= 1){
-    cli::cli_abort("Can only check poses when the data contains more than 1 keypoint.")
+  if (n_keypoints <= 1) {
+    cli::cli_abort(
+      "Can only check poses when the data contains more than 1 keypoint."
+    )
   }
 
   # Calculate distance to centroid
@@ -65,12 +67,12 @@ check_pose <- function(data, reference_keypoint, type = "histogram"){
     dplyr::filter(.data$keypoint != "reference_keypoint") |>
     dplyr::mutate(keypoint = factor(.data$keypoint))
 
-  for (i in 1:length(keypoints)){
-    if (type == "histogram"){
+  for (i in 1:length(keypoints)) {
+    if (type == "histogram") {
       na_plots[[i]] <- data |>
         dplyr::filter(.data$keypoint == keypoints[i]) |>
         subplot_dist_to_centroid_hist(keypoint = keypoints[i])
-    } else if (type == "confidence"){
+    } else if (type == "confidence") {
       na_plots[[i]] <- data |>
         dplyr::filter(.data$keypoint == keypoints[i]) |>
         subplot_dist_to_centroid_confidence(keypoint = keypoints[i])
@@ -78,14 +80,16 @@ check_pose <- function(data, reference_keypoint, type = "histogram"){
   }
 
   output_plot <- patchwork::wrap_plots(na_plots) +
-    patchwork::plot_annotation(title = "Distance from keypoint to centroid",
-                               subtitle = "Gap sizes (NAs in a row) ordered by most common",
-                               theme = theme(plot.subtitle = ggtext::element_markdown(lineheight = 1.1),
-                                             legend.position="bottom")
+    patchwork::plot_annotation(
+      title = "Distance from keypoint to centroid",
+      subtitle = "Gap sizes (NAs in a row) ordered by most common",
+      theme = theme(
+        plot.subtitle = ggtext::element_markdown(lineheight = 1.1),
+        legend.position = "bottom"
+      )
     ) +
-    patchwork::plot_layout(axes = "collect",
-                           axis_titles = "collect")
-  if (type == "histogram"){
+    patchwork::plot_layout(axes = "collect", axis_titles = "collect")
+  if (type == "histogram") {
     output_plot <- output_plot + patchwork::plot_layout(guides = "collect")
   }
   return(output_plot)

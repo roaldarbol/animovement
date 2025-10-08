@@ -15,6 +15,8 @@ ensure_not_zero <- function(x) {
 #' @keywords internal
 ensure_circular <- function(x) {
   if (!circular::is.circular(x)) {
-    cli::cli_abort("Values have to be circular (convert with `circular::circular()`")
+    cli::cli_abort(
+      "Values have to be circular (convert with `circular::circular()`"
+    )
   }
 }

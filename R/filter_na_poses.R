@@ -1,12 +1,10 @@
-filter_by_pose <- function(data){
+filter_by_pose <- function(data) {}
 
-}
-
-calculate_distance_to_centroid <- function(data, centroid_name = "centroid"){
+calculate_distance_to_centroid <- function(data, centroid_name = "centroid") {
   data_egocentric_distance <- data.frame()
   individuals <- unique(data$individual)
   n_individuals <- length(individuals)
-  if (n_individuals == 1 && is.na(individuals)){
+  if (n_individuals == 1 && is.na(individuals)) {
     id_was_na <- TRUE
     data <- data |>
       dplyr::mutate(individual = "temporary_id")
@@ -14,10 +12,10 @@ calculate_distance_to_centroid <- function(data, centroid_name = "centroid"){
     n_individuals <- length(individuals)
   }
 
-  for (i in 1:length(individuals)){
+  for (i in 1:length(individuals)) {
     temp_data <- data |>
       dplyr::filter(.data$individual == individuals[i])
-    if (!centroid_name %in% unique(temp_data$keypoint)){
+    if (!centroid_name %in% unique(temp_data$keypoint)) {
       temp_data <- temp_data |>
         add_centroid(centroid_name = centroid_name)
     }

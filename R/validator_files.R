@@ -20,11 +20,11 @@
 #' @keywords internal
 #' @export
 validate_files <- function(
-    path,
-    expected_permission = "r",
-    expected_suffix = NULL,
-    expected_headers = NULL) {
-
+  path,
+  expected_permission = "r",
+  expected_suffix = NULL,
+  expected_headers = NULL
+) {
   # Perform checks on all supplied paths
   for (p in path) {
     ensure_is_not_dir(p)
@@ -33,7 +33,7 @@ validate_files <- function(
     if (!is.null(expected_suffix)) {
       ensure_file_has_expected_suffix(p, expected_suffix)
     }
-    if (!is.null(expected_headers)){
+    if (!is.null(expected_headers)) {
       ensure_file_has_headers(p)
       ensure_file_has_expected_headers(p, expected_headers)
     }
@@ -55,9 +55,13 @@ ensure_is_not_dir <- function(path) {
 #' @inheritParams validate_files
 #' @keywords internal
 ensure_file_exists_when_expected <- function(path, expected_permission) {
-  if (expected_permission %in% c("r", "rw") & file.access(path, mode = 0) == -1) {
+  if (
+    expected_permission %in% c("r", "rw") & file.access(path, mode = 0) == -1
+  ) {
     cli::cli_abort("File {path} does not exist.")
-  } else if (expected_permission %in% c("w", "rw") & file.access(path, mode = 0) == 0) {
+  } else if (
+    expected_permission %in% c("w", "rw") & file.access(path, mode = 0) == 0
+  ) {
     cli::cli_abort("File {path} already exists.")
   }
 }
@@ -67,10 +71,18 @@ ensure_file_exists_when_expected <- function(path, expected_permission) {
 #' @inheritParams validate_files
 #' @keywords internal
 ensure_file_has_access_permissions <- function(path, expected_permission) {
-  if (expected_permission %in% c("r", "rw") & file.access(path, mode = 4) == -1) {
-    cli::cli_abort("Unable to read file: {path}. Make sure that you have read permissions.")
-  } else if (expected_permission %in% c("w", "rw") & file.access(path, mode = 2) == -1) {
-    cli::cli_abort("Unable to write to file: {path}. Make sure that you have write permissions.")
+  if (
+    expected_permission %in% c("r", "rw") & file.access(path, mode = 4) == -1
+  ) {
+    cli::cli_abort(
+      "Unable to read file: {path}. Make sure that you have read permissions."
+    )
+  } else if (
+    expected_permission %in% c("w", "rw") & file.access(path, mode = 2) == -1
+  ) {
+    cli::cli_abort(
+      "Unable to write to file: {path}. Make sure that you have write permissions."
+    )
   }
 }
 
@@ -81,7 +93,9 @@ ensure_file_has_access_permissions <- function(path, expected_permission) {
 ensure_file_has_expected_suffix <- function(path, expected_suffix) {
   path_suffix <- .get_file_ext(path)
   if (!path_suffix %in% expected_suffix) {
-    cli::cli_abort("Expected file with suffix(es) {expected_suffix}, but got suffix {path_suffix} instead.")
+    cli::cli_abort(
+      "Expected file with suffix(es) {expected_suffix}, but got suffix {path_suffix} instead."
+    )
   }
 }
 
@@ -109,7 +123,10 @@ ensure_file_has_headers <- function(path) {
 #' @inheritParams validate_files
 #' @keywords internal
 #' @export
-ensure_file_has_expected_headers <- function(path, expected_headers = c("x", "y", "time")) {
+ensure_file_has_expected_headers <- function(
+  path,
+  expected_headers = c("x", "y", "time")
+) {
   df <- vroom::vroom(
     path,
     n_max = 10,
@@ -120,7 +137,9 @@ ensure_file_has_expected_headers <- function(path, expected_headers = c("x", "y"
     suppressMessages()
   has_correct_headers <- all(expected_headers %in% names(df))
   if (has_correct_headers != TRUE) {
-    cli::cli_abort("Expected the following file headers: {expected_headers}, but they were not present.")
+    cli::cli_abort(
+      "Expected the following file headers: {expected_headers}, but they were not present."
+    )
   }
 }
 
@@ -128,7 +147,10 @@ ensure_file_has_expected_headers <- function(path, expected_headers = c("x", "y"
 #' @inheritParams validate_files
 #' @keywords internal
 #' @export
-does_file_have_expected_headers <- function(path, expected_headers = c("x", "y", "time")) {
+does_file_have_expected_headers <- function(
+  path,
+  expected_headers = c("x", "y", "time")
+) {
   df <- vroom::vroom(
     path,
     n_max = 10,

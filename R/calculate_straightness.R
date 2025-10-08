@@ -32,9 +32,15 @@ calculate_straightness <- function(data, straightness = c("A", "B", "C", "D")) {
 
   # Only select the methods chosen by the user
   possible_straightness <- c("A", "B", "C", "D")
-  possible_straightness_columns <- paste("straightness", possible_straightness, sep = "_")
+  possible_straightness_columns <- paste(
+    "straightness",
+    possible_straightness,
+    sep = "_"
+  )
   straightness_columns <- paste("straightness", straightness, sep = "_")
-  columns_not_selected <- possible_straightness_columns[which(!possible_straightness_columns %in% straightness_columns)]
+  columns_not_selected <- possible_straightness_columns[which(
+    !possible_straightness_columns %in% straightness_columns
+  )]
   data <- data |>
     dplyr::select(!all_of(columns_not_selected))
 

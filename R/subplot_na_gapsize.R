@@ -71,24 +71,26 @@
 #' @keywords internal
 #'
 #' @export
-ggplot_na_gapsize <- function(data,
-                              limit = 10,
-                              include_total = TRUE,
-                              ranked_by = "occurrence",
-                              color_occurrence = "indianred",
-                              color_total = "steelblue",
-                              color_border = "black",
-                              alpha_bars = 1,
-                              title = "Occurrence of gap sizes",
-                              subtitle = "Gap sizes (NAs in a row) ordered by most common",
-                              xlab = NULL,
-                              ylab = "Number occurrence",
-                              legend = TRUE,
-                              orientation = "horizontal",
-                              label_occurrence = "Number occurrence gapsize",
-                              label_total = "Resulting NAs for gapsize",
-                              theme = ggplot2::theme_linedraw(),
-                              keypoint = NULL) {
+ggplot_na_gapsize <- function(
+  data,
+  limit = 10,
+  include_total = TRUE,
+  ranked_by = "occurrence",
+  color_occurrence = "indianred",
+  color_total = "steelblue",
+  color_border = "black",
+  alpha_bars = 1,
+  title = "Occurrence of gap sizes",
+  subtitle = "Gap sizes (NAs in a row) ordered by most common",
+  xlab = NULL,
+  ylab = "Number occurrence",
+  legend = TRUE,
+  orientation = "horizontal",
+  label_occurrence = "Number occurrence gapsize",
+  label_total = "Resulting NAs for gapsize",
+  theme = ggplot2::theme_linedraw(),
+  keypoint = NULL
+) {
   ##
   ## 1. Input Check and Transformation
   ##
@@ -96,18 +98,18 @@ ggplot_na_gapsize <- function(data,
   # 1.1 special handling data types
   if (any(class(data) == "tbl_ts")) {
     data <- as.vector(as.data.frame(data)[, 2])
-  }
-  else if (any(class(data) == "tbl")) {
+  } else if (any(class(data) == "tbl")) {
     data <- as.vector(as.data.frame(data)[, 1])
   }
 
   # 1.2 Check if the input is multivariate
   if (!is.null(dim(data)[2]) && dim(data)[2] > 1) {
-    stop("x is not univariate. The function only works with univariate
+    stop(
+      "x is not univariate. The function only works with univariate
     input for x. For data types with multiple variables/columns only input
-    the column you want to plot as parameter x.")
+    the column you want to plot as parameter x."
+    )
   }
-
 
   # 1.3 Checks and corrections for wrong data dimension
 
@@ -117,49 +119,42 @@ ggplot_na_gapsize <- function(data,
     data <- data[, 1]
   }
 
-
-
   # 1.4 Input as vector
   data <- as.vector(data)
-
-
 
   # 1.5 Check if input is numeric
   if (!is.numeric(data)) {
     stop("Input x is not numeric")
   }
 
-
   # 1.6 Check preconditions about amount of NAs
 
   # exclude NA only inputs
   missindx <- is.na(data)
   if (all(missindx)) {
-    stop("Input data consists only of NAs. At least one non-NA numeric value is needed
-    for creating a meaningful ggplot_na_gapsize plot)")
+    stop(
+      "Input data consists only of NAs. At least one non-NA numeric value is needed
+    for creating a meaningful ggplot_na_gapsize plot)"
+    )
   }
 
   # exclude inputs without NAs
   if (!anyNA(data)) {
-    stop("Input data contains no NAs. At least one missing value is needed
-         to create a meaningful ggplot_na_gapsize plot)")
+    stop(
+      "Input data contains no NAs. At least one missing value is needed
+         to create a meaningful ggplot_na_gapsize plot)"
+    )
   }
-
-
 
   ##
   ## End Input Check and Transformation
   ##
 
-
-
   ##
   ## 2. Preparations
   ##
 
-
   # 2.1 Create required data
-
 
   # Calculation consecutive NA information
   rle_na <- base::rle(is.na(data))
@@ -168,8 +163,6 @@ ggplot_na_gapsize <- function(data,
   gaps_vec <- as.integer(names(occurrence_bar))
   totals_bar <- occurrence_bar * gaps_vec
   labels1 <- paste0(gaps_vec, " NA-gap")
-
-
 
   # 2.2 Adjust to parameter selection by user
 
@@ -186,20 +179,23 @@ ggplot_na_gapsize <- function(data,
     occurrence_bar <- occurrence_bar[fooind]
     totals_bar <- totals_bar[fooind]
     labels1 <- labels1[fooind]
-  }
-  else {
-    stop("Wrong input for parameter ranked_by. Input must be either 'occurrence' or 'total'.
-    Call ?ggplot_na_gapsize to view the documentation.")
+  } else {
+    stop(
+      "Wrong input for parameter ranked_by. Input must be either 'occurrence' or 'total'.
+    Call ?ggplot_na_gapsize to view the documentation."
+    )
   }
 
   # Adjust to show only a limited amount of bars for limit param
   if (length(occurrence_bar) > limit) {
-    occurrence_bar <- occurrence_bar[(length(occurrence_bar) - limit + 1):length(occurrence_bar)]
-    totals_bar <- totals_bar[(length(totals_bar) - limit + 1):length(totals_bar)]
+    occurrence_bar <- occurrence_bar[
+      (length(occurrence_bar) - limit + 1):length(occurrence_bar)
+    ]
+    totals_bar <- totals_bar[
+      (length(totals_bar) - limit + 1):length(totals_bar)
+    ]
     labels1 <- labels1[(length(labels1) - limit + 1):length(labels1)]
   }
-
-
 
   # 2.3 Create dataframe for ggplot2
 
@@ -221,20 +217,19 @@ ggplot_na_gapsize <- function(data,
   ## End Preparations
   ##
 
-
-
   ##
   ## 3. Create the ggplot2 plot
   ##
 
-
   # Create ggplot
   gg <- ggplot2::ggplot(data = df) +
-    ggplot2::geom_bar(aes(x = id, y = val, fill = label),
-                      color = color_border,
-                      width= 0.6,
-                      alpha = alpha_bars,
-                      stat = "identity", position = position_dodge(width = 0.7)
+    ggplot2::geom_bar(
+      aes(x = id, y = val, fill = label),
+      color = color_border,
+      width = 0.6,
+      alpha = alpha_bars,
+      stat = "identity",
+      position = position_dodge(width = 0.7)
     ) +
     ggplot2::scale_x_discrete(
       labels = labels1,
@@ -267,11 +262,9 @@ ggplot_na_gapsize <- function(data,
       )
   }
 
-
   ##
   ##  End creating the ggplot2 plot
   ##
-
 
   return(gg)
 }

@@ -40,17 +40,21 @@
 #'                                 min_high_frames = 2)
 #'
 #' @export
-classify_by_threshold <- function(values,
-                                  threshold,
-                                  min_low_frames,
-                                  min_high_frames,
-                                  return_type = c("numeric", "factor")) {
-
+classify_by_threshold <- function(
+  values,
+  threshold,
+  min_low_frames,
+  min_high_frames,
+  return_type = c("numeric", "factor")
+) {
   return_type <- match.arg(return_type)
 
   # Initial binary sequence with NA handling
-  binary_seq <- ifelse(is.na(values), NA_character_,
-                       ifelse(values > threshold, "high", "low"))
+  binary_seq <- ifelse(
+    is.na(values),
+    NA_character_,
+    ifelse(values > threshold, "high", "low")
+  )
   n <- length(binary_seq)
 
   # Helper function to process runs
@@ -61,19 +65,27 @@ classify_by_threshold <- function(values,
 
     for (i in 2:length(seq)) {
       # Skip NA values in comparison
-      if (is.na(seq[i]) || is.na(seq[i-1])) {
+      if (is.na(seq[i]) || is.na(seq[i - 1])) {
         # Start a new run after NA
         run_start <- i
         current_run <- 1
         next
       }
 
-      if (seq[i] == seq[i-1]) {
+      if (seq[i] == seq[i - 1]) {
         current_run <- current_run + 1
       } else {
         # Check if we need to flip the previous run
-        if (!is.na(seq[i-1]) && seq[i-1] == target_value && current_run < min_frames) {
-          result[run_start:(i-1)] <- ifelse(target_value == "low", "high", "low")
+        if (
+          !is.na(seq[i - 1]) &&
+            seq[i - 1] == target_value &&
+            current_run < min_frames
+        ) {
+          result[run_start:(i - 1)] <- ifelse(
+            target_value == "low",
+            "high",
+            "low"
+          )
         }
         run_start <- i
         current_run <- 1
@@ -81,8 +93,16 @@ classify_by_threshold <- function(values,
     }
 
     # Check the last run
-    if (!is.na(seq[length(seq)]) && seq[length(seq)] == target_value && current_run < min_frames) {
-      result[run_start:length(seq)] <- ifelse(target_value == "low", "high", "low")
+    if (
+      !is.na(seq[length(seq)]) &&
+        seq[length(seq)] == target_value &&
+        current_run < min_frames
+    ) {
+      result[run_start:length(seq)] <- ifelse(
+        target_value == "low",
+        "high",
+        "low"
+      )
     }
 
     return(result)
@@ -95,7 +115,7 @@ classify_by_threshold <- function(values,
   result <- process_runs(result, "high", min_high_frames)
 
   # Convert character states to numeric
-  if (return_type == "numeric"){
+  if (return_type == "numeric") {
     result <- numeric(length(result))
     result[is.na(result)] <- NA_real_
     result[result == "high"] <- 1

@@ -55,8 +55,10 @@ calculate_kinematics <- function(data, by = NULL) {
   missing_cols <- setdiff(required_cols, names(data))
   if (length(missing_cols) > 0) {
     cli::cli_abort(
-      c("Missing required columns in input data:",
-        "x" = "{.val {missing_cols}}")
+      c(
+        "Missing required columns in input data:",
+        "x" = "{.val {missing_cols}}"
+      )
     )
   }
 
@@ -65,8 +67,10 @@ calculate_kinematics <- function(data, by = NULL) {
     missing_by_cols <- setdiff(by, names(data))
     if (length(missing_by_cols) > 0) {
       cli::cli_abort(
-        c("Grouping columns specified in 'by' not found in data:",
-          "x" = "{.val {missing_by_cols}}")
+        c(
+          "Grouping columns specified in 'by' not found in data:",
+          "x" = "{.val {missing_by_cols}}"
+        )
       )
     }
     data <- data |>
@@ -84,14 +88,35 @@ calculate_kinematics <- function(data, by = NULL) {
   data <- data |>
     dplyr::mutate(
       d_translation = calculate_distance(.data$dx, .data$dy),
-      v_translation = calculate_derivative(.data$d_translation, 0, .data$time, lag(.data$time)),
-      a_translation = calculate_derivative(.data$v_translation, lag(.data$v_translation),
-                                           .data$time, lag(.data$time)),
+      v_translation = calculate_derivative(
+        .data$d_translation,
+        0,
+        .data$time,
+        lag(.data$time)
+      ),
+      a_translation = calculate_derivative(
+        .data$v_translation,
+        lag(.data$v_translation),
+        .data$time,
+        lag(.data$time)
+      ),
       direction = calculate_direction(.data$dx, .data$dy),
-      d_rotation = calculate_angular_difference(.data$direction, lag(.data$direction)),
-      v_rotation = calculate_derivative(0, .data$d_rotation, .data$time, lag(.data$time)),
-      a_rotation = calculate_derivative(.data$v_rotation, lag(.data$v_rotation),
-                                        .data$time, lag(.data$time)),
+      d_rotation = calculate_angular_difference(
+        .data$direction,
+        lag(.data$direction)
+      ),
+      v_rotation = calculate_derivative(
+        0,
+        .data$d_rotation,
+        .data$time,
+        lag(.data$time)
+      ),
+      a_rotation = calculate_derivative(
+        .data$v_rotation,
+        lag(.data$v_rotation),
+        .data$time,
+        lag(.data$time)
+      ),
       direction = constrain_angles_radians(.data$direction)
     )
 

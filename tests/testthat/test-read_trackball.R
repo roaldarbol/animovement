@@ -1,9 +1,25 @@
 # Test arguments
-path_correct <- testthat::test_path("data", "single", "opticalflow_sensor_1.csv")
-path_named_cols <- testthat::test_path("data", "single", "named_cols_opticalflow_sensor_1.csv")
-path_correct2 <- testthat::test_path("data", "single", "opticalflow_sensor_2.csv")
+path_correct <- testthat::test_path(
+  "data",
+  "single",
+  "opticalflow_sensor_1.csv"
+)
+path_named_cols <- testthat::test_path(
+  "data",
+  "single",
+  "named_cols_opticalflow_sensor_1.csv"
+)
+path_correct2 <- testthat::test_path(
+  "data",
+  "single",
+  "opticalflow_sensor_2.csv"
+)
 path_wrong <- testthat::test_path("data", "single", "opticalflow_sensor_12.csv")
-path_wrong_suffix <- testthat::test_path("data", "single", "opticalflow_sensor_12.txt")
+path_wrong_suffix <- testthat::test_path(
+  "data",
+  "single",
+  "opticalflow_sensor_12.txt"
+)
 paths_multiple <- c(path_correct, path_correct2)
 paths_multiple_wrong <- c(path_correct, path_wrong_suffix)
 
@@ -13,7 +29,10 @@ test_that("File headers", {
     does_file_have_expected_headers(path_correct)
   )
   expect_true(
-    does_file_have_expected_headers(path_named_cols, expected_headers = c("x", "y", "t"))
+    does_file_have_expected_headers(
+      path_named_cols,
+      expected_headers = c("x", "y", "t")
+    )
   )
 })
 

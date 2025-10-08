@@ -46,8 +46,14 @@
 #' - replace_na_value() for constant value replacement details
 #'
 #' @export
-replace_na <- function(x, method = "linear", value = NULL,
-                       min_gap = 1, max_gap = Inf, ...) {
+replace_na <- function(
+  x,
+  method = "linear",
+  value = NULL,
+  min_gap = 1,
+  max_gap = Inf,
+  ...
+) {
   # Input validation
   if (!is.numeric(x)) {
     cli::cli_abort("Input must be numeric")
@@ -62,12 +68,18 @@ replace_na <- function(x, method = "linear", value = NULL,
   }
 
   # Dispatch to appropriate method
-  result <- switch(method,
-                   "linear" = replace_na_linear(x, min_gap = min_gap, max_gap = max_gap, ...),
-                   "spline" = replace_na_spline(x, min_gap = min_gap, max_gap = max_gap, ...),
-                   "stine" = replace_na_stine(x, min_gap = min_gap, max_gap = max_gap, ...),
-                   "locf" = replace_na_locf(x, min_gap = min_gap, max_gap = max_gap),
-                   "value" = replace_na_value(x, value = value, min_gap = min_gap, max_gap = max_gap)
+  result <- switch(
+    method,
+    "linear" = replace_na_linear(x, min_gap = min_gap, max_gap = max_gap, ...),
+    "spline" = replace_na_spline(x, min_gap = min_gap, max_gap = max_gap, ...),
+    "stine" = replace_na_stine(x, min_gap = min_gap, max_gap = max_gap, ...),
+    "locf" = replace_na_locf(x, min_gap = min_gap, max_gap = max_gap),
+    "value" = replace_na_value(
+      x,
+      value = value,
+      min_gap = min_gap,
+      max_gap = max_gap
+    )
   )
 
   return(result)

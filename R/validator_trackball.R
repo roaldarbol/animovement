@@ -28,17 +28,23 @@ validate_trackball <- function(paths, setup, col_time) {
 #' @keywords internal
 ensure_trackball_setup <- function(setup) {
   if (!setup %in% c("of_free", "of_fixed", "fictrac")) {
-    cli::cli_abort("Expected setup being either \"of_free\", \"of_fixed\" or \"fictrac\", but got {setup} instead.")
+    cli::cli_abort(
+      "Expected setup being either \"of_free\", \"of_fixed\" or \"fictrac\", but got {setup} instead."
+    )
   }
 }
 
 #' @inheritParams validate_trackball
 ensure_number_of_files <- function(paths, setup) {
   if (setup == "of_free" & length(paths) != 2) {
-    cli::cli_abort("For setup {setup} expected 2 files, but got {length(paths)} files instead.")
+    cli::cli_abort(
+      "For setup {setup} expected 2 files, but got {length(paths)} files instead."
+    )
   }
   if (setup == "of_fixed" & !length(paths) %in% c(1, 2)) {
-    cli::cli_abort("For setup {setup} expected 1 or 2 files, but got {length(paths)} files instead.")
+    cli::cli_abort(
+      "For setup {setup} expected 1 or 2 files, but got {length(paths)} files instead."
+    )
   }
 }
 
@@ -49,7 +55,9 @@ ensure_identical_suffix <- function(paths) {
   if (length(paths) == 2) {
     file_exts <- c(.get_file_ext(paths[1]), .get_file_ext(paths[2]))
     if (file_exts[1] != file_exts[2]) {
-      cli::cli_abort("Files have different suffixes. Please provide 2 files of the same format.")
+      cli::cli_abort(
+        "Files have different suffixes. Please provide 2 files of the same format."
+      )
     }
   }
 }
@@ -59,6 +67,8 @@ ensure_identical_suffix <- function(paths) {
 ensure_header_match <- function(path, col_time) {
   does_file_have_expected_headers(path)
   if (is.character(col_time)) {
-    cli::cli_abort("`col_time` is a string ({col_time}), but the file doesn't have named headers. Either use a column number or provide a file with named headers.")
+    cli::cli_abort(
+      "`col_time` is a string ({col_time}), but the file doesn't have named headers. Either use a column number or provide a file with named headers."
+    )
   }
 }

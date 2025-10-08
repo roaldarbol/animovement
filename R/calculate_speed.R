@@ -27,7 +27,7 @@ calculate_speed <- function(x, y, time) {
   dt <- diff(time)
 
   # Calculate speed: sqrt((dx/dt)^2 + (dy/dt)^2)
-  speed <- sqrt((dx/dt)^2 + (dy/dt)^2)
+  speed <- sqrt((dx / dt)^2 + (dy / dt)^2)
 
   # Add NA at the start since we can't calculate speed for first point
   c(NA, speed)

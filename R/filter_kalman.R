@@ -50,24 +50,27 @@
 #' * If you know your sensor's noise characteristics, set R to the square of the standard deviation
 #'
 #' @export
-filter_kalman <- function(measurements,
-                          sampling_rate,
-                          base_Q = NULL,
-                          R = NULL,
-                          initial_state = NULL,
-                          initial_P = NULL) {
-
+filter_kalman <- function(
+  measurements,
+  sampling_rate,
+  base_Q = NULL,
+  R = NULL,
+  initial_state = NULL,
+  initial_P = NULL
+) {
   # Input validation
-  if(!is.numeric(sampling_rate) || length(sampling_rate) != 1) {
+  if (!is.numeric(sampling_rate) || length(sampling_rate) != 1) {
     stop("sampling_rate must be a single numeric value")
   }
-  if(sampling_rate <= 0 || is.infinite(sampling_rate) || is.na(sampling_rate)) {
+  if (
+    sampling_rate <= 0 || is.infinite(sampling_rate) || is.na(sampling_rate)
+  ) {
     stop("sampling_rate must be finite and positive")
   }
-  if(length(measurements) == 0) {
+  if (length(measurements) == 0) {
     stop("measurements cannot be empty")
   }
-  if(all(is.na(measurements))) {
+  if (all(is.na(measurements))) {
     stop("At least one non-NA measurement is required")
   }
 
@@ -75,31 +78,31 @@ filter_kalman <- function(measurements,
   valid_measurements <- measurements[!is.na(measurements)]
 
   # Improved parameter auto-configuration
-  if(is.null(base_Q)) {
+  if (is.null(base_Q)) {
     # If we have enough valid measurements for variance
-    if(length(valid_measurements) > 1) {
+    if (length(valid_measurements) > 1) {
       signal_var <- var(valid_measurements)
     } else {
-      signal_var <- 1  # Default if we can't compute variance
+      signal_var <- 1 # Default if we can't compute variance
     }
     base_Q <- signal_var / sampling_rate
   }
 
-  if(is.null(R)) {
+  if (is.null(R)) {
     # If we have enough measurements for local differences
-    if(length(valid_measurements) > 1) {
+    if (length(valid_measurements) > 1) {
       local_diff_var <- mean(diff(valid_measurements)^2) / 2
       R <- min(local_diff_var, var(valid_measurements) / 4)
     } else {
-      R <- 0.1  # Default if we can't estimate noise
+      R <- 0.1 # Default if we can't estimate noise
     }
   }
 
-  if(is.null(initial_P)) {
-    if(length(valid_measurements) > 1) {
+  if (is.null(initial_P)) {
+    if (length(valid_measurements) > 1) {
       initial_P <- var(valid_measurements)
     } else {
-      initial_P <- 1  # Default if we can't compute variance
+      initial_P <- 1 # Default if we can't compute variance
     }
   }
 
@@ -107,9 +110,9 @@ filter_kalman <- function(measurements,
   filtered <- numeric(n)
 
   # Initialize state
-  x_hat <- if(is.null(initial_state)) {
+  x_hat <- if (is.null(initial_state)) {
     first_valid <- valid_measurements[1]
-    x_hat <- first_valid  # We know this exists due to earlier check
+    x_hat <- first_valid # We know this exists due to earlier check
   } else {
     initial_state
   }
@@ -120,13 +123,13 @@ filter_kalman <- function(measurements,
   Q <- base_Q * dt
 
   # Process each measurement
-  for(i in 1:n) {
+  for (i in 1:n) {
     # Predict step
     x_hat_minus <- x_hat
     P_minus <- P + Q
 
     # Update step
-    if(!is.na(measurements[i])) {
+    if (!is.na(measurements[i])) {
       # Kalman gain
       K <- P_minus / (P_minus + R)
 
@@ -221,41 +224,44 @@ filter_kalman <- function(measurements,
 #' filter_kalman for regularly sampled data
 #'
 #' @export
-filter_kalman_irregular <- function(measurements,
-                                    times,
-                                    base_Q = NULL,
-                                    R = NULL,
-                                    initial_state = NULL,
-                                    initial_P = NULL,
-                                    resample = FALSE,
-                                    resample_freq = NULL) {
-
+filter_kalman_irregular <- function(
+  measurements,
+  times,
+  base_Q = NULL,
+  R = NULL,
+  initial_state = NULL,
+  initial_P = NULL,
+  resample = FALSE,
+  resample_freq = NULL
+) {
   # Previous input validation remains the same
-  if(length(measurements) != length(times)) {
+  if (length(measurements) != length(times)) {
     stop("measurements and times must have the same length")
   }
-  if(!is.numeric(times)) {
+  if (!is.numeric(times)) {
     stop("times must be numeric")
   }
-  if(any(is.na(times)) || any(is.infinite(times))) {
+  if (any(is.na(times)) || any(is.infinite(times))) {
     stop("times must be finite and not NA")
   }
-  if(length(measurements) == 0) {
+  if (length(measurements) == 0) {
     stop("measurements cannot be empty")
   }
-  if(all(is.na(measurements))) {
+  if (all(is.na(measurements))) {
     stop("At least one non-NA measurement is required")
   }
-  if(resample && is.null(resample_freq)) {
+  if (resample && is.null(resample_freq)) {
     stop("resample_freq must be provided when resample=TRUE")
   }
 
   # Check for non-decreasing times
-  if(any(diff(times) < 0)) {
+  if (any(diff(times) < 0)) {
     stop("times must be monotonically increasing")
   }
-  if(any(diff(times) == 0)) {
-    warning("Duplicate time points detected. Using measurements in order provided.")
+  if (any(diff(times) == 0)) {
+    warning(
+      "Duplicate time points detected. Using measurements in order provided."
+    )
   }
 
   # Get valid measurements for parameter estimation
@@ -263,39 +269,39 @@ filter_kalman_irregular <- function(measurements,
 
   # Calculate median sampling rate
   time_diffs <- diff(times)
-  time_diffs <- time_diffs[time_diffs > 0]  # Exclude zero differences
-  if(length(time_diffs) > 0) {
+  time_diffs <- time_diffs[time_diffs > 0] # Exclude zero differences
+  if (length(time_diffs) > 0) {
     median_rate <- 1 / median(time_diffs)
   } else {
     median_rate <- 1
   }
 
   # Improved parameter auto-configuration
-  if(is.null(base_Q)) {
+  if (is.null(base_Q)) {
     # If we have enough valid measurements for variance
-    if(length(valid_measurements) > 1) {
+    if (length(valid_measurements) > 1) {
       signal_var <- var(valid_measurements)
       # Scale base_Q based on both variance and rate, but more conservative
       base_Q <- signal_var / (10 * median_rate)
     } else {
-      base_Q <- 0.1  # Default if we can't compute variance
+      base_Q <- 0.1 # Default if we can't compute variance
     }
   }
 
-  if(is.null(R)) {
+  if (is.null(R)) {
     # If we have enough measurements for local differences
-    if(length(valid_measurements) > 1) {
+    if (length(valid_measurements) > 1) {
       # Use both local differences and overall variance to estimate noise
       local_diff_var <- mean(diff(valid_measurements)^2) / 2
       signal_var <- var(valid_measurements)
       R <- min(local_diff_var, signal_var / 10)
     } else {
-      R <- 0.1  # Default if we can't estimate noise
+      R <- 0.1 # Default if we can't estimate noise
     }
   }
 
-  if(is.null(initial_P)) {
-    if(length(valid_measurements) > 1) {
+  if (is.null(initial_P)) {
+    if (length(valid_measurements) > 1) {
       initial_P <- var(valid_measurements)
     } else {
       initial_P <- 1
@@ -303,19 +309,21 @@ filter_kalman_irregular <- function(measurements,
   }
 
   # Warn if resampling frequency is too high
-  if(resample && resample_freq > 2 * median_rate) {
+  if (resample && resample_freq > 2 * median_rate) {
     warning(sprintf(
       "Requested resampling frequency (%g Hz) exceeds twice the median sampling rate (%g Hz).
             This may lead to poor interpolation.",
-      resample_freq, median_rate))
+      resample_freq,
+      median_rate
+    ))
   }
 
   n <- length(measurements)
   filtered <- numeric(n)
 
   # Initialize state
-  x_hat <- if(is.null(initial_state)) {
-    valid_measurements[1]  # We know this exists due to earlier check
+  x_hat <- if (is.null(initial_state)) {
+    valid_measurements[1] # We know this exists due to earlier check
   } else {
     initial_state
   }
@@ -324,14 +332,14 @@ filter_kalman_irregular <- function(measurements,
   last_time <- times[1]
 
   # Process each measurement
-  for(i in 1:n) {
-    dt <- max(times[i] - last_time, 0)  # Prevent negative time differences
-    Q <- base_Q * dt  # Scale base_Q by time difference
+  for (i in 1:n) {
+    dt <- max(times[i] - last_time, 0) # Prevent negative time differences
+    Q <- base_Q * dt # Scale base_Q by time difference
 
     x_hat_minus <- x_hat
     P_minus <- P + Q
 
-    if(!is.na(measurements[i])) {
+    if (!is.na(measurements[i])) {
       K <- P_minus / (P_minus + R)
       x_hat <- x_hat_minus + K * (measurements[i] - x_hat_minus)
       P <- (1 - K) * P_minus
@@ -344,11 +352,16 @@ filter_kalman_irregular <- function(measurements,
     filtered[i] <- x_hat
   }
 
-  if(resample) {
+  if (resample) {
     dt <- 1 / resample_freq
-    regular_times <- seq(min(times), max(times), by=dt)
-    regular_filtered <- approx(times, filtered, regular_times,
-                               method="linear", rule=2)$y
+    regular_times <- seq(min(times), max(times), by = dt)
+    regular_filtered <- approx(
+      times,
+      filtered,
+      regular_times,
+      method = "linear",
+      rule = 2
+    )$y
 
     return(list(
       time = regular_times,

@@ -26,9 +26,9 @@
 #' @return movement data frame with rotated coordinates
 #' @export
 rotate_coords <- function(
-    data,
-    alignment_points,     # Two keypoint names to use for alignment
-    align_perpendicular = FALSE  # If TRUE, alignment_points will be made perpendicular to 0°
+  data,
+  alignment_points, # Two keypoint names to use for alignment
+  align_perpendicular = FALSE # If TRUE, alignment_points will be made perpendicular to 0°
 ) {
   # Input validation
   if (length(alignment_points) != 2) {
@@ -66,7 +66,7 @@ rotate_coords <- function(
         vec_y = .data$y2 - .data$y1,
         # Calculate current angle and needed rotation
         current_angle = atan2(.data$vec_y, .data$vec_x),
-        target_angle = dplyr::if_else(isTRUE(align_perpendicular), pi/2, 0),
+        target_angle = dplyr::if_else(isTRUE(align_perpendicular), pi / 2, 0),
         rotation_angle = .data$target_angle - .data$current_angle
       ) |>
       dplyr::select(.data$time, .data$rotation_angle)
@@ -75,8 +75,12 @@ rotate_coords <- function(
     ind_rotated <- ind_data |>
       dplyr::left_join(angles, by = "time") |>
       dplyr::mutate(
-        x_new = .data$x * cos(.data$rotation_angle) - .data$y * sin(.data$rotation_angle),
-        y_new = .data$x * sin(.data$rotation_angle) + .data$y * cos(.data$rotation_angle)
+        x_new = .data$x *
+          cos(.data$rotation_angle) -
+          .data$y * sin(.data$rotation_angle),
+        y_new = .data$x *
+          sin(.data$rotation_angle) +
+          .data$y * cos(.data$rotation_angle)
       ) |>
       dplyr::select(-.data$rotation_angle, -.data$x, -.data$y) |>
       dplyr::rename(x = .data$x_new, y = .data$y_new)
@@ -84,5 +88,7 @@ rotate_coords <- function(
     out_data <- dplyr::bind_rows(out_data, ind_rotated)
   }
 
-  return(out_data |> dplyr::arrange(.data$time, .data$individual, .data$keypoint))
+  return(
+    out_data |> dplyr::arrange(.data$time, .data$individual, .data$keypoint)
+  )
 }

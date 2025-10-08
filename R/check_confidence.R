@@ -30,8 +30,7 @@
 #' check_confidence(data)
 #'
 #' @export
-check_confidence <- function(data){
-
+check_confidence <- function(data) {
   # Parameters
   keypoints <- unique(data$keypoint)
   n_keypoints <- length(keypoints)
@@ -40,21 +39,26 @@ check_confidence <- function(data){
   color_border = "black"
   na_plots <- list()
 
-  for (i in 1:length(keypoints)){
+  for (i in 1:length(keypoints)) {
     na_plots[[i]] <- data |>
       dplyr::filter(.data$keypoint == keypoints[i]) |>
       subplot_confidence(keypoint = keypoints[i])
   }
 
   output_plot <- patchwork::wrap_plots(na_plots) +
-    patchwork::plot_annotation(title = "Confidence",
-                               subtitle = "Number of observations by confidence",
-                               theme = theme(plot.subtitle = ggtext::element_markdown(lineheight = 1.1),
-                                             legend.position="bottom")
+    patchwork::plot_annotation(
+      title = "Confidence",
+      subtitle = "Number of observations by confidence",
+      theme = theme(
+        plot.subtitle = ggtext::element_markdown(lineheight = 1.1),
+        legend.position = "bottom"
+      )
     ) +
-    patchwork::plot_layout(axes = "collect",
-                           axis_titles = "collect",
-                           guides = "collect")
+    patchwork::plot_layout(
+      axes = "collect",
+      axis_titles = "collect",
+      guides = "collect"
+    )
 
   return(output_plot)
 }

@@ -16,13 +16,25 @@ test_that("replace_na input validation works", {
   expect_error(replace_na(simple_vec, method = "invalid"))
 
   # Check value parameter
-  expect_error(replace_na(simple_vec, method = "value"), "value must be specified")
-  expect_error(replace_na(simple_vec, method = "value", value = "0"), "must be a single numeric value")
-  expect_error(replace_na(simple_vec, method = "value", value = c(1, 2)), "must be a single numeric value")
+  expect_error(
+    replace_na(simple_vec, method = "value"),
+    "value must be specified"
+  )
+  expect_error(
+    replace_na(simple_vec, method = "value", value = "0"),
+    "must be a single numeric value"
+  )
+  expect_error(
+    replace_na(simple_vec, method = "value", value = c(1, 2)),
+    "must be a single numeric value"
+  )
 
   # Check gap parameters
   expect_error(replace_na(simple_vec, min_gap = 0), "min_gap must be >= 1")
-  expect_error(replace_na(simple_vec, min_gap = 3, max_gap = 2), "max_gap must be >= min_gap")
+  expect_error(
+    replace_na(simple_vec, min_gap = 3, max_gap = 2),
+    "max_gap must be >= min_gap"
+  )
 })
 
 test_that("replace_na handles edge cases correctly", {
@@ -33,7 +45,10 @@ test_that("replace_na handles edge cases correctly", {
 
   # All NAs
   expect_warning(replace_na(all_nas), "At least 2 non-NA data points required")
-  expect_warning(replace_na(all_nas, method = "spline"), "At least 2 non-NA data points required")
+  expect_warning(
+    replace_na(all_nas, method = "spline"),
+    "At least 2 non-NA data points required"
+  )
 })
 
 test_that("linear interpolation works correctly", {
@@ -43,15 +58,15 @@ test_that("linear interpolation works correctly", {
 
   # Edge NAs should be filled using rule = 2
   result <- replace_na(edge_nas, method = "linear")
-  expect_equal(result[1:2], c(3, 3))  # First NAs filled with first non-NA
-  expect_equal(result[5:6], c(4, 4))  # Last NAs filled with last non-NA
+  expect_equal(result[1:2], c(3, 3)) # First NAs filled with first non-NA
+  expect_equal(result[5:6], c(4, 4)) # Last NAs filled with last non-NA
 
   # Gap constraints
   result <- replace_na(simple_vec, method = "linear", min_gap = 3)
-  expect_true(is.na(result[2]))  # Single NA should remain
+  expect_true(is.na(result[2])) # Single NA should remain
 
   result <- replace_na(simple_vec, method = "linear", max_gap = 2)
-  expect_true(all(is.na(result[6:8])))  # Gap of 3 should remain NA
+  expect_true(all(is.na(result[6:8]))) # Gap of 3 should remain NA
 })
 
 test_that("spline interpolation works correctly", {
@@ -61,7 +76,7 @@ test_that("spline interpolation works correctly", {
 
   # Gap constraints
   result <- replace_na(simple_vec, method = "spline", min_gap = 3)
-  expect_true(is.na(result[2]))  # Single NA should remain
+  expect_true(is.na(result[2])) # Single NA should remain
 
   # Should handle edge cases like linear
   result <- replace_na(edge_nas, method = "spline")
@@ -75,7 +90,7 @@ test_that("stine interpolation works correctly", {
 
   # Gap constraints
   result <- replace_na(simple_vec, method = "stine", min_gap = 3)
-  expect_true(is.na(result[2]))  # Single NA should remain
+  expect_true(is.na(result[2])) # Single NA should remain
 
   # Should handle edge cases
   # result <- replace_na(edge_nas, method = "stine")
@@ -96,10 +111,10 @@ test_that("locf works correctly", {
 
   # Gap constraints
   result <- replace_na(simple_vec, method = "locf", min_gap = 3)
-  expect_true(is.na(result[2]))  # Single NA should remain
+  expect_true(is.na(result[2])) # Single NA should remain
 
   result <- replace_na(simple_vec, method = "locf", max_gap = 2)
-  expect_true(all(is.na(result[6:8])))  # Gap of 3 should remain NA
+  expect_true(all(is.na(result[6:8]))) # Gap of 3 should remain NA
 })
 
 test_that("value replacement works correctly", {
@@ -111,12 +126,12 @@ test_that("value replacement works correctly", {
 
   # Gap constraints
   result <- replace_na(simple_vec, method = "value", value = -999, min_gap = 3)
-  expect_true(is.na(result[2]))  # Single NA should remain
-  expect_equal(result[6:8], rep(-999, 3))  # Longer gap should be filled
+  expect_true(is.na(result[2])) # Single NA should remain
+  expect_equal(result[6:8], rep(-999, 3)) # Longer gap should be filled
 
   result <- replace_na(simple_vec, method = "value", value = -999, max_gap = 2)
-  expect_equal(result[2], -999)  # Single NA should be filled
-  expect_true(all(is.na(result[6:8])))  # Gap of 3 should remain NA
+  expect_equal(result[2], -999) # Single NA should be filled
+  expect_true(all(is.na(result[6:8]))) # Gap of 3 should remain NA
 })
 
 test_that("min_gap and max_gap work together correctly", {
@@ -124,10 +139,7 @@ test_that("min_gap and max_gap work together correctly", {
   methods <- c("linear", "spline", "stine", "locf")
 
   for (method in methods) {
-    result <- replace_na(simple_vec,
-                         method = method,
-                         min_gap = 2,
-                         max_gap = 2)
+    result <- replace_na(simple_vec, method = method, min_gap = 2, max_gap = 2)
 
     # Single NA should remain (gap too small)
     expect_true(!is.na(result[2]))
@@ -140,13 +152,15 @@ test_that("min_gap and max_gap work together correctly", {
   }
 
   # Test value method separately
-  result <- replace_na(simple_vec,
-                       method = "value",
-                       value = 0,
-                       min_gap = 2,
-                       max_gap = 2)
+  result <- replace_na(
+    simple_vec,
+    method = "value",
+    value = 0,
+    min_gap = 2,
+    max_gap = 2
+  )
 
-  expect_true(!is.na(result[2]))  # Single NA
-  expect_true(all(is.na(result[6:8])))  # Triple NA
-  expect_equal(result[2:3], c(0, 0))  # Double NA
+  expect_true(!is.na(result[2])) # Single NA
+  expect_true(all(is.na(result[6:8]))) # Triple NA
+  expect_equal(result[2:3], c(0, 0)) # Double NA
 })

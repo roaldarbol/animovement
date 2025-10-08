@@ -39,25 +39,28 @@
 #'   group_every(n = 30) |> # group every 30 observations together
 #'   dplyr::summarise(mean_x = mean(x),
 #'                    mean_y = mean(y))
-group_every <- function(data, seconds = NULL, n = NULL){
-  if (!is.null(n) & !is.null(seconds)){
-    cli::cli_abort("Both `n` and `seconds` are provided; please only specify one or the other.")
+group_every <- function(data, seconds = NULL, n = NULL) {
+  if (!is.null(n) & !is.null(seconds)) {
+    cli::cli_abort(
+      "Both `n` and `seconds` are provided; please only specify one or the other."
+    )
   }
-  if (!is.null(seconds) & !"time" %in% names(data)){
-    cli::cli_abort("To group by seconds, there needs to be a \"time\" column in the data.")
+  if (!is.null(seconds) & !"time" %in% names(data)) {
+    cli::cli_abort(
+      "To group by seconds, there needs to be a \"time\" column in the data."
+    )
   }
 
-  if (!is.null(n)){
+  if (!is.null(n)) {
     data_grouped <- data |>
       dplyr::mutate(bin = ceiling(dplyr::row_number() / n)) |>
       dplyr::group_by(.data$bin)
   }
 
-  if (!is.null(seconds)){
+  if (!is.null(seconds)) {
     data_grouped <- data |>
       dplyr::mutate(bin = .data$time %/% seconds) |>
       dplyr::group_by(.data$bin)
   }
   return(data_grouped)
 }
-

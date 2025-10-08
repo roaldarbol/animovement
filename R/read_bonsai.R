@@ -19,19 +19,22 @@ read_bonsai <- function(path) {
     path,
     delim = ",",
     show_col_types = FALSE
-    ) |>
+  ) |>
     suppressMessages() |>
     convert_nan_to_na() |>
     dplyr::select(tidyselect::contains(c("Timestamp", "Centroid"))) |>
-    dplyr::rename(time = tidyselect::contains("Timestamp"),
-                  x = tidyselect::contains("X"),
-                  y = tidyselect::contains("Y")) |>
-    dplyr::mutate(keypoint = factor("centroid"),
-                  individual = factor(NA),
-                  confidence = as.numeric(NA)) |>
+    dplyr::rename(
+      time = tidyselect::contains("Timestamp"),
+      x = tidyselect::contains("X"),
+      y = tidyselect::contains("Y")
+    ) |>
+    dplyr::mutate(
+      keypoint = factor("centroid"),
+      individual = factor(NA),
+      confidence = as.numeric(NA)
+    ) |>
     dplyr::relocate("keypoint", .after = "time") |>
     dplyr::relocate("individual", .after = "time")
-
 
   attributes(data)$spec <- NULL
   attributes(data)$problems <- NULL

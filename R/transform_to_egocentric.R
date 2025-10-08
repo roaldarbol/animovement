@@ -50,16 +50,20 @@
 #' @return movement data frame in egocentric reference frame
 #' @export
 transform_to_egocentric <- function(
-    data,
-    to_keypoint,         # Reference point for translation
-    alignment_points,     # Two keypoint names to use for alignment
-    align_perpendicular = FALSE  # If TRUE, alignment_points will be made perpendicular to 0°
+  data,
+  to_keypoint, # Reference point for translation
+  alignment_points, # Two keypoint names to use for alignment
+  align_perpendicular = FALSE # If TRUE, alignment_points will be made perpendicular to 0°
 ) {
   # First translate
   translated_data <- translate_coords(data, to_keypoint = to_keypoint)
 
   # Then rotate
-  transformed_data <- rotate_coords(translated_data, alignment_points, align_perpendicular)
+  transformed_data <- rotate_coords(
+    translated_data,
+    alignment_points,
+    align_perpendicular
+  )
 
   return(transformed_data)
 }

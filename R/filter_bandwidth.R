@@ -92,15 +92,20 @@
 #' @importFrom signal butter filtfilt
 #'
 #' @export
-filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4,
-                           na_action = c("linear", "spline", "stine", "locf", "value", "error"),
-                           keep_na = FALSE,
-                           ...) {
+filter_lowpass <- function(
+  x,
+  cutoff_freq,
+  sampling_rate,
+  order = 4,
+  na_action = c("linear", "spline", "stine", "locf", "value", "error"),
+  keep_na = FALSE,
+  ...
+) {
   # Input validation
   if (!is.numeric(x)) {
     cli::cli_abort("Input signal must be numeric")
   }
-  if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
+  if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate / 2) {
     cli::cli_abort("Cutoff frequency must be between 0 and sampling_rate/2")
   }
   if (order < 1 || order > 8) {
@@ -122,16 +127,18 @@ filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4,
   }
 
   # For very low cutoff frequencies (<0.001 normalized), reduce order
-  nyquist_freq <- sampling_rate/2
-  normalized_cutoff <- cutoff_freq/nyquist_freq
+  nyquist_freq <- sampling_rate / 2
+  normalized_cutoff <- cutoff_freq / nyquist_freq
 
   if (normalized_cutoff < 0.001 & order > 2) {
-    order <- min(order, 2)  # Limit order for very low frequencies
-    cli::cli_warn("Very low cutoff frequency detected. Reducing filter order to 2 for stability.")
+    order <- min(order, 2) # Limit order for very low frequencies
+    cli::cli_warn(
+      "Very low cutoff frequency detected. Reducing filter order to 2 for stability."
+    )
   }
 
   # Add reflection padding to reduce edge effects
-  n_pad <- max(round(sampling_rate/cutoff_freq), order * 10)
+  n_pad <- max(round(sampling_rate / cutoff_freq), order * 10)
   start_pad <- rev(x[1:min(n_pad, length(x))])
   end_pad <- rev(x[(length(x) - min(n_pad, length(x)) + 1):length(x)])
   x_padded <- c(start_pad, x, end_pad)
@@ -244,15 +251,20 @@ filter_lowpass <- function(x, cutoff_freq, sampling_rate, order = 4,
 #' @importFrom signal butter filtfilt
 #'
 #' @export
-filter_highpass <- function(x, cutoff_freq, sampling_rate, order = 4,
-                            na_action = c("linear", "spline", "stine", "locf", "value", "error"),
-                            keep_na = FALSE,
-                            ...) {
+filter_highpass <- function(
+  x,
+  cutoff_freq,
+  sampling_rate,
+  order = 4,
+  na_action = c("linear", "spline", "stine", "locf", "value", "error"),
+  keep_na = FALSE,
+  ...
+) {
   # Input validation
   if (!is.numeric(x)) {
     cli::cli_abort("Input signal must be numeric")
   }
-  if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate/2) {
+  if (cutoff_freq <= 0 || cutoff_freq >= sampling_rate / 2) {
     cli::cli_abort("Cutoff frequency must be between 0 and sampling_rate/2")
   }
   if (order < 1 || order > 8) {
@@ -274,16 +286,18 @@ filter_highpass <- function(x, cutoff_freq, sampling_rate, order = 4,
   }
 
   # For very low cutoff frequencies (<0.001 normalized), reduce order
-  nyquist_freq <- sampling_rate/2
-  normalized_cutoff <- cutoff_freq/nyquist_freq
+  nyquist_freq <- sampling_rate / 2
+  normalized_cutoff <- cutoff_freq / nyquist_freq
 
   if (normalized_cutoff < 0.001 & order > 2) {
-    order <- min(order, 2)  # Limit order for very low frequencies
-    cli::cli_warn("Very low cutoff frequency detected. Reducing filter order to 2 for stability.")
+    order <- min(order, 2) # Limit order for very low frequencies
+    cli::cli_warn(
+      "Very low cutoff frequency detected. Reducing filter order to 2 for stability."
+    )
   }
 
   # Add reflection padding to reduce edge effects
-  n_pad <- max(round(sampling_rate/cutoff_freq), order * 10)
+  n_pad <- max(round(sampling_rate / cutoff_freq), order * 10)
   start_pad <- rev(x[1:min(n_pad, length(x))])
   end_pad <- rev(x[(length(x) - min(n_pad, length(x)) + 1):length(x)])
   x_padded <- c(start_pad, x, end_pad)

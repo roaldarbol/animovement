@@ -4,22 +4,23 @@
 #'
 #' @return movement data frame with Cartesian coordinates
 #' @export
-map_to_cartesian <- function(data){
+map_to_cartesian <- function(data) {
   ensure_coord_polar(data)
   data <- data |>
     dplyr::mutate(
       x = polar_to_x(.data$rho, .data$theta),
-      y = polar_to_y(.data$rho, .data$theta)) |>
+      y = polar_to_y(.data$rho, .data$theta)
+    ) |>
     dplyr::select(-c("rho", "theta")) |>
     dplyr::relocate("x", .after = "keypoint") |>
     dplyr::relocate("y", .after = "x")
   return(data)
 }
 
-polar_to_x <- function(rho, theta){
+polar_to_x <- function(rho, theta) {
   rho * cos(theta)
 }
 
-polar_to_y <- function(rho, theta){
+polar_to_y <- function(rho, theta) {
   rho * sin(theta)
 }
