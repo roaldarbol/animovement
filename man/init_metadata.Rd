@@ -4,7 +4,7 @@
 \alias{init_metadata}
 \title{Initiate movement metadata}
 \usage{
-init_metadata(data)
+init_metadata(data, metadata = list())
 }
 \arguments{
 \item{data}{movement data frame}
