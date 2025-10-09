@@ -775,6 +775,11 @@
       ],
       "Hash": "2f286162ac1320c8e244331368cf9029"
     },
+    "sloop": {
+      "Package": "sloop",
+      "Version": "1.0.1",
+      "Source": "Repository"
+    },
     "snakecase": {
       "Package": "snakecase",
       "Version": "0.11.1",
